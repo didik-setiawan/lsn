@@ -24,4 +24,9 @@ class Master_model extends CI_Model{
         return $this->db->get()->result();
     }
 
+    public function get_cabang(){
+        $data = $this->db->get('cabang');
+        return $data;
+    }
+
 }

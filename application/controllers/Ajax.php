@@ -16,4 +16,16 @@ class Ajax extends CI_Controller {
         ];
         $this->load->view('ajax/master/menu', $data);
     }
+
+    public function get_data_cabang(){
+        validation_ajax_request();
+        $data = [
+            'data' => $this->m->get_cabang()->result()
+        ];
+        $this->load->view('ajax/master/cabang', $data);
+    }
+
+    
+
+
 }

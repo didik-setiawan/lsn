@@ -525,4 +525,84 @@ class Master extends CI_Controller
         $this->load->view('template', $data);
     }
 
+    private function validation_cabang(){
+        $this->form_validation->set_rules('cabang', 'Nama Cabang', 'required|trim|is_unique[cabang.nama_cabang]');
+        if($this->form_validation->run() == false){
+            $params = [
+                'type' => 'validation',
+                'err_cabang' => form_error('cabang')
+            ];
+            echo json_encode($params);
+            die;
+        } else {
+            return true;
+        }
+    }
+
+    public function add_cabang(){
+        validation_ajax_request();
+        $this->validation_cabang();
+        $data = [
+            'nama_cabang' => htmlspecialchars($this->input->post('cabang', true))
+        ];
+        $this->db->insert('cabang', $data);
+        if($this->db->affected_rows() > 0){
+            $params = [
+                'type' => 'result',
+                'success' => true,
+                'msg' => 'Anak cabang baru berhasil di tambahkan'
+            ];
+        } else {
+            $params = [
+                'type' => 'result',
+                'success' => false,
+                'msg' => 'Anak cabang baru gagal di tambahkan'
+            ];
+        }
+        echo json_encode($params);
+    }
+
+    public function edit_cabang(){
+        validation_ajax_request();
+        $this->validation_cabang();
+        $data = [
+            'nama_cabang' => htmlspecialchars($this->input->post('cabang', true))
+        ];
+        $id = $this->input->post('id_cabang');
+        $this->db->where('md5(sha1(id_cabang))', $id)->update('cabang', $data);
+        if($this->db->affected_rows() > 0){
+            $params = [
+                'type' => 'result',
+                'success' => true,
+                'msg' => 'Anak cabang berhasil di edit'
+            ];
+        } else {
+            $params = [
+                'type' => 'result',
+                'success' => false,
+                'msg' => 'Anak cabang gagal di edit'
+            ];
+        }
+        echo json_encode($params);
+    }
+
+    public function delete_cabang(){
+        validation_ajax_request();
+        $id = $this->input->post('id');
+        $this->db->where('md5(sha1(id_cabang))', $id)->delete('cabang');
+        if($this->db->affected_rows() > 0){
+            $params = [
+                'success' => true,
+                'msg' => 'Anak cabang berhasil di hapus'
+            ];
+        } else {
+            $params = [
+                'success' => false,
+                'msg' => 'Anak cabang gagal di hapus'
+            ];
+        }
+        echo json_encode($params);
+    }
+
+
 }
