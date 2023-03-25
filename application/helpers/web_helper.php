@@ -57,6 +57,13 @@ function get_menu(){
     
 }
 
+function check_login(){
+    $t = get_instance();
+    if(!$t->session->userdata('email') || !$t->session->userdata('id_role') || !$t->session->userdata('status')) {
+        redirect('auth');
+    }
+}
+
 // DIRECT LINK SESUAI ROLE //
 function check_admin()
 {

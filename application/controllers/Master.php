@@ -6,6 +6,7 @@ class Master extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        check_login();
         $this->load->model('user_model');
     }
 
@@ -513,6 +514,15 @@ class Master extends CI_Controller
     }
 
 
-
+    //master cabang
+    public function cabang(){
+        access_menu();
+        $data = [
+            'title' => 'Master Anak Cabang',
+            'user' => get_user(),
+            'view' => 'master/cabang'
+        ];
+        $this->load->view('template', $data);
+    }
 
 }

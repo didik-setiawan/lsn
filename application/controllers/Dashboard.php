@@ -6,7 +6,8 @@ class Dashboard extends CI_Controller
     {
         parent::__construct();
         // DIRECT LINK SESUAI ROLE //
-        check_admin();
+        // check_admin();
+        check_login();
         // END DIRECT LINK SESUAI ROLE //
     }
     public function index()
