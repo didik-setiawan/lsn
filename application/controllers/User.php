@@ -74,5 +74,56 @@ class User extends CI_Controller
         }
     }
 
+    public function change_password(){
+        validation_ajax_request();
+        $this->form_validation->set_rules('old_pass', 'Password lama', 'required|trim');
+        $this->form_validation->set_rules('new_pass', 'Password baru', 'required|trim|min_length[5]|matches[re_new]');
+        $this->form_validation->set_rules('re_new', 'Ulangi password baru', 'required|trim|matches[new_pass]');
+        
+        if($this->form_validation->run() == false){
+            $params = [
+                'type' => 'validation',
+                'err_old' => form_error('old_pass'),
+                'err_new' => form_error('new_pass'),
+                'err_re' => form_error('re_new')
+            ];
+        } else {
+            $new_pass = md5(sha1($this->input->post('new_pass')));
+            $old_pass = md5(sha1($this->input->post('old_pass')));
+            $user = get_user();
+
+            if($new_pass == $user->password){
+                $params = [
+                    'type' => 'result',
+                    'success' => false,
+                    'msg' => 'Password baru tidak boleh sama dengan password lama'
+                ];
+            } else {
+                if($old_pass != $user->password){
+                    $params = [
+                        'type' => 'result',
+                        'success' => false,
+                        'msg' => 'Password lama salah'
+                    ];
+                } else {
+                    $this->db->set('password', $new_pass)->where('email', $this->session->userdata('email'))->update('user');
+                    if($this->db->affected_rows() > 0){
+                        $params = [
+                            'type' => 'result',
+                            'success' => true,
+                            'msg' => 'Password berhasil di ubah'
+                        ];
+                    } else {
+                        $params = [
+                            'type' => 'result',
+                            'success' => false,
+                            'msg' => 'Password gagal di ubah'
+                        ];
+                    }
+                }
+            }
+        }
+        echo json_encode($params);
+    }
 
 }
