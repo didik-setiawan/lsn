@@ -29,4 +29,18 @@ class Master_model extends CI_Model{
         return $data;
     }
 
+    public function get_member($id = null){
+        $this->db->select('
+            user.*,
+            role_user.nama_role
+        ')->from('user')
+        ->join('role_user', 'user.id_role = role_user.id_role');
+        if($id){
+            $this->db->where('md5(sha1(id_user))', $id);
+        }
+        $data = $this->db->get();
+        return $data;
+    }
+
+
 }

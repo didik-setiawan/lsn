@@ -584,5 +584,29 @@ class Master extends CI_Controller
         echo json_encode($params);
     }
 
+    public function change_status_user(){
+        validation_ajax_request();
+        $id = $_POST['id'];
+        $type = $_POST['type'];
+        if ($type == 1) {
+            $this->db->set('status', 1)->where('md5(sha1(id_user))', $id)->update('user');
+        } else if ($type == 2) {
+            $this->db->set('status', 0)->where('md5(sha1(id_user))', $id)->update('user');
+        }
+
+        if ($this->db->affected_rows() > 0) {
+            $params = [
+                'success' => true,
+                'msg' => 'Status user berhasil di ubah'
+            ];
+        } else {
+            $params = [
+                'success' => false,
+                'msg' => 'Status user gagal di ubah'
+            ];
+        }
+        echo json_encode($params);
+    }
+
 
 }

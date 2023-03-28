@@ -25,6 +25,22 @@ class Ajax extends CI_Controller {
         $this->load->view('ajax/master/cabang', $data);
     }
 
+    public function load_data_member(){
+        validation_ajax_request();
+        $data = [
+            'data' => $this->m->get_member()->result()
+        ];
+        $this->load->view('ajax/master/member', $data);
+    }
+
+    public function load_data_anggota(){
+        validation_ajax_request();
+        $id = $_POST['id'];
+        $data = [
+            'data' => $this->m->get_member($id)->row()
+        ];
+        $this->load->view('ajax/master/member_detail', $data);
+    }
     
 
 

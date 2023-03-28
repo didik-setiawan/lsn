@@ -4,8 +4,8 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <div class="dropdown">
-                    <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                <div class="dropdown mb-3">
+                    <button class="btn btn-sm btn-success dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-plus"></i> Tambah
                     </button>
                     <div class="dropdown-menu">
@@ -13,6 +13,7 @@
                         <a class="dropdown-item" href="#">Import dari excel</a>
                     </div>
                 </div>
+                <div id="load_data"></div>
             </div>
         </div>
     </div>
@@ -211,7 +212,28 @@
 </div>
 
 
+<!-- Modal -->
+<div class="modal fade" id="modalDetail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-light">
+        <h5 class="modal-title" id="exampleModalLabel">Detail Anggota</h5>
+      </div>
+      <div class="modal-body" id="load_detail_member">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+    $(document).ready(function(){
+        load_data();
+    });
+
     $('#provinsi').change(function(){
         let id = $(this).val();
 
@@ -318,6 +340,37 @@
         $('.titleXL').html('Tambah Data Anggota');
         $('#formAnggota').attr('action', '<?= base_url('master/add_member'); ?>');
 
+        $('#nama').val('');
+        $('#nik').val('');
+        $('#tempat_lahir').val('');
+        $('#tgl_lahir').val('');
+        $('#jk').val('');
+        $('#no_telp').val('');
+        $('#email').val('');
+        $('#err_pass').val('');
+        $('#provinsi').val('');
+        $('#kabupaten').val('');
+        $('#kecamatan').val('');
+        $('#desa').val('');
+        $('#dusun').val('');
+        $('#rw').val('');
+        $('#rt').val('');
+        $('#status_organisasi').val('');
+        $('#status_kepengurusan').val('');
+        $('#kel_pengajian').val('');
+        $('#alamat_engkap').val('');
+        $('#role').val('');
+
+        $('#err_nama').html('');
+        $('#err_nik').html('');
+        $('#err_tl').html('');
+        $('#err_telp').html('');
+        $('#err_email').html('');
+        $('#err_pass').html('');
+        $('#err_dusun').html('');
+        $('#err_rw').html('');
+        $('#err_rt').html('');
+
     });
 
     $('#formAnggota').submit(function(e){
@@ -405,7 +458,8 @@
                             toastr["error"](d.msg, "Error");
                         } else {
                             $('#modalXL').modal('hide');
-                            toastr["success"](d.msg, "Success");   
+                            toastr["success"](d.msg, "Success");  
+                            load_data(); 
                         }
                     }
             },
@@ -424,6 +478,95 @@
                     }
             }
         });
-    })
+    });
+
+    $(document).on('change', '.status', function(){
+        let tipe = $(this).data('type');
+        let id = $(this).val();
+
+        $.ajax({
+            url: '<?= base_url('master/change_status_user') ?>',
+            data: {
+                id: id,
+                type: tipe,
+            },
+            type: 'POST',
+            dataType: 'JSON',
+            success: function(d){
+                if(d.success == true){
+                    toastr["success"](d.msg, "Success");
+                    load_data();
+                } else {
+                    toastr["error"](d.msg, "Error");
+                }
+            },
+            error: function(xhr){
+               
+               if(xhr.status === 0){
+                   toastr["error"]("No internet access", "Error");
+               } else if(xhr.status == 404){
+                   toastr["error"]("Page not found", "Error");
+               } else if(xhr.status == 500){
+                   toastr["error"]("Internal server error", "Error");
+               } else {
+                   toastr["error"]("Unknow error", "Error");
+               }
+            }
+        });
+
+    });
+
+    $(document).on('click', '.detail', function(){
+        $('#modalDetail').modal('show');
+        let id = $(this).data('id');
+        const loading_animation = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
+        $('#load_detail_member').html(loading_animation);
+
+        $.ajax({
+            url: '<?= base_url('ajax/load_data_anggota'); ?>',
+            type: 'POST',
+            data: {id: id},
+            success: function(d){
+                $('#load_detail_member').html(d);
+            },
+            error: function(xhr){
+               
+                    if(xhr.status === 0){
+                        toastr["error"]("No internet access", "Error");
+                    } else if(xhr.status == 404){
+                        toastr["error"]("Page not found", "Error");
+                    } else if(xhr.status == 500){
+                        toastr["error"]("Internal server error", "Error");
+                    } else {
+                        toastr["error"]("Unknow error", "Error");
+                    }
+            }
+        });
+    });
+
+    function load_data(){
+        const loading_animation = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
+        $('#load_data').html(loading_animation);
+
+        $.ajax({
+            url: '<?= base_url('ajax/load_data_member'); ?>',
+            type: 'POST',
+            success: function(d){
+                $('#load_data').html(d);
+            },
+            error: function(xhr){
+               
+                    if(xhr.status === 0){
+                        toastr["error"]("No internet access", "Error");
+                    } else if(xhr.status == 404){
+                        toastr["error"]("Page not found", "Error");
+                    } else if(xhr.status == 500){
+                        toastr["error"]("Internal server error", "Error");
+                    } else {
+                        toastr["error"]("Unknow error", "Error");
+                    }
+            }
+        });
+    }
 
 </script>
