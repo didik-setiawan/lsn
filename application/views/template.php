@@ -14,12 +14,13 @@
   <link href="<?= base_url('assets/') ?>css/ruang-admin.min.css" rel="stylesheet">
   <link rel="stylesheet" href="<?= base_url('assets/toastr/build/toastr.min.css') ?>">
   <link href="<?= base_url('assets/') ?>vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-
+  <link href="<?= base_url('assets/') ?>vendor/select2/dist/css/select2.min.css" rel="stylesheet" type="text/css">
 
   <script src="<?= base_url('assets/') ?>vendor/jquery/jquery.min.js"></script>
   <script src="<?= base_url('assets/toastr/build/toastr.min.js') ?>"></script>
   <script src="<?= base_url('assets/') ?>vendor/datatables/jquery.dataTables.min.js"></script>
   <script src="<?= base_url('assets/') ?>vendor/datatables/dataTables.bootstrap4.min.js"></script>
+  <script src="<?= base_url('assets/') ?>vendor/select2/dist/js/select2.min.js"></script>
 
   <script>
     toastr.options = {

@@ -361,159 +361,6 @@ class Master extends CI_Controller
     }
 
 
-
-    //master user
-
-    public function user()
-    {
-        access_menu();
-
-        $this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email|is_unique[user.email]', [
-            'is_unique' => 'This Email has already registered!'
-        ]);
-        $this->form_validation->set_rules('password1', 'Password', 'required|trim|min_length[5]|matches[password2]', [
-            'matches' => 'password dont match!',
-            'min_length' => 'password too short'
-        ]);
-        $this->form_validation->set_rules('password2', 'Password', 'required|trim|min_length[5]|matches[password1]');
-
-
-        if ($this->form_validation->run() == FALSE) {
-            $data = [
-                'title' => 'User',
-                'user' => get_user(),
-                'role' => $this->db->get('role_user')->result_array(),
-                'all_user' => $this->user_model->getAllUser(),
-                'view' => 'master/user'
-            ];
-            $this->load->view('template', $data);
-        } else {
-            $data = [
-                'nama' => $this->input->post('nama'),
-                'email' => htmlspecialchars($this->input->post('email', true)),
-                'password' => md5(sha1($this->input->post('password1'))),
-                'status' => $this->input->post('status'),
-                'img' => 'default.png',
-                'id_role' => $this->input->post('id_role'),
-            ];
-            $this->db->insert('user', $data);
-            redirect('master/user');
-        }
-    }
-   
-    public function delete_user($id_user = NULL)
-    {
-        $data = [
-            'id_user'   => $id_user,
-        ];
-        $this->db->where('id_user', $data['id_user']);
-        $this->db->delete('user', $data);
-
-        if ($this->db->affected_rows() > 0) {
-            $this->session->set_flashdata('message_scs', 'Berhasil Menghapus Data');
-        } else {
-            $this->session->set_flashdata('message_err', 'Data Tidak Berhasil Dihapus');
-        }
-        redirect('master/user');
-    }
-
-    public function edit_user($id_user)
-    {
-        $this->form_validation->set_rules(
-            'nama',
-            'nama',
-            'required',
-            array('required' => '%s Harus Diisi !')
-        );
-        $this->form_validation->set_rules(
-            'email',
-            'email',
-            'required',
-            array('required' => '%s Harus Diisi !')
-        );
-        $this->form_validation->set_rules(
-            'status',
-            'status',
-            'required',
-            array('required' => '%s Harus Diisi !')
-        );
-        $this->form_validation->set_rules(
-            'id_role',
-            'role',
-            'required',
-            array('required' => '%s Harus Diisi !')
-        );
-
-        if ($this->form_validation->run() == TRUE) {
-            $config['upload_path']      = './assets/img/user/';
-            $config['allowed_types']    = 'jpg|png|gif|jpeg';
-            $this->upload->initialize($config);
-            $field_name   = 'img';
-            if (!$this->upload->do_upload($field_name)) {
-                $data = [
-                    'title' => 'User',
-                    'user' => get_user(),
-                    'role' => $this->db->get('role_user')->result_array(),
-                    'all_user' => $this->user_model->getAllUser(),
-                    'edit_user' => $this->user_model->getAllUserById($id_user),
-                    'view' => 'user/edit_user'
-                ];
-                $this->load->view('template', $data);
-            } else {
-                //HAPUS GAMBAR
-                $user = $this->user_model->getAllUserById($id_user);
-                if ($user->img != 'default.png') {
-                    unlink('./assets/img/user/' . $user->img);
-                }
-
-                $upload_data = array('uploads' => $this->upload->data());
-                $config['image_library'] = 'gd2';
-                $config['source_image'] = './assets/img/user/' . $upload_data['uploads']['file_name'];
-                $this->load->library('image_lib', $config);
-
-                $data = array(
-                    'id_user' => $id_user,
-                    'nama' => $this->input->post('nama'),
-                    'email' => htmlspecialchars($this->input->post('email', true)),
-                    'status' => $this->input->post('status'),
-                    'id_role' => $this->input->post('id_role'),
-                    'img' => $upload_data['uploads']['file_name'],
-                );
-                $this->user_model->edit($data);
-
-                $this->session->set_flashdata('pesan', 'Berhasil Mengedit Data !');
-                redirect('master/user');
-            }
-            //JIKA TANPA GANTI GAMBAR
-            $upload_data = array('uploads' => $this->upload->data());
-            $config['image_library'] = 'gd2';
-            $config['source_image'] = './assets/img/user/' . $upload_data['uploads']['file_name'];
-            $this->load->library('image_lib', $config);
-
-            $data = array(
-                'id_user' => $id_user,
-                'nama' => $this->input->post('nama'),
-                'email' => htmlspecialchars($this->input->post('email', true)),
-                'status' => $this->input->post('status'),
-                'id_role' => $this->input->post('id_role'),
-            );
-            $this->user_model->edit($data);
-            $this->session->set_flashdata('pesan', 'Berhasil Mengedit Data !');
-            redirect('master/user');
-        }
-
-        $data = [
-            'title' => 'User',
-            'user' => get_user(),
-            'role' => $this->db->get('role_user')->result_array(),
-            'all_user' => $this->user_model->getAllUser(),
-            'edit_user' => $this->user_model->getAllUserById($id_user),
-            'view' => 'master/edit_user'
-        ];
-        $this->load->view('template', $data);
-    }
-
-
     //master cabang
     public function cabang(){
         access_menu();
@@ -599,6 +446,139 @@ class Master extends CI_Controller
             $params = [
                 'success' => false,
                 'msg' => 'Anak cabang gagal di hapus'
+            ];
+        }
+        echo json_encode($params);
+    }
+
+
+
+    //master anggota
+
+    public function member(){
+        access_menu();
+        $data = [
+            'title' => 'Master Anggota',
+            'user' => get_user(),
+            'view' => 'master/member',
+            'provinsi' => $this->db->get('wilayah_provinsi')->result(),
+            'role' => $this->db->where('status', 1)->get('role_user')->result()
+        ];
+        $this->load->view('template', $data);
+    }
+
+    public function get_kabupaten(){
+        validation_ajax_request();
+        $prov = $_POST['id'];
+        $data = $this->db->select('wilayah_kabupaten.*')->from('wilayah_kabupaten')->join('wilayah_provinsi', 'wilayah_kabupaten.provinsi_id = wilayah_provinsi.id')->where('wilayah_provinsi.id', $prov)->get()->result();
+        echo json_encode($data);
+    }
+
+    public function get_kecamatan(){
+        validation_ajax_request();
+        $req = $_POST['id'];
+        $this->db->select('wilayah_kecamatan.*')
+        ->from('wilayah_kecamatan')
+        ->join('wilayah_kabupaten', 'wilayah_kecamatan.kabupaten_id = wilayah_kabupaten.id')
+        ->where('wilayah_kabupaten.id', $req);
+        $data = $this->db->get()->result();
+        echo json_encode($data);
+    }
+
+    public function get_kelurahan(){
+        validation_ajax_request();
+        $req = $_POST['id'];
+        $this->db->select('wilayah_desa.*')
+        ->from('wilayah_desa')
+        ->join('wilayah_kecamatan', 'wilayah_kecamatan.id = wilayah_desa.kecamatan_id')
+        ->where('wilayah_kecamatan.id', $req);
+        $data = $this->db->get()->result();
+        echo json_encode($data);
+    }
+
+    private function validation_member(){
+        $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required|trim');
+        $this->form_validation->set_rules('nik', 'NIk', 'required|trim|numeric|is_unique[user.nik]');
+        $this->form_validation->set_rules('tempat_lahir', 'Tempat Lahir', 'required|trim');
+        $this->form_validation->set_rules('no_telp', 'No Telp', 'required|trim|numeric|is_unique[user.no_telp]');
+        $this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email|is_unique[user.email]');
+        $this->form_validation->set_rules('password', 'Password', 'required|trim|min_length[5]');
+        $this->form_validation->set_rules('dusun', 'Dusun', 'required|trim');
+        $this->form_validation->set_rules('rw', 'Rw', 'required|trim|numeric');
+        $this->form_validation->set_rules('rt', 'Rt', 'required|trim|numeric');
+       
+        if($this->form_validation->run() == false){
+            $params = [
+                'type' => 'validation',
+                'err_nama' => form_error('nama'),
+                'err_tl' => form_error('tempat_lahir'),
+                'err_tlp' => form_error('no_telp'),
+                'err_email' => form_error('email'),
+                'err_pass' => form_error('password'),
+                'err_dusun' => form_error('dusun'),
+                'err_rw' => form_error('rw'),
+                'err_rt' => form_error('rt'),
+                'err_nik' => form_error('nik'),
+            ];
+            echo json_encode($params);
+            die;
+        } else {
+            return true;
+        }
+    }
+
+    public function add_member(){
+        validation_ajax_request();
+        $this->validation_member();
+
+        $prov = htmlspecialchars($this->input->post('provinsi', true));
+        $kab = htmlspecialchars($this->input->post('kabupaten', true));
+        $kec = htmlspecialchars($this->input->post('kecamatan', true));
+        $desa = htmlspecialchars($this->input->post('desa', true));
+
+        $get_prov = $this->db->where('id', $prov)->get('wilayah_provinsi')->row();
+        $get_kab = $this->db->where('id', $kab)->get('wilayah_kabupaten')->row();
+        $get_kec = $this->db->where('id', $kec)->get('wilayah_kecamatan')->row();
+        $get_desa = $this->db->where('id', $desa)->get('wilayah_desa')->row();
+
+        $data = [
+            'nama' => htmlspecialchars($this->input->post('nama', true)),
+            'email' => htmlspecialchars($this->input->post('email', true)),
+            'password' => md5(sha1($this->input->post('password'))),
+            'status' => 1,
+            'img' => 'default.png',
+            'id_role' => htmlspecialchars($this->input->post('role', true)),
+            'nik' => htmlspecialchars($this->input->post('nik', true)),
+            'tanggal_lahir' => htmlspecialchars($this->input->post('tgl_lahir', true)),
+            'tempat_lahir' => htmlspecialchars($this->input->post('tempat_lahir', true)),
+            'jenis_kelamin' => htmlspecialchars($this->input->post('jk', true)),
+            'provinsi' => $get_prov->nama,
+            'kabupaten' => $get_kab->nama,
+            'kecamatan' => $get_kec->nama,
+            'desa' => $get_desa->nama,
+            'dusun' => htmlspecialchars($this->input->post('dusun', true)),
+            'rw' => htmlspecialchars($this->input->post('rw', true)),
+            'rt' => htmlspecialchars($this->input->post('rt', true)),
+            'alamat_lengkap' => htmlspecialchars($this->input->post('alamat_lengkap', true)),
+            'file_ktp' => '',
+            'no_telp' => htmlspecialchars($this->input->post('no_telp', true)),
+            'status_organisasi' => htmlspecialchars($this->input->post('status_organisasi', true)),
+            'status_kepengurusan' => htmlspecialchars($this->input->post('status_kepengurusan', true)),
+            'nama_kelompok_pengajian' => htmlspecialchars($this->input->post('kel_pengajian', true)),
+        ];
+
+        $this->db->insert('user', $data);
+        if($this->db->affected_rows() > 0){
+            $params = [
+                'success' => true,
+                'type' => 'result',
+                'msg' => 'Anggota baru berhasil di tambahkan'
+            ];
+        } else {
+            $params = [
+                'success' => false,
+                'type' => 'result',
+                'msg' => 'Anggota baru gagal di tambahkan'
             ];
         }
         echo json_encode($params);
