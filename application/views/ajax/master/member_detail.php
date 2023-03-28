@@ -1,3 +1,9 @@
+<style>
+    .detail-ktp {
+      cursor: pointer;
+    }
+</style>
+
 <div class="text-center">
     <img src="<?= base_url('assets/img/user/') . $data->img ?>" alt="img-user" width="150px" class="img-thumbnail rounded-circle shadow-sm">
 </div>
@@ -62,6 +68,16 @@
     <tr>
         <th>Role User</th>
         <td><?= $data->nama_role ?></td>
+    </tr>
+    <tr>
+        <th>Foto KTP</th>
+        <td>
+            <?php if($data->file_ktp == null){ ?>   
+                <i>KTP belum di upload</i>
+            <?php } else { ?>
+                <img src="<?= base_url('assets/img/ktp/') . $data->file_ktp ?>" class="detail-ktp" alt="file_ktp" width="100px">
+            <?php } ?>
+        </td>
     </tr>
     
 </table>

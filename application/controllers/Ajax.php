@@ -41,6 +41,13 @@ class Ajax extends CI_Controller {
         ];
         $this->load->view('ajax/master/member_detail', $data);
     }
+
+    public function coba(){
+        $date = '22-9-2003';
+        $p = date_create($date);
+        echo date_format($p, 'Y-m-d');
+
+    }
     
 
 

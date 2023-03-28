@@ -10,7 +10,7 @@
                     </button>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="#" id="addXL">Tambah langsung</a>
-                        <a class="dropdown-item" href="#">Import dari excel</a>
+                        <a class="dropdown-item" id="import" href="#">Import dari excel</a>
                     </div>
                 </div>
                 <div id="load_data"></div>
@@ -211,7 +211,6 @@
   </div>
 </div>
 
-
 <!-- Modal -->
 <div class="modal fade" id="modalDetail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -224,6 +223,45 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalKTP" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="close btn-sm" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+
+        <img src="" class="show-ktp" width="100%" alt="foto-ktp">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalImport" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-light">
+        <h5 class="modal-title" id="exampleModalLabel">Import File</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span amodalImportria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+            <label>Pilih File</label>
+            <input type="file" name="file" id="file" class="form-control">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Go</button>
       </div>
     </div>
   </div>
@@ -480,6 +518,11 @@
         });
     });
 
+    $('#import').click(function(){
+        $('#modalImport').modal('show');
+
+    });
+
     $(document).on('change', '.status', function(){
         let tipe = $(this).data('type');
         let id = $(this).val();
@@ -514,6 +557,12 @@
             }
         });
 
+    });
+
+    $(document).on('click', '.detail-ktp', function(){
+        let ktp = $(this).attr('src');
+        $('#modalKTP').modal('show');
+        $('.show-ktp').attr('src', ktp);
     });
 
     $(document).on('click', '.detail', function(){
