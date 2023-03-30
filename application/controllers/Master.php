@@ -1,5 +1,10 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+
+require './assets/phpspreadsheet/vendor/autoload.php';
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+
 class Master extends CI_Controller
 {
 
@@ -606,6 +611,100 @@ class Master extends CI_Controller
             ];
         }
         echo json_encode($params);
+    }
+
+    public function delete_member(){
+        validation_ajax_request();
+        $id = $_POST['id'];
+        $user = $this->db->where('md5(sha1(id_user))', $id)->get('user')->row();
+        if($user->img != 'default.png'){
+            unlink('./assets/img/user/'. $user->img);
+        }
+        if($user->file_ktp != null){
+            unlink('./assets/img/ktp/'. $user->file_ktp);
+        }
+        $this->db->where('md5(sha1(id_user))', $id)->delete('user');
+
+        if($this->db->affected_rows() > 0){
+            $params = [
+                'success' => true,
+                'msg' => 'Data member berhasil di hapus'
+            ];
+        } else {
+            $params = [
+                'success' => false,
+                'msg' => 'Data member gagal di hapus'
+            ];
+        }
+        echo json_encode($params);
+
+    }
+
+    public function get_member(){
+        $id = $_POST['id'];
+        $user = $this->m->get_member_relation_all($id)->row();
+        echo json_encode($user);
+    }
+     
+
+    public function import_member(){
+        $file = $_FILES['file'];
+
+        if($file){
+            $file_name = 'member_import_' . time();
+            $config['upload_path']          = './assets/excel/import/';
+            $config['allowed_types']        = 'xls|xlsx|csv|ods';
+            $config['file_name']            = $file_name;
+            $this->load->library('upload', $config);
+            if($this->upload->do_upload('file')){
+                $file_path = $this->upload->data('full_path');
+    
+                $reader = \PhpOffice\PhpSpreadsheet\IOFactory::load($file_path);
+                $data = $reader->getActiveSheet()->toArray();
+
+                foreach($data as $t){
+                    $tgl_lahir = date_create($t['4']);
+                    $result_data = [
+                        'nama'                      => $t['2'],
+                        'email'                     => $t['18'],
+                        'password'                  => md5(sha1($t['19'])),
+                        'status'                    => 1,
+                        'img'                       => 'default.png',
+                        'id_role'                   => $t['16'],
+                        'nik'                       => $t['1'],
+                        'tanggal_lahir'             => date_format($tgl_lahir, 'Y-m-d'),
+                        'tempat_lahir'              => $t['3'],
+                        'jenis_kelamin'             => $t['5'],
+                        'provinsi'                  => $t['6'],
+                        'kabupaten'                 => $t['7'],
+                        'kecamatan'                 => $t['8'],
+                        'desa'                      => $t['9'],
+                        'dusun'                     => $t['10'],
+                        'rw'                        => $t['11'],
+                        'rt'                        => $t['12'],
+                        'alamat_lengkap'            => $t['13'],
+                        'file_ktp'                  => '',
+                        'no_telp'                   => $t['17'],
+                        'status_organisasi'         => $t['14'],
+                        'status_kepengurusan'       => $t['15'],
+                        'nama_kelompok_pengajian'   => $t['16'],
+                     ];
+                     $this->db->insert('user', $result_data);
+                }
+                
+
+           
+               
+
+            } else {
+                echo $this->upload->display_errors();
+            }
+
+        } else {
+            echo "no file";
+        }
+
+
     }
 
 

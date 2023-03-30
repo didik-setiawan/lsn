@@ -3,7 +3,7 @@
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-body">
+            <div class="card-body table-responsive">
                 <div class="dropdown mb-3">
                     <button class="btn btn-sm btn-success dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-plus"></i> Tambah
@@ -30,7 +30,7 @@
       </div>
       <form action="" id="formAnggota" method="post">
       <div class="modal-body">
-
+        <input type="hidden" name="id_member" id="id_member">
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Nama Lengkap <span class="text-danger">*</span></label>
             <div class="col-sm-10">
@@ -44,7 +44,6 @@
             <div class="col-sm-10">
                 <input type="text" class="form-control" name="nik" id="nik">
                 <small class="text-danger" id="err_nik"></small>
-
             </div>
         </div>
 
@@ -253,6 +252,7 @@
           <span amodalImportria-hidden="true">&times;</span>
         </button>
       </div>
+      <form action="<?= base_url('master/import_member') ?>" enctype="multipart/form-data" id="formImport" method="post">
       <div class="modal-body">
         <div class="form-group">
             <label>Pilih File</label>
@@ -261,8 +261,9 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Go</button>
+        <button type="submit" class="btn btn-primary">Go</button>
       </div>
+      </form>
     </div>
   </div>
 </div>
@@ -520,7 +521,7 @@
 
     $('#import').click(function(){
         $('#modalImport').modal('show');
-
+        $('#file').val('');
     });
 
     $(document).on('change', '.status', function(){
@@ -593,6 +594,120 @@
         });
     });
 
+    $(document).on('click', '.delete', function(){
+        let id = $(this).data('id');
+        let con = confirm('Apakah anda yakin untuk menghapus data ini?');
+        if(con){
+            $.ajax({
+                url: '<?= base_url('master/delete_member') ?>',
+                data: {id: id},
+                type: 'POST',
+                dataType: 'JSON',
+                success: function(d){
+                    if(d.success == true){
+                        toastr["success"](d.msg, "Success");
+                        load_data();
+                    } else {
+                        toastr["error"](d.msg, "Error");
+                    }
+                },
+                error: function(xhr){
+                    if(xhr.status === 0){
+                        toastr["error"]("No internet access", "Error");
+                    } else if(xhr.status == 404){
+                        toastr["error"]("Page not found", "Error");
+                    } else if(xhr.status == 500){
+                        toastr["error"]("Internal server error", "Error");
+                    } else {
+                        toastr["error"]("Unknow error", "Error");
+                    }
+                }
+
+            });
+        }
+    });
+
+    $(document).on('click', '.edit', function(){
+        let id = $(this).data('id');
+        $('#modalXL').modal('show');
+        $('.titleXL').html('Tambah Data Anggota');
+        $('#formAnggota').attr('action', '<?= base_url('master/add_member'); ?>');
+
+        $('#nama').val('');
+        $('#nik').val('');
+        $('#tempat_lahir').val('');
+        $('#tgl_lahir').val('');
+        $('#jk').val('');
+        $('#no_telp').val('');
+        $('#email').val('');
+        $('#password').val('');
+        $('#provinsi').val('');
+        $('#kabupaten').val('');
+        $('#kecamatan').val('');
+        $('#desa').val('');
+        $('#dusun').val('');
+        $('#rw').val('');
+        $('#rt').val('');
+        $('#status_organisasi').val('');
+        $('#status_kepengurusan').val('');
+        $('#kel_pengajian').val('');
+        $('#alamat_engkap').val('');
+        $('#role').val('');
+
+        $('#err_nama').html('');
+        $('#err_nik').html('');
+        $('#err_tl').html('');
+        $('#err_telp').html('');
+        $('#err_email').html('');
+        $('#err_pass').html('');
+        $('#err_dusun').html('');
+        $('#err_rw').html('');
+        $('#err_rt').html('');
+
+        $.ajax({
+            url: '<?= base_url('master/get_member') ?>',
+            data: {id: id},
+            type: 'POST',
+            dataType:'JSON',
+            success: function(d){
+                $('#id_member').val(id);
+                $('#nama').val(d.nama);
+                $('#nik').val(d.nik);
+                $('#tempat_lahir').val(d.tempat_lahir);
+                $('#tgl_lahir').val(d.tanggal_lahir);
+                $('#jk').val(d.jenis_kelamin);
+                $('#no_telp').val(d.no_telp);
+                $('#email').val(d.email);
+                $('#password').val('');
+                $('#provinsi').val(d.id_provinsi);
+                $('#kabupaten').val('');
+                $('#kecamatan').val('');
+                $('#desa').val('');
+                $('#dusun').val(d.dusun);
+                $('#rw').val(d.rw);
+                $('#rt').val(d.rt);
+                $('#status_organisasi').val(d.status_organisasi);
+                $('#status_kepengurusan').val(d.status_kepengurusan);
+                $('#kel_pengajian').val(d.nama_kelompok_pengajian);
+                $('#alamat_engkap').val(d.alamat_lengkap);
+                $('#role').val(d.id_role);
+            }, 
+            error: function(xhr){
+                    if(xhr.status === 0){
+                        toastr["error"]("No internet access", "Error");
+                    } else if(xhr.status == 404){
+                        toastr["error"]("Page not found", "Error");
+                    } else if(xhr.status == 500){
+                        toastr["error"]("Internal server error", "Error");
+                    } else {
+                        toastr["error"]("Unknow error", "Error");
+                    }
+            }
+        });
+
+
+    });
+
     function load_data(){
         const loading_animation = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
         $('#load_data').html(loading_animation);
@@ -617,5 +732,7 @@
             }
         });
     }
+
+
 
 </script>

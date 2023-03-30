@@ -15,7 +15,8 @@
         $i = 1;
         $a = 1;
         $b = 1;
-        foreach($data as $d){ ?>
+        foreach($data as $d){ 
+        ?>
         <tr>
             <td><?= $i++ ?></td>
             <td class="text-center"><img src="<?= base_url('assets/img/user/') . $d->img ?>" alt="img_<?= $d->nik ?>" width="100px"></td>
@@ -45,13 +46,15 @@
             <td>
 
                 <div class="dropdown">
-                    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-sm btn-primary dropdown-toggle" <?= $action ?> type="button" data-toggle="dropdown" aria-expanded="false">
                         Action
                     </button>
                     <div class="dropdown-menu">
                         <a class="dropdown-item detail" data-id="<?= md5(sha1($d->id_user)); ?>" href="#">Detail</a>
-                        <a class="dropdown-item" href="#">Edit</a>
-                        <a class="dropdown-item" href="#">Hapus</a>
+                        <a class="dropdown-item delete" data-id="<?= md5(sha1($d->id_user)); ?>" href="#">Hapus</a>
+                        <a class="dropdown-item edit" data-id="<?= md5(sha1($d->id_user)); ?>" href="#">Edit Data</a>
+
+                        
                     </div>
                 </div>
 
