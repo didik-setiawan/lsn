@@ -772,6 +772,94 @@ class Master extends CI_Controller
 
     }
 
-    
+    public function edit_member(){
+        $telp = $this->input->post('no_telp');
+        $nik = $this->input->post('nik');
+
+        $get_telp = $this->db->where('no_telp', $telp)->get('user')->num_rows();
+        $get_nik = $this->db->where('nik', $nik)->get('user')->num_rows();
+
+        if($get_telp > 1){
+            $params = [
+                'type' => 'validation',
+                'err_tlp' => 'No telp sudah terdaftar'
+            ];
+            echo json_encode($params);die;
+        }
+
+        if($get_nik > 1){
+            $params = [
+                'type' => 'validation',
+                'err_nik' => 'NIK sudah terdaftar'
+            ];
+            echo json_encode($params);die;
+        }
+
+        $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required|trim');
+        $this->form_validation->set_rules('nik', 'NIk', 'required|trim|numeric');
+        $this->form_validation->set_rules('tempat_lahir', 'Tempat Lahir', 'required|trim');
+        $this->form_validation->set_rules('no_telp', 'No Telp', 'required|trim|numeric');
+        $this->form_validation->set_rules('dusun', 'Dusun', 'required|trim');
+        $this->form_validation->set_rules('rw', 'Rw', 'required|trim|numeric');
+        $this->form_validation->set_rules('rt', 'Rt', 'required|trim|numeric');
+       
+        if($this->form_validation->run() == false){
+            $params = [
+                'type' => 'validation',
+                'err_nama' => form_error('nama'),
+                'err_tl' => form_error('tempat_lahir'),
+                'err_tlp' => form_error('no_telp'),
+                'err_dusun' => form_error('dusun'),
+                'err_rw' => form_error('rw'),
+                'err_rt' => form_error('rt'),
+                'err_nik' => form_error('nik'),
+            ];
+            echo json_encode($params);
+            die;
+        } else {
+            $id = $this->input->post('id_member');
+            $prov = htmlspecialchars($this->input->post('provinsi', true));
+            $kab = htmlspecialchars($this->input->post('kabupaten', true));
+            $kec = htmlspecialchars($this->input->post('kecamatan', true));
+            $desa = htmlspecialchars($this->input->post('desa', true));
+
+            $data = [
+                'nama' => htmlspecialchars($this->input->post('nama', true)),
+                'id_role' => htmlspecialchars($this->input->post('role', true)),
+                'nik' => htmlspecialchars($this->input->post('nik', true)),
+                'tanggal_lahir' => htmlspecialchars($this->input->post('tgl_lahir', true)),
+                'tempat_lahir' => htmlspecialchars($this->input->post('tempat_lahir', true)),
+                'jenis_kelamin' => htmlspecialchars($this->input->post('jk', true)),
+                'provinsi' => $prov,
+                'kabupaten' => $kab,
+                'kecamatan' => $kec,
+                'desa' => $desa,
+                'dusun' => htmlspecialchars($this->input->post('dusun', true)),
+                'rw' => htmlspecialchars($this->input->post('rw', true)),
+                'rt' => htmlspecialchars($this->input->post('rt', true)),
+                'alamat_lengkap' => htmlspecialchars($this->input->post('alamat_lengkap', true)),
+                'no_telp' => htmlspecialchars($this->input->post('no_telp', true)),
+                'status_organisasi' => htmlspecialchars($this->input->post('status_organisasi', true)),
+                'status_kepengurusan' => htmlspecialchars($this->input->post('status_kepengurusan', true)),
+                'nama_kelompok_pengajian' => htmlspecialchars($this->input->post('kel_pengajian', true)),
+            ];
+            $this->db->where('md5(sha1(id_user))', $id)->update('user', $data);
+            if($this->db->affected_rows() > 0){
+                $params = [
+                    'success' => true,
+                    'type' => 'result',
+                    'msg' => 'Data anggota berhasil di edit'
+                ];
+            } else {
+                $params = [
+                    'success' => false,
+                    'type' => 'result',
+                    'msg' => 'Data anggota gagal di edit'
+                ];
+            }
+            echo json_encode($params);
+        }
+
+    }    
 
 }

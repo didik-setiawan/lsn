@@ -224,7 +224,7 @@
       <div class="modal-header bg-dark text-light">
         <h5 class="modal-title titleXLE" id="exampleModalLabel">Modal title</h5>
       </div>
-      <form action="" id="formAnggotaE" method="post">
+      <form action="<?= site_url('master/edit_member') ?>" id="formAnggotaE" method="post">
       <div class="modal-body">
         <input type="hidden" name="id_member" id="id_member">
         <div class="form-group row">
@@ -343,7 +343,13 @@
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Status Organisasi</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" name="status_organisasi" id="status_organisasiE">
+               
+                <select name="status_organisasi" id="status_organisasiE" required class="form-control">
+                    <option value="">--pilih--</option>
+                    <?php foreach($cabang as $c){ ?>
+                        <option value="<?= $c->id_cabang ?>"><?= $c->nama_cabang ?></option>
+                    <?php } ?>
+                </select>
             </div>
         </div>
 
@@ -989,6 +995,201 @@
         });
 
 
+    });
+
+    $('#provinsiE').change(function(){
+        let id = $(this).val();
+
+        $.ajax({
+            url: '<?= base_url('master/get_kabupaten') ?>',
+            data: {id: id},
+            type: 'POST',
+            dataType: 'JSON',
+            success: function(d){
+                let html = '<option value="">--pilih--</option>';
+                let i;
+
+                for(i=0; i<d.length; i++){
+                    html += '<option value='+d[i].id+'>'+d[i].nama+'</option>'
+                }
+                $('#kabupatenE').html(html);
+            },
+            error: function(xhr){
+               
+                    if(xhr.status === 0){
+                        toastr["error"]("No internet access", "Error");
+                    } else if(xhr.status == 404){
+                        toastr["error"]("Page not found", "Error");
+                    } else if(xhr.status == 500){
+                        toastr["error"]("Internal server error", "Error");
+                    } else {
+                        toastr["error"]("Unknow error", "Error");
+                    }
+            }
+        });
+
+    });
+
+    $('#kabupatenE').change(function(){
+        let id = $(this).val();
+
+        $.ajax({
+            url: '<?= base_url('master/get_kecamatan') ?>',
+            data: {id: id},
+            type: 'POST',
+            dataType: 'JSON',
+            success: function(d){
+                let html = '<option value="">--pilih--</option>';
+                let i;
+
+                for(i=0; i<d.length; i++){
+                    html += '<option value='+d[i].id+'>'+d[i].nama+'</option>'
+                }
+                $('#kecamatanE').html(html);
+            },
+            error: function(xhr){
+              
+
+                    if(xhr.status === 0){
+                        toastr["error"]("No internet access", "Error");
+                    } else if(xhr.status == 404){
+                        toastr["error"]("Page not found", "Error");
+                    } else if(xhr.status == 500){
+                        toastr["error"]("Internal server error", "Error");
+                    } else {
+                        toastr["error"]("Unknow error", "Error");
+                    }
+            }
+        });
+
+    });
+    
+    $('#kecamatanE').change(function(){
+        let id = $(this).val();
+
+        $.ajax({
+            url: '<?= base_url('master/get_kelurahan') ?>',
+            data: {id: id},
+            type: 'POST',
+            dataType: 'JSON',
+            success: function(d){
+                let html = '<option value="">--pilih--</option>';
+                let i;
+
+                for(i=0; i<d.length; i++){
+                    html += '<option value='+d[i].id+'>'+d[i].nama+'</option>'
+                }
+                $('#desaE').html(html);
+            },
+            error: function(xhr){
+              
+
+                    if(xhr.status === 0){
+                        toastr["error"]("No internet access", "Error");
+                    } else if(xhr.status == 404){
+                        toastr["error"]("Page not found", "Error");
+                    } else if(xhr.status == 500){
+                        toastr["error"]("Internal server error", "Error");
+                    } else {
+                        toastr["error"]("Unknow error", "Error");
+                    }
+            }
+        });
+
+    });
+
+    $('#formAnggotaE').submit(function(e){
+        e.preventDefault();
+        $('#toSubmitE').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+        $('#toSubmitE').attr('disabled', true);
+
+        $.ajax({
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            type: 'POST',
+            dataType: 'JSON',
+            success: function(d){
+                console.log(d);
+                $('#toSubmitE').html('Save');
+                $('#toSubmitE').removeAttr('disabled');
+
+                    if(d.type == 'validation'){
+                        if(d.nama == ''){
+                            $('#err_nama_e').html('');
+                        } else {
+                            $('#err_nama_e').html(d.err_nama);
+                        }
+
+                        if(d.nik == ''){
+                            $('#err_nik_e').html('');
+                        } else {
+                            $('#err_nik_e').html(d.err_nik);
+                        }
+
+                        if(d.tl == ''){
+                            $('#err_tl_e').html('');
+                        } else {
+                            $('#err_tl_e').html(d.err_tl);
+                        }
+
+                        if(d.tlp == ''){
+                            $('#err_telp_e').html('');
+                        } else {
+                            $('#err_telp_e').html(d.err_tlp);
+                        }
+
+                        if(d.dusun == ''){
+                            $('#err_dusun_e').html('');
+                        } else {
+                            $('#err_dusun_e').html(d.err_dusun);
+                        }
+
+                        if(d.rw == ''){
+                            $('#err_rw_e').html('');
+                        } else {
+                            $('#err_rw_e').html(d.err_rw);
+                        }
+
+                        if(d.rt == ''){
+                            $('#err_rt_e').html('');
+                        } else {
+                            $('#err_rt_e').html(d.err_rt);
+                        }
+
+                    } else if(d.type == 'result'){
+
+                        $('#err_nama_e').html('');
+                        $('#err_nik_e').html('');
+                        $('#err_tl_e').html('');
+                        $('#err_telp_e').html('');
+                        $('#err_dusun_e').html('');
+                        $('#err_rw_e').html('');
+                        $('#err_rt_e').html('');
+
+                        if(d.success == false){
+                            toastr["error"](d.msg, "Error");
+                        } else {
+                            $('#modalEdit').modal('hide');
+                            toastr["success"](d.msg, "Success");  
+                            load_data(); 
+                        }
+                    }
+            },
+            error: function(xhr){
+                $('#toSubmitE').html('Save');
+                $('#toSubmitE').removeAttr('disabled');
+
+                    if(xhr.status === 0){
+                        toastr["error"]("No internet access", "Error");
+                    } else if(xhr.status == 404){
+                        toastr["error"]("Page not found", "Error");
+                    } else if(xhr.status == 500){
+                        toastr["error"]("Internal server error", "Error");
+                    } else {
+                        toastr["error"]("Unknow error", "Error");
+                    }
+            }
+        });
     });
 
     function load_data(){
