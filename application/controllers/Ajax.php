@@ -43,9 +43,8 @@ class Ajax extends CI_Controller {
     }
 
     public function coba(){
-        $date = '22-9-2003';
-        $p = date_create($date);
-        echo date_format($p, 'Y-m-d');
+        $word = "jawa timur";
+        echo ucwords($word);
 
     }
     

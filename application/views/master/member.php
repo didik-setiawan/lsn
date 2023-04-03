@@ -30,7 +30,6 @@
       </div>
       <form action="" id="formAnggota" method="post">
       <div class="modal-body">
-        <input type="hidden" name="id_member" id="id_member">
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Nama Lengkap <span class="text-danger">*</span></label>
             <div class="col-sm-10">
@@ -163,7 +162,15 @@
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Status Organisasi</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" name="status_organisasi" id="status_organisasi">
+                <!-- <input type="text" class="form-control" name="status_organisasi" id="status_organisasi"> -->
+
+                <select name="status_organisasi" id="status_organisasi" required class="form-control">
+                    <option value="">--pilih--</option>
+                    <?php foreach($cabang as $c){ ?>
+                        <option value="<?= $c->id_cabang ?>"><?= $c->nama_cabang ?></option>
+                    <?php } ?>
+                </select>
+
             </div>
         </div>
 
@@ -171,6 +178,7 @@
             <label class="col-sm-2 col-form-label">Status Kepengurusan</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" name="status_kepengurusan" id="status_kepengurusan">
+                
             </div>
         </div>
 
@@ -204,6 +212,178 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="submit" id="toSubmit" class="btn btn-primary">Save</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-light">
+        <h5 class="modal-title titleXLE" id="exampleModalLabel">Modal title</h5>
+      </div>
+      <form action="" id="formAnggotaE" method="post">
+      <div class="modal-body">
+        <input type="hidden" name="id_member" id="id_member">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Nama Lengkap <span class="text-danger">*</span></label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="nama" id="namaE">
+                <small class="text-danger" id="err_nama_e"></small>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">NIK <span class="text-danger">*</span></label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="nik" id="nikE">
+                <small class="text-danger" id="err_nik_e"></small>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Tempat Lahir <span class="text-danger">*</span></label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="tempat_lahir" id="tempat_lahirE">
+                <small class="text-danger" id="err_tl_e"></small>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Tanggal Lahir <span class="text-danger">*</span></label>
+            <div class="col-sm-10">
+                <input type="date" class="form-control" name="tgl_lahir" id="tgl_lahirE" required>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Jenis Kelamin <span class="text-danger">*</span></label>
+            <div class="col-sm-10">
+                <select name="jk" id="jkE" class="form-control" required>
+                    <option value="">--pilih--</option>
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">No Telp <span class="text-danger">*</span></label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="no_telp" id="no_telpE">
+                <small class="text-danger" id="err_telp_e"></small>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Provinsi <span class="text-danger">*</span></label>
+            <div class="col-sm-10 prov">
+                <select name="provinsi" id="provinsiE" class="form-control" required>
+                    <option value="">--pilih--</option>
+                    <?php foreach($provinsi as $p){ ?>
+                        <option value="<?= $p->id ?>"><?= $p->nama ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Kabupaten <span class="text-danger">*</span></label>
+            <div class="col-sm-10">
+                <select name="kabupaten" id="kabupatenE" class="form-control" required> 
+                    <option value="">--pilih--</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Kecamatan <span class="text-danger">*</span></label>
+            <div class="col-sm-10">
+                <select name="kecamatan" id="kecamatanE" class="form-control" required>
+                    <option value="">--pilih--</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Desa / Kelurahan <span class="text-danger">*</span></label>
+            <div class="col-sm-10">
+                <select name="desa" id="desaE" class="form-control" required>
+                    <option value="">--pilih--</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Dusun <span class="text-danger">*</span></label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="dusun" id="dusunE">
+                <small class="text-danger" id="err_dusun_e"></small>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Rw <span class="text-danger">*</span></label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="rw" id="rwE">
+                <small class="text-danger" id="err_rw_e"></small>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Rt <span class="text-danger">*</span></label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="rt" id="rtE">
+                <small class="text-danger" id="err_rt_e"></small>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Status Organisasi</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="status_organisasi" id="status_organisasiE">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Status Kepengurusan</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="status_kepengurusan" id="status_kepengurusanE">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Nama Kelompok Pengajian</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="kel_pengajian" id="kel_pengajianE">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Alamat Lengkap <span class="text-danger">*</span></label>
+            <div class="col-sm-10">
+                <textarea name="alamat_lengkap" id="alamat_engkapE" class="form-control" cols="30" rows="3" required></textarea>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Role User <span class="text-danger">*</span></label>
+            <div class="col-sm-10">
+                <select name="role" id="roleE" class="form-control" required>
+                    <option value="">--pilih--</option>
+                    <?php foreach($role as $r){ ?>
+                        <option value="<?= $r->id_role ?>"><?= $r->nama_role ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" id="toSubmitE" class="btn btn-primary">Save</button>
       </div>
       </form>
     </div>
@@ -252,16 +432,17 @@
           <span amodalImportria-hidden="true">&times;</span>
         </button>
       </div>
-      <form action="<?= base_url('master/import_member') ?>" enctype="multipart/form-data" id="formImport" method="post">
+      <form action="<?= base_url('master/import_member') ?>" id="formImport" method="post">
       <div class="modal-body">
         <div class="form-group">
             <label>Pilih File</label>
-            <input type="file" name="file" id="file" class="form-control">
+            <input type="file" required name="file" id="file" class="form-control">
+            <small class="text-danger">File yang di support: xls, xlsx</small>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Go</button>
+        <button type="submit" class="btn btn-primary" id="toImport">Go</button>
       </div>
       </form>
     </div>
@@ -524,6 +705,38 @@
         $('#file').val('');
     });
 
+    $('#formImport').submit(function(e){
+        e.preventDefault();
+            $.ajax({
+                url: $(this).attr('action'),
+                data: new FormData(this),
+                type: 'POST',
+                dataType: 'JSON',
+                contentType: false,
+                processData: false,
+                success: function(d){
+                    if(d.success == true){
+                        toastr["success"](d.msg, "Success");
+                        $('#modalImport').modal('hide');
+                        load_data();
+                    } else {
+                        toastr["error"](d.msg, "Error");
+                    }
+                },
+                error: function(xhr){
+                    if(xhr.status === 0){
+                        toastr["error"]("No internet access", "Error");
+                    } else if(xhr.status == 404){
+                        toastr["error"]("Page not found", "Error");
+                    } else if(xhr.status == 500){
+                        toastr["error"]("Internal server error", "Error");
+                    } else {
+                        toastr["error"]("Unknow error", "Error");
+                    }
+                }
+            });
+    });
+
     $(document).on('change', '.status', function(){
         let tipe = $(this).data('type');
         let id = $(this).val();
@@ -629,40 +842,36 @@
 
     $(document).on('click', '.edit', function(){
         let id = $(this).data('id');
-        $('#modalXL').modal('show');
-        $('.titleXL').html('Tambah Data Anggota');
-        $('#formAnggota').attr('action', '<?= base_url('master/add_member'); ?>');
+        $('.titleXLE').html('Edit Data Anggota');
+        $('#formAnggotaE').attr('action', '<?= base_url('master/edit_member'); ?>');
 
-        $('#nama').val('');
-        $('#nik').val('');
-        $('#tempat_lahir').val('');
-        $('#tgl_lahir').val('');
-        $('#jk').val('');
-        $('#no_telp').val('');
-        $('#email').val('');
-        $('#password').val('');
-        $('#provinsi').val('');
-        $('#kabupaten').val('');
-        $('#kecamatan').val('');
-        $('#desa').val('');
-        $('#dusun').val('');
-        $('#rw').val('');
-        $('#rt').val('');
-        $('#status_organisasi').val('');
-        $('#status_kepengurusan').val('');
-        $('#kel_pengajian').val('');
-        $('#alamat_engkap').val('');
-        $('#role').val('');
+        $('#namaE').val('');
+        $('#nikE').val('');
+        $('#tempat_lahirE').val('');
+        $('#tgl_lahirE').val('');
+        $('#jkE').val('');
+        $('#no_telpE').val('');
+      
+        $('#provinsiE').val('');
+        $('#kabupatenE').val('');
+        $('#kecamatanE').val('');
+        $('#desaE').val('');
+        $('#dusunE').val('');
+        $('#rwE').val('');
+        $('#rtE').val('');
+        $('#status_organisasiE').val('');
+        $('#status_kepengurusanE').val('');
+        $('#kel_pengajianE').val('');
+        $('#alamat_engkapE').val('');
+        $('#roleE').val('');
 
-        $('#err_nama').html('');
-        $('#err_nik').html('');
-        $('#err_tl').html('');
-        $('#err_telp').html('');
-        $('#err_email').html('');
-        $('#err_pass').html('');
-        $('#err_dusun').html('');
-        $('#err_rw').html('');
-        $('#err_rt').html('');
+        $('#err_nama_e').html('');
+        $('#err_nik_e').html('');
+        $('#err_tl_e').html('');
+        $('#err_telp_e').html('');
+        $('#err_dusun_e').html('');
+        $('#err_rw_e').html('');
+        $('#err_rt_e').html('');
 
         $.ajax({
             url: '<?= base_url('master/get_member') ?>',
@@ -670,27 +879,101 @@
             type: 'POST',
             dataType:'JSON',
             success: function(d){
+                $('#modalEdit').modal('show');
+                
                 $('#id_member').val(id);
-                $('#nama').val(d.nama);
-                $('#nik').val(d.nik);
-                $('#tempat_lahir').val(d.tempat_lahir);
-                $('#tgl_lahir').val(d.tanggal_lahir);
-                $('#jk').val(d.jenis_kelamin);
-                $('#no_telp').val(d.no_telp);
-                $('#email').val(d.email);
-                $('#password').val('');
-                $('#provinsi').val(d.id_provinsi);
+                $('#namaE').val(d.nama);
+                $('#nikE').val(d.nik);
+                $('#tempat_lahirE').val(d.tempat_lahir);
+                $('#tgl_lahirE').val(d.tanggal_lahir);
+                $('#jkE').val(d.jenis_kelamin);
+                $('#no_telpE').val(d.no_telp);
+          
+                $('#provinsiE').val(d.provinsi);
                 $('#kabupaten').val('');
                 $('#kecamatan').val('');
                 $('#desa').val('');
-                $('#dusun').val(d.dusun);
-                $('#rw').val(d.rw);
-                $('#rt').val(d.rt);
-                $('#status_organisasi').val(d.status_organisasi);
-                $('#status_kepengurusan').val(d.status_kepengurusan);
-                $('#kel_pengajian').val(d.nama_kelompok_pengajian);
-                $('#alamat_engkap').val(d.alamat_lengkap);
-                $('#role').val(d.id_role);
+                $('#dusunE').val(d.dusun);
+                $('#rwE').val(d.rw);
+                $('#rtE').val(d.rt);
+                $('#status_organisasiE').val(d.status_organisasi);
+                $('#status_kepengurusanE').val(d.status_kepengurusan);
+                $('#kel_pengajianE').val(d.nama_kelompok_pengajian);
+                $('#alamat_engkapE').val(d.alamat_lengkap);
+                $('#roleE').val(d.id_role);
+
+                let id_prov = d.provinsi;
+                let id_kab = d.kabupaten;
+                let id_kec = d.kecamatan;
+                let id_desa = d.desa;
+                
+                $.ajax({
+                    url: '<?= base_url('master/get_kabupaten') ?>',
+                    data: {id: id_prov},
+                    dataType: 'JSON',
+                    type: 'POST',
+                    success: function(kab){
+                        let html_kab = '<option value="">--pilih--</option>';
+                        let i;
+                        for(i=0; i<kab.length; i++){
+                            if(id_kab == kab[i].id){
+                                html_kab += '<option value="'+kab[i].id+'" selected>'+kab[i].nama+'</option>';
+                            } else {
+                                html_kab += '<option value="'+kab[i].id+'">'+kab[i].nama+'</option>';
+                            }
+                        }
+                        $('#kabupatenE').html(html_kab);
+                    }
+                });
+                
+                $.ajax({
+                    url: '<?= base_url('master/get_kecamatan') ?>',
+                    data: {id: id_kab},
+                    dataType: 'JSON',
+                    type: 'POST',
+                    success: function(kec){
+                        let html_kec = '<option value="">--pilih--</option>';
+                        let i;
+
+                        for(i=0; i<kec.length; i++){
+                            if(id_kec == kec[i].id){
+                                html_kec += '<option value="'+kec[i].id+'" selected>'+kec[i].nama+'</option>';
+                            } else {
+                                html_kec += '<option value="'+kec[i].id+'">'+kec[i].nama+'</option>';
+                            }
+                        }
+                        $('#kecamatanE').html(html_kec);
+                    }
+                });
+
+                $.ajax({
+                    url: '<?= base_url('master/get_kelurahan') ?>',
+                    data: {id: id_kec},
+                    dataType: 'JSON',
+                    type: 'POST',
+                    success: function(desa){
+                        let html_desa = '<option value="">--pilih--</option>';
+                        let i;
+                        
+                        for(i=0; i<desa.length; i++){
+                            if(id_desa == desa[i].id){
+                                html_desa += '<option value="'+desa[i].id+'" selected>'+desa[i].nama+'</option>';
+                            } else {
+                                html_desa += '<option value="'+desa[i].id+'">'+desa[i].nama+'</option>';
+                            }
+                        }
+                        $('#desaE').html(html_desa);
+                    }
+                });
+
+               
+
+                
+
+
+
+
+
             }, 
             error: function(xhr){
                     if(xhr.status === 0){
@@ -732,7 +1015,5 @@
             }
         });
     }
-
-
 
 </script>

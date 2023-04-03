@@ -45,24 +45,15 @@ class Master_model extends CI_Model{
     public function get_member_relation_all($id = null){
         $this->db->select('
             user.*,
-            role_user.nama_role,
-            wilayah_provinsi.id as id_provinsi,
-            wilayah_kabupaten.id as id_kabupaten,
-            wilayah_kecamatan.id as id_kecamatan,
-            wilayah_desa.id as id_desa
+            role_user.nama_role
         ')
         ->from('user')
-        ->join('role_user', 'user.id_role = role_user.id_role')
-        ->join('wilayah_provinsi', 'user.provinsi = wilayah_provinsi.nama')
-        ->join('wilayah_kabupaten', 'user.kabupaten = wilayah_kabupaten.nama')
-        ->join('wilayah_kecamatan', 'user.kecamatan = wilayah_kecamatan.nama')
-        ->join('wilayah_desa', 'user.desa = wilayah_desa.nama');
-        if($id){
-            $this->db->where('md5(sha1(id_user))', $id);
-        }
-        $data = $this->db->get();
-        return $data;
-    }
+        ->join('role_user', 'user.id_role = role_user.id_role');
 
+    
+        $this->db->where('md5(sha1(id_user))', $id);
+    
+        return $this->db->get();
+    }
 
 }

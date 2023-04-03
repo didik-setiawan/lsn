@@ -16,13 +16,19 @@
         $a = 1;
         $b = 1;
         foreach($data as $d){ 
+            $get_organisasi = $this->db->where('id_cabang', $d->status_organisasi)->get('cabang')->row();
+            if(isset($get_organisasi)){
+                $organisasi = $get_organisasi->nama_cabang;
+            } else {
+                $organisasi = '<i>Unknow</i>';
+            }
         ?>
         <tr>
             <td><?= $i++ ?></td>
-            <td class="text-center"><img src="<?= base_url('assets/img/user/') . $d->img ?>" alt="img_<?= $d->nik ?>" width="100px"></td>
+            <td class="text-center"><img src="<?= base_url('assets/img/user/') . $d->img ?>" loading="lazy" alt="img_<?= $d->nik ?>" width="100px"></td>
             <td><?= $d->nama ?></td>
             <td><?= $d->nama_role ?></td>
-            <td><?= $d->status_organisasi ?></td>
+            <td><?= $organisasi ?></td>
             <td>
                 <?php 
                     if($d->id_role == 1){

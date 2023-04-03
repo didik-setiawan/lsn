@@ -4,6 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 require './assets/phpspreadsheet/vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Xlsx;
 
 class Master extends CI_Controller
 {
@@ -467,7 +468,8 @@ class Master extends CI_Controller
             'user' => get_user(),
             'view' => 'master/member',
             'provinsi' => $this->db->get('wilayah_provinsi')->result(),
-            'role' => $this->db->where('status', 1)->get('role_user')->result()
+            'role' => $this->db->where('status', 1)->get('role_user')->result(),
+            'cabang' => $this->db->get('cabang')->result()
         ];
         $this->load->view('template', $data);
     }
@@ -541,10 +543,10 @@ class Master extends CI_Controller
         $kec = htmlspecialchars($this->input->post('kecamatan', true));
         $desa = htmlspecialchars($this->input->post('desa', true));
 
-        $get_prov = $this->db->where('id', $prov)->get('wilayah_provinsi')->row();
-        $get_kab = $this->db->where('id', $kab)->get('wilayah_kabupaten')->row();
-        $get_kec = $this->db->where('id', $kec)->get('wilayah_kecamatan')->row();
-        $get_desa = $this->db->where('id', $desa)->get('wilayah_desa')->row();
+        // $get_prov = $this->db->where('id', $prov)->get('wilayah_provinsi')->row();
+        // $get_kab = $this->db->where('id', $kab)->get('wilayah_kabupaten')->row();
+        // $get_kec = $this->db->where('id', $kec)->get('wilayah_kecamatan')->row();
+        // $get_desa = $this->db->where('id', $desa)->get('wilayah_desa')->row();
 
         $data = [
             'nama' => htmlspecialchars($this->input->post('nama', true)),
@@ -557,10 +559,10 @@ class Master extends CI_Controller
             'tanggal_lahir' => htmlspecialchars($this->input->post('tgl_lahir', true)),
             'tempat_lahir' => htmlspecialchars($this->input->post('tempat_lahir', true)),
             'jenis_kelamin' => htmlspecialchars($this->input->post('jk', true)),
-            'provinsi' => $get_prov->nama,
-            'kabupaten' => $get_kab->nama,
-            'kecamatan' => $get_kec->nama,
-            'desa' => $get_desa->nama,
+            'provinsi' => $prov,
+            'kabupaten' => $kab,
+            'kecamatan' => $kec,
+            'desa' => $desa,
             'dusun' => htmlspecialchars($this->input->post('dusun', true)),
             'rw' => htmlspecialchars($this->input->post('rw', true)),
             'rt' => htmlspecialchars($this->input->post('rt', true)),
@@ -637,7 +639,6 @@ class Master extends CI_Controller
             ];
         }
         echo json_encode($params);
-
     }
 
     public function get_member(){
@@ -646,14 +647,14 @@ class Master extends CI_Controller
         echo json_encode($user);
     }
      
-
     public function import_member(){
+        validation_ajax_request();
         $file = $_FILES['file'];
 
         if($file){
             $file_name = 'member_import_' . time();
             $config['upload_path']          = './assets/excel/import/';
-            $config['allowed_types']        = 'xls|xlsx|csv|ods';
+            $config['allowed_types']        = 'xls|xlsx';
             $config['file_name']            = $file_name;
             $this->load->library('upload', $config);
             if($this->upload->do_upload('file')){
@@ -661,51 +662,116 @@ class Master extends CI_Controller
     
                 $reader = \PhpOffice\PhpSpreadsheet\IOFactory::load($file_path);
                 $data = $reader->getActiveSheet()->toArray();
+                unset($data[0]);
+                unset($data[1]);
+                unset($data[2]);
+                unset($data[3]);
+                unset($data[4]);
 
                 foreach($data as $t){
-                    $tgl_lahir = date_create($t['4']);
-                    $result_data = [
-                        'nama'                      => $t['2'],
-                        'email'                     => $t['18'],
-                        'password'                  => md5(sha1($t['19'])),
-                        'status'                    => 1,
-                        'img'                       => 'default.png',
-                        'id_role'                   => $t['16'],
-                        'nik'                       => $t['1'],
-                        'tanggal_lahir'             => date_format($tgl_lahir, 'Y-m-d'),
-                        'tempat_lahir'              => $t['3'],
-                        'jenis_kelamin'             => $t['5'],
-                        'provinsi'                  => $t['6'],
-                        'kabupaten'                 => $t['7'],
-                        'kecamatan'                 => $t['8'],
-                        'desa'                      => $t['9'],
-                        'dusun'                     => $t['10'],
-                        'rw'                        => $t['11'],
-                        'rt'                        => $t['12'],
-                        'alamat_lengkap'            => $t['13'],
+                    $date = date_create($t[4]);
+
+                    $input_prov = ucwords($t[6]);
+                    $input_kab = ucwords($t[7]);
+                    $input_kec = ucwords($t[8]);
+                    $input_desa = ucwords($t[9]);
+                    $input_organisasi = $t[14];
+
+                    $prov   =   $this->db->where('nama', $input_prov)->get('wilayah_provinsi')->row();
+
+                    $kab    =   $this->db->select('wilayah_kabupaten.*')
+                                ->from('wilayah_kabupaten')
+                                ->join('wilayah_provinsi', 'wilayah_kabupaten.provinsi_id = wilayah_provinsi.id')
+                                ->where('wilayah_provinsi.nama', $input_prov)
+                                ->where('wilayah_kabupaten.nama', $input_kab)
+                                ->get()->row();
+
+                    $kec    =   $this->db->select('wilayah_kecamatan.*')
+                                ->from('wilayah_kecamatan')
+                                ->join('wilayah_kabupaten', 'wilayah_kecamatan.kabupaten_id = wilayah_kabupaten.id')
+                                ->join('wilayah_provinsi', 'wilayah_kabupaten.provinsi_id = wilayah_provinsi.id')
+                                ->where('wilayah_provinsi.nama', $input_prov)
+                                ->where('wilayah_kabupaten.nama', $input_kab)
+                                ->where('wilayah_kecamatan.nama', ' '.$input_kec)
+                                ->get()->row();
+
+                    $desa   =   $this->db->select('wilayah_desa.*')
+                                ->from('wilayah_desa')
+                                ->join('wilayah_kecamatan', 'wilayah_desa.kecamatan_id = wilayah_kecamatan.id')
+                                ->join('wilayah_kabupaten', 'wilayah_kecamatan.kabupaten_id = wilayah_kabupaten.id')
+                                ->join('wilayah_provinsi', 'wilayah_kabupaten.provinsi_id = wilayah_provinsi.id')
+                                ->where('wilayah_provinsi.nama', $input_prov)
+                                ->where('wilayah_kabupaten.nama', $input_kab)
+                                ->where('wilayah_kecamatan.nama', ' '.$input_kec)
+                                ->where('wilayah_desa.nama', $input_desa)
+                                ->get()->row();
+
+                    $get_organisasi = $this->db->where('nama_cabang', $input_organisasi)->get('cabang')->row();
+                    if(isset($get_organisasi)){
+                        $organisasi = $get_organisasi->id_cabang;
+                    } else {
+                        $organisasi = 0;
+                    }
+
+                    $insert_data = [
+                        'nama'              => $t[2],
+                        'email'             => $t[19],
+                        'password'          => md5(sha1($t[20])),
+                        'status'            => 1,
+                        'img'               => 'default.png',
+                        'id_role'           => $t[17],
+                        'nik'               => $t[1],
+                        'tanggal_lahir'     => date_format($date, 'Y-m-d'),
+                        'tempat_lahir'      => $t[3],
+                        'jenis_kelamin'     => $t[5],
+                        'provinsi'          => $prov->id,
+                        'kabupaten'         => $kab->id,
+                        'kecamatan'         => $kec->id,
+                        'desa'              => $desa->id,
+                        'dusun'             => $t[10],
+                        'rw'                => $t[11],
+                        'rt'                        => $t[12],
+                        'alamat_lengkap'            => $t[13],
                         'file_ktp'                  => '',
-                        'no_telp'                   => $t['17'],
-                        'status_organisasi'         => $t['14'],
-                        'status_kepengurusan'       => $t['15'],
-                        'nama_kelompok_pengajian'   => $t['16'],
-                     ];
-                     $this->db->insert('user', $result_data);
+                        'no_telp'                   => $t[18],
+                        'status_organisasi'         => $organisasi,
+                        'status_kepengurusan'       => $t[15],
+                        'nama_kelompok_pengajian'   => $t[16]
+                    ];
+                    $this->db->insert('user', $insert_data);
                 }
                 
-
+                if($this->db->affected_rows() > 0){
+                    $params = [
+                        'success' => true,
+                        'msg' => 'File berhasil di import'
+                    ];
+                } else {
+                    $params = [
+                        'success' => false,
+                        'msg' => 'File gagal di import'
+                    ];
+                }
            
                
 
             } else {
-                echo $this->upload->display_errors();
+                $params = [
+                    'success' => false,
+                    'msg' => 'Gagal import file'
+                ];
             }
 
         } else {
-            echo "no file";
+            $params = [
+                'success' => false,
+                'msg' => 'No file to upload'
+            ];
         }
-
+        echo json_encode($params);
 
     }
 
+    
 
 }

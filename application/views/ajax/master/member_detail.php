@@ -1,3 +1,41 @@
+<?php
+    $get_organisasi = $this->db->where('id_cabang', $data->status_organisasi)->get('cabang')->row();
+    $get_prov = $this->db->where('id', $data->provinsi)->get('wilayah_provinsi')->row();
+    $get_kab = $this->db->where('id', $data->kabupaten)->get('wilayah_kabupaten')->row();
+    $get_kec = $this->db->where('id', $data->kecamatan)->get('wilayah_kecamatan')->row();
+    $get_desa = $this->db->where('id', $data->desa)->get('wilayah_desa')->row();
+
+    if(isset($get_organisasi)){
+        $organisasi = $get_organisasi->nama_cabang;
+    } else {
+        $organisasi = '<i class="text-danger">Unknow</i>';
+    }
+
+    if(isset($get_prov)){
+        $prov = $get_prov->nama;
+    } else {
+        $prov = '<i class="text-danger">Unknow</i>';
+    }
+
+    if(isset($get_kab)){
+        $kab = $get_kab->nama;
+    } else {
+        $kab = '<i class="text-danger">Unknow</i>';
+    }
+
+    if(isset($get_kec)){
+        $kec = $get_kec->nama;
+    } else {
+        $kec = '<i class="text-danger">Unknow</i>';
+    }
+
+    if(isset($get_desa)){
+        $desa = $get_desa->nama;
+    } else {
+        $desa = '<i class="text-danger">Unknow</i>';
+    }
+
+?>
 <style>
     .detail-ktp {
       cursor: pointer;
@@ -27,19 +65,19 @@
     </tr>
     <tr>
         <th>Provinsi</th>
-        <td><?= $data->provinsi ?></td>
+        <td><?= $prov ?></td>
     </tr>
     <tr>
         <th>Kabupaten</th>
-        <td><?= $data->kabupaten ?></td>
+        <td><?= $kab ?></td>
     </tr>
     <tr>
         <th>Kecamatan</th>
-        <td><?= $data->kecamatan ?></td>
+        <td><?= $kec ?></td>
     </tr>
     <tr>
         <th>Kelurahan / Desa</th>
-        <td><?= $data->desa ?></td>
+        <td><?= $desa ?></td>
     </tr>
     <tr>
         <th>Dusun</th>
@@ -55,7 +93,7 @@
     </tr>
     <tr>
         <th>Status Organisasi</th>
-        <td><?= $data->status_organisasi ?></td>
+        <td><?= $organisasi ?></td>
     </tr>
     <tr>
         <th>Status Kepengurusan</th>
