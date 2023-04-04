@@ -59,7 +59,8 @@
                         <a class="dropdown-item detail" data-id="<?= md5(sha1($d->id_user)); ?>" href="#">Detail</a>
                         <a class="dropdown-item delete" data-id="<?= md5(sha1($d->id_user)); ?>" href="#">Hapus</a>
                         <a class="dropdown-item edit" data-id="<?= md5(sha1($d->id_user)); ?>" href="#">Edit Data</a>
-
+                        <a class="dropdown-item edit-img" data-id="<?= md5(sha1($d->id_user)); ?>" href="#">Edit Foto</a>
+                        <a class="dropdown-item edit-ktp" data-id="<?= md5(sha1($d->id_user)); ?>" href="#">Edit Ktp</a>
                         
                     </div>
                 </div>

@@ -773,6 +773,7 @@ class Master extends CI_Controller
     }
 
     public function edit_member(){
+        validation_ajax_request();
         $telp = $this->input->post('no_telp');
         $nik = $this->input->post('nik');
 
@@ -861,5 +862,123 @@ class Master extends CI_Controller
         }
 
     }    
+
+    public function get_img_member(){
+        validation_ajax_request();
+        $id = $_POST['id'];
+        $member = $this->db->get_where('user', ['md5(sha1(id_user))' => $id])->row();
+        if($member->img){
+            $output = '<center><img class="img-thumbnail" src="'.base_url('assets/img/user/').$member->img.'" width="50%"></center>';
+        } else {
+            $output = '<center><i>No image user<i></center>';
+        }
+        echo $output;
+    }
+
+    private function crop_image_user($file = null){
+        $config['image_library'] = 'gd2';
+        $config['source_image'] = './assets/img/user/' . $file;
+        $config['maintain_ratio'] = false;
+        $config['width']         = 512;
+        $config['height']       = 512;
+
+        $this->load->library('image_lib', $config);
+
+        $this->image_lib->resize();
+    }
+
+    public function edit_foto_member(){
+        validation_ajax_request();
+        $id = $_POST['id_member'];
+        $user = $this->db->where('md5(sha1(id_user))', $id)->get('user')->row();
+        $file  = $_FILES['file_upload'];
+        if($file){
+            $file_name = 'lsn_user_' . time();
+            $config['upload_path'] = './assets/img/user/';
+            $config['allowed_types'] = 'gif|jpg|png|jpeg';
+            $config['file_name'] = $file_name;
+
+            $this->load->library('upload', $config);
+
+            if($this->upload->do_upload('file_upload')){
+                $file_upload = $this->upload->data('file_name');
+                $this->crop_image_user($file_upload);
+
+                if($user->img != 'default.png'){
+                    unlink('./assets/img/user/' . $user->img);
+                }
+            } else {
+               $file_upload = $user->img;
+            }
+        }
+        $this->db->set('img', $file_upload)->where('md5(sha1(id_user))', $id)->update('user');
+        if($this->db->affected_rows() > 0){
+            $params = [
+                'success' => true,
+                'msg' => 'Foto member berhasil di edit'
+            ];
+        } else {
+            $params = [
+                'success' => false,
+                'msg' => 'Foto member gagal di edit'
+            ];
+        }
+
+        echo json_encode($params);
+    }
+
+    public function get_member_ktp(){
+        validation_ajax_request();
+        $id = $_POST['id'];
+        $data_member = $this->db->get_where('user', ['md5(sha1(id_user))' => $id])->row();
+        if($data_member->file_ktp){
+            $output = '<center><img src="'.base_url('assets/img/ktp/').$data_member->file_ktp.'" width="70%" class="img-thumbnail"></center>';
+        } else {
+            $output = '<center><i>No image KTP</i></center>';
+        }
+        echo $output;
+    }
+
+    public function edit_member_ktp(){
+        validation_ajax_request();
+        $id = $_POST['id_member'];
+        $img = $_FILES['img_ktp'];
+        $user = $this->db->where('md5(sha1(id_user))', $id)->get('user')->row();
+        
+        if($img){
+            $file_name = 'lsn_ktp_' . time();
+            $config['upload_path'] = './assets/img/ktp/';
+            $config['allowed_types'] = 'jpg|png|jpeg';
+            $config['file_name'] = $file_name;
+
+            $this->load->library('upload', $config);
+
+            if($this->upload->do_upload('img_ktp')){
+                $file_upload = $this->upload->data('file_name');
+                if($user->file_ktp){
+                    unlink('./assets/img/ktp/' . $user->file_ktp);
+                }
+                
+            } else {
+               $file_upload = $user->img;
+            }
+        }
+
+        $this->db->set('file_ktp', $file_upload)->where('md5(sha1(id_user))', $id)->update('user');
+
+        if($this->db->affected_rows() > 0){
+            $params = [
+                'success' => true,
+                'msg' => 'KTP berhasil di edit'
+            ];
+        } else {
+            $params = [
+                'success' => false,
+                'msg' => 'KTP gagal di edit'
+            ];
+        }
+        echo json_encode($params);
+    }
+
 
 }

@@ -455,6 +455,58 @@
   </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="editImage" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-light">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Foto Anggota</h5>
+      </div>
+      <form action="<?= base_url('master/edit_foto_member') ?>" id="formEditFoto" method="post">
+      <div class="modal-body">
+        <div id="load_image"></div>
+        <div class="form-group mt-3">
+            <label>Upload Foto Baru</label>
+            <input type="hidden" name="id_member" id="id_member_edit_img">
+            <input type="file" class="form-control" name="file_upload" id="file_edit_foto" required>
+            <small class="text-danger">File yg di bolehkan: png, jpg, jpeg</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" id="SubmitImage" class="btn btn-primary">Save</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="editKtp" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-light">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Foto KTP</h5>
+      </div>
+      <form action="<?= base_url('master/edit_member_ktp'); ?>" id="formKTP" method="post">
+      <div class="modal-body">
+        <div id="load_img_ktp"></div>
+        <div class="form-group mt-3">
+            <label>Pilih File</label>
+            <input type="hidden" name="id_member" id="member_id_ktp">
+            <input type="file" name="img_ktp" id="img_ktp" class="form-control" required>
+            <small class="text-danger">File yg di izinkan: png, jpg, jpeg</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" id="submitImgKTP" class="btn btn-primary">Go</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script>
     $(document).ready(function(){
         load_data();
@@ -1192,6 +1244,76 @@
         });
     });
 
+    $(document).on('click', '.edit-img',function(){
+        let id = $(this).data('id');
+        $('#id_member_edit_img').val(id);
+        $('#img_ktp').val('');
+
+        $.ajax({
+            url: '<?= base_url('master/get_img_member') ?>',
+            data: {id: id},
+            type: 'POST',
+            success: function(d){
+                $('#load_image').html(d);
+            },
+            error: function(xhr){
+               
+               if(xhr.status === 0){
+                   toastr["error"]("No internet access", "Error");
+               } else if(xhr.status == 404){
+                   toastr["error"]("Page not found", "Error");
+               } else if(xhr.status == 500){
+                   toastr["error"]("Internal server error", "Error");
+               } else {
+                   toastr["error"]("Unknow error", "Error");
+               }
+            }
+        });
+        $('#editImage').modal('show');
+    });
+
+    $('#formEditFoto').submit(function(e){
+        e.preventDefault();
+        $('#SubmitImage').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+        $('#SubmitImage').attr('disabled', true);
+
+        $.ajax({
+            url: $(this).attr('action'),
+            data: new FormData(this),
+            type: 'POST',
+            dataType: 'JSON',
+            contentType: false,
+            processData: false,
+            success: function(d){
+                $('#SubmitImage').html('Save');
+                $('#SubmitImage').removeAttr('disabled');
+
+                if(d.success == false){
+                    toastr["error"](d.msg, "Error");
+                } else {
+                    $('#editImage').modal('hide');
+                    toastr["success"](d.msg, "Success");  
+                    load_data(); 
+                }
+
+            },
+            error: function(xhr){
+                $('#SubmitImage').html('Save');
+                $('#SubmitImage').removeAttr('disabled');
+
+                    if(xhr.status === 0){
+                        toastr["error"]("No internet access", "Error");
+                    } else if(xhr.status == 404){
+                        toastr["error"]("Page not found", "Error");
+                    } else if(xhr.status == 500){
+                        toastr["error"]("Internal server error", "Error");
+                    } else {
+                        toastr["error"]("Unknow error", "Error");
+                    }
+            }
+        });
+    });
+
     function load_data(){
         const loading_animation = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
         $('#load_data').html(loading_animation);
@@ -1216,5 +1338,74 @@
             }
         });
     }
+
+    $(document).on('click', '.edit-ktp', function(){
+        let id = $(this).data('id');
+        $('#member_id_ktp').val(id);
+        $.ajax({
+            url: '<?= base_url('master/get_member_ktp') ?>',
+            data: {id: id},
+            type: 'POST',
+            success: function(d){
+                $('#load_img_ktp').html(d);
+            },
+            error: function(xhr){
+               
+               if(xhr.status === 0){
+                   toastr["error"]("No internet access", "Error");
+               } else if(xhr.status == 404){
+                   toastr["error"]("Page not found", "Error");
+               } else if(xhr.status == 500){
+                   toastr["error"]("Internal server error", "Error");
+               } else {
+                   toastr["error"]("Unknow error", "Error");
+               }
+            }
+        });
+
+        $('#editKtp').modal('show');
+    });
+
+    $('#formKTP').submit(function(e){
+        e.preventDefault();
+        $('#submitImgKTP').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+        $('#submitImgKTP').attr('disabled', true);
+
+        $.ajax({
+            url: $(this).attr('action'),
+            data: new FormData(this),
+            type: 'POST',
+            dataType: 'JSON',
+            contentType: false,
+            processData: false,
+            success: function(d){
+                $('#submitImgKTP').html('Go');
+                $('#submitImgKTP').removeAttr('disabled');
+
+                if(d.success == false){
+                    toastr["error"](d.msg, "Error");
+                } else {
+                    $('#editKtp').modal('hide');
+                    toastr["success"](d.msg, "Success");  
+                    load_data(); 
+                }
+
+            },
+            error: function(xhr){
+                $('#submitImgKTP').html('Go');
+                $('#submitImgKTP').removeAttr('disabled');
+               if(xhr.status === 0){
+                   toastr["error"]("No internet access", "Error");
+               } else if(xhr.status == 404){
+                   toastr["error"]("Page not found", "Error");
+               } else if(xhr.status == 500){
+                   toastr["error"]("Internal server error", "Error");
+               } else {
+                   toastr["error"]("Unknow error", "Error");
+               }
+            }
+        });
+
+    });
 
 </script>
