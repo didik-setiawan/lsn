@@ -4,6 +4,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body table-responsive">
+                
                 <div class="dropdown mb-3">
                     <button class="btn btn-sm btn-success dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-plus"></i> Tambah
@@ -12,7 +13,11 @@
                         <a class="dropdown-item" href="#" id="addXL">Tambah langsung</a>
                         <a class="dropdown-item" id="import" href="#">Import dari excel</a>
                     </div>
+                    <button href="" class="btn btn-sm btn-secondary">Export Data</button>
+                    <button class="btn btn-sm btn-primary" id="filterData"><i class="fa fa-filter"></i> Filter Data</button>
                 </div>
+
+
                 <div id="load_data"></div>
             </div>
         </div>
@@ -447,6 +452,7 @@
         </div>
       </div>
       <div class="modal-footer">
+        <a href="<?= base_url('master/download_template') ?>" class="btn btn-success"><i class="fa fa-download"></i> Download template excel</a>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="submit" class="btn btn-primary" id="toImport">Go</button>
       </div>
@@ -503,6 +509,78 @@
         <button type="submit" id="submitImgKTP" class="btn btn-primary">Go</button>
       </div>
       </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="getFilterData" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-light">
+        <h5 class="modal-title" id="exampleModalLabel">Filter Data</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+     
+      <div class="modal-body">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                <div class="form-group">
+                    <label>Provinsi</label>
+                    <select class="form-control" name="provinsi" id="filter_provinsi">
+                        <option value="">--pilih--</option>
+                        <?php foreach($provinsi as $p){ ?>
+                            <option value="<?= $p->id ?>"><?= $p->nama ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                <div class="form-group">
+                    <label>Kabupaten</label>
+                    <select name="kabupaten" id="filter_kabupaten" class="form-control">
+                        <option value="">--pilih--</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                <div class="form-group">
+                    <label>Kecamatan</label>
+                    <select name="kecamatan" id="filter_kecamatan" class="form-control">
+                        <option value="">--pilih--</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                <div class="form-group">
+                    <label>Desa</label>
+                    <select name="desa" id="filter_desa" class="form-control">
+                        <option value="">--pilih--</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                <div class="form-group">
+                    <label>Status Organisasi</label>
+                    <select name="organisasi" id="filter_organisasi" class="form-control">
+                        <option value="">--pilih--</option>
+                         <?php foreach($cabang as $c){ ?>
+                            <option value="<?= $c->id_cabang ?>"><?= $c->nama_cabang ?></option>
+                         <?php } ?>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" id="goFilter" class="btn btn-primary">Go</button>
+      </div>
+     
     </div>
   </div>
 </div>
@@ -1403,6 +1481,156 @@
                } else {
                    toastr["error"]("Unknow error", "Error");
                }
+            }
+        });
+
+    });
+
+    $('#filterData').click(function(){
+        $('#getFilterData').modal('show');
+    });
+
+    $('#filter_provinsi').change(function(){
+        let id = $(this).val();
+
+        $.ajax({
+            url: '<?= base_url('master/get_kabupaten') ?>',
+            data: {id: id},
+            type: 'POST',
+            dataType: 'JSON',
+            success: function(d){
+                let html = '<option value="">--pilih--</option>';
+                let i;
+
+                for(i=0; i<d.length; i++){
+                    html += '<option value='+d[i].id+'>'+d[i].nama+'</option>'
+                }
+                $('#filter_kabupaten').html(html);
+            },
+            error: function(xhr){
+               
+                    if(xhr.status === 0){
+                        toastr["error"]("No internet access", "Error");
+                    } else if(xhr.status == 404){
+                        toastr["error"]("Page not found", "Error");
+                    } else if(xhr.status == 500){
+                        toastr["error"]("Internal server error", "Error");
+                    } else {
+                        toastr["error"]("Unknow error", "Error");
+                    }
+            }
+        });
+
+    });
+
+    $('#filter_kabupaten').change(function(){
+        let id = $(this).val();
+
+        $.ajax({
+            url: '<?= base_url('master/get_kecamatan') ?>',
+            data: {id: id},
+            type: 'POST',
+            dataType: 'JSON',
+            success: function(d){
+                let html = '<option value="">--pilih--</option>';
+                let i;
+
+                for(i=0; i<d.length; i++){
+                    html += '<option value='+d[i].id+'>'+d[i].nama+'</option>'
+                }
+                $('#filter_kecamatan').html(html);
+            },
+            error: function(xhr){
+              
+
+                    if(xhr.status === 0){
+                        toastr["error"]("No internet access", "Error");
+                    } else if(xhr.status == 404){
+                        toastr["error"]("Page not found", "Error");
+                    } else if(xhr.status == 500){
+                        toastr["error"]("Internal server error", "Error");
+                    } else {
+                        toastr["error"]("Unknow error", "Error");
+                    }
+            }
+        });
+
+    });
+    
+    $('#filter_kecamatan').change(function(){
+        let id = $(this).val();
+
+        $.ajax({
+            url: '<?= base_url('master/get_kelurahan') ?>',
+            data: {id: id},
+            type: 'POST',
+            dataType: 'JSON',
+            success: function(d){
+                let html = '<option value="">--pilih--</option>';
+                let i;
+
+                for(i=0; i<d.length; i++){
+                    html += '<option value='+d[i].id+'>'+d[i].nama+'</option>'
+                }
+                $('#filter_desa').html(html);
+            },
+            error: function(xhr){
+              
+
+                    if(xhr.status === 0){
+                        toastr["error"]("No internet access", "Error");
+                    } else if(xhr.status == 404){
+                        toastr["error"]("Page not found", "Error");
+                    } else if(xhr.status == 500){
+                        toastr["error"]("Internal server error", "Error");
+                    } else {
+                        toastr["error"]("Unknow error", "Error");
+                    }
+            }
+        });
+
+    });
+
+    $('#goFilter').click(function(){
+        $('#goFilter').attr('disabled', true);
+        $('#goFilter').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+
+        let prov = $('#filter_provinsi').val();
+        let kab = $('#filter_kabupaten').val();
+        let kec = $('#filter_kecamatan').val();
+        let desa = $('#filter_desa').val();
+        let org = $('#filter_organisasi').val();
+
+        $.ajax({
+            url: '<?= base_url('ajax/load_data_member'); ?>',
+            data: {
+                provinsi: prov,
+                kabupaten: kab,
+                kecamatan: kec,
+                desa: desa,
+                organisasi: org
+            },
+            type: 'POST',
+            success: function(d){
+                $('#load_data').html(d);
+
+                $('#goFilter').removeAttr('disabled');
+                $('#goFilter').html('Go');
+                $('#getFilterData').modal('hide');
+            },
+            error: function(xhr){
+                $('#goFilter').removeAttr('disabled');
+                $('#goFilter').html('Go');
+               
+                    if(xhr.status === 0){
+                        toastr["error"]("No internet access", "Error");
+                    } else if(xhr.status == 404){
+                        toastr["error"]("Page not found", "Error");
+                    } else if(xhr.status == 500){
+                        toastr["error"]("Internal server error", "Error");
+                    } else {
+                        toastr["error"]("Unknow error", "Error");
+                    }
             }
         });
 

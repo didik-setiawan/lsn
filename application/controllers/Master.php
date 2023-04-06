@@ -980,5 +980,20 @@ class Master extends CI_Controller
         echo json_encode($params);
     }
 
+    public function download_template(){
+        
+            // Set headers for file download
+            $file_name = 'template_data.xlsx';
+            $file_path = './assets/excel/template/' . $file_name;
+            header("Content-Type: application/vnd.ms-excel");
+            header("Content-Disposition: attachment; filename=".$file_name);
+            header("Pragma: no-cache");
+            header("Expires: 0");
+            
+            // Read file and output to browser
+            readfile($file_path);
+            exit();
+          
+    }
 
 }

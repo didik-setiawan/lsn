@@ -29,7 +29,7 @@ class Master_model extends CI_Model{
         return $data;
     }
 
-    public function get_member($id = null){
+    public function get_member($id = null, $prov = null, $kab = null, $kec = null, $desa = null, $org = null){
         $this->db->select('
             user.*,
             role_user.nama_role
@@ -38,6 +38,27 @@ class Master_model extends CI_Model{
         if($id){
             $this->db->where('md5(sha1(id_user))', $id);
         }
+
+        if($prov){
+            $this->db->where('provinsi', $prov);
+        }
+
+        if($kab){
+            $this->db->where('kabupaten', $kab);
+        }
+
+        if($kec){
+            $this->db->where('kecamatan', $kec);
+        }
+
+        if($desa){
+            $this->db->where('desa', $desa);
+        }
+
+        if($org){
+            $this->db->where('status_organisasi', $org);
+        }
+
         $data = $this->db->get();
         return $data;
     }
