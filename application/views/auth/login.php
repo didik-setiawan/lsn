@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,6 +14,7 @@
     <script src="<?= base_url('assets/toastr/build/toastr.min.js') ?>"></script>
     <title>Login</title>
 </head>
+
 <body style="background: #147019">
 
     <div class="container">
@@ -22,27 +24,27 @@
                     <div class="card-body">
                         <h3 class="text-center" style="color: #000000"><b>Login Page</b></h3>
                         <form action="<?= base_url('auth/validation_login') ?>" id="formLogin" method="post">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon1"><i class="fas fa-at"></i></span>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-at"></i></span>
+                                </div>
+
+                                <input type="text" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="basic-addon1" name="email" id="email">
                             </div>
-
-                            <input type="text" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="basic-addon1" name="email" id="email">
-                        </div>
-                        <small class="text-danger" id="err_email"></small>
+                            <small class="text-danger" id="err_email"></small>
 
 
-                        <div class="input-group mt-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon1"><i class="fas fa-key"></i></span>
+                            <div class="input-group mt-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-key"></i></span>
+                                </div>
+
+                                <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1" id="password" name="password">
                             </div>
-                            
-                            <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1" id="password" name="password">
-                        </div>
-                        <small class="text-danger" id="err_password"></small>
+                            <small class="text-danger" id="err_password"></small>
 
-                        <a href=""><small>Lupa Password?</small></a>
-                        <button class="btn btn-danger float-right mt-3" id="toLogin" type="submit">Login</button>
+                            <a href="<?= base_url('auth/forgotpassword') ?>"><small>Lupa Password?</small></a>
+                            <button class="btn btn-danger float-right mt-3" id="toLogin" type="submit">Login</button>
                         </form>
                     </div>
                 </div>
@@ -69,7 +71,7 @@
         }
     </script>
     <script>
-        $('#formLogin').submit(function(e){
+        $('#formLogin').submit(function(e) {
             e.preventDefault();
             $('#toLogin').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
             $('#toLogin').attr('disabled', true);
@@ -79,33 +81,33 @@
                 data: $(this).serialize(),
                 type: 'POST',
                 dataType: 'JSON',
-                success: function(d){
+                success: function(d) {
                     $('#toLogin').html('Login');
                     $('#toLogin').removeAttr('disabled');
 
-                    if(d.type == 'validation'){
-                        if(d.err_email == ''){
+                    if (d.type == 'validation') {
+                        if (d.err_email == '') {
                             $('#err_email').html('');
                         } else {
                             $('#err_email').html(d.err_email);
                         }
 
-                        if(d.err_pass == ''){
+                        if (d.err_pass == '') {
                             $('#err_password').html('');
                         } else {
                             $('#err_password').html(d.err_pass);
                         }
-                    } else if(d.type == 'result'){
+                    } else if (d.type == 'result') {
                         $('#err_email').html('');
                         $('#err_password').html('');
 
 
-                        if(d.success == false){
+                        if (d.success == false) {
                             toastr["error"](d.msg, "Error");
                         } else {
                             $('#email').val('');
                             $('#password').val('');
-                            
+
                             toastr["success"](d.msg, "Success");
                             setTimeout(() => {
                                 window.location.href = d.redirect;
@@ -113,15 +115,15 @@
                         }
                     }
                 },
-                error: function(xhr){
+                error: function(xhr) {
                     $('#toLogin').html('Login');
                     $('#toLogin').removeAttr('disabled');
 
-                    if(xhr.status === 0){
+                    if (xhr.status === 0) {
                         toastr["error"]("No internet access", "Error");
-                    } else if(xhr.status == 404){
+                    } else if (xhr.status == 404) {
                         toastr["error"]("Page not found", "Error");
-                    } else if(xhr.status == 500){
+                    } else if (xhr.status == 500) {
                         toastr["error"]("Internal server error", "Error");
                     } else {
                         toastr["error"]("Unknow error", "Error");
@@ -132,4 +134,5 @@
         });
     </script>
 </body>
+
 </html>

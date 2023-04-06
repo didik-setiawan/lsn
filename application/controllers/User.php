@@ -126,4 +126,38 @@ class User extends CI_Controller
         echo json_encode($params);
     }
 
+     // UPLOAD FILE KTP
+     public function upload_ktp()
+     {
+         $file_ktp = $_FILES['file_ktp'];
+         $user = get_user();
+ 
+         if ($file_ktp) {
+             $file_name = 'lsn_ktp_user_' . time();
+             $config['upload_path'] = './assets/img/ktp/';
+             $config['allowed_types'] = 'gif|jpg|png|jpeg';
+             $config['file_name'] = $file_name;
+ 
+             $this->load->library('upload', $config);
+ 
+             if ($this->upload->do_upload('file_ktp')) {
+                 $file = $this->upload->data('file_name');
+                 $this->crop_image($file);
+ 
+                 if ($user->img != 'default-image.jpg') {
+                     unlink('./assets/img/ktp/' . $user->file_ktp);
+                 }
+             } else {
+                 $file = $user->file_ktp;
+             }
+ 
+             $data = [
+                 'file_ktp' => $file
+             ];
+             $this->db->where('email', $this->session->userdata('email'))->update('user', $data);
+             redirect('user/setting');
+         }
+     }
+     // END UPLOAD FILE KTP
+
 }
