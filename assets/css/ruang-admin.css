@@ -758,7 +758,7 @@ a:focus {
   height: 4.375rem;
   text-decoration: none;
   font-size: 1rem;
-  font-weight: 800;
+  font-weight: 800rem;
   padding: 1.5rem 1rem;
   text-align: center;
   letter-spacing: .05rem;
@@ -766,7 +766,7 @@ a:focus {
 }
 
 .sidebar .sidebar-brand .sidebar-brand-icon img {
-  max-height: 2.3rem
+  max-height: 2.3rem;
 }
 
 .sidebar hr.sidebar-divider {
@@ -1021,7 +1021,7 @@ a:focus {
   }
 
   .sidebar.toggled .sidebar-brand {
-      height: 4.375rem;
+      height: 5rem;
       text-decoration: none;
       font-size: 1rem;
       font-weight: 800;

@@ -15,7 +15,7 @@
     <title>Forgot Password</title>
 </head>
 
-<body style="background: #147019">
+<body style="background: #0f0e17">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-12 col-sm-12 col-md-8 col-lg-5 mt-3">

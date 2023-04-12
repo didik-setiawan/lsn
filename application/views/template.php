@@ -48,22 +48,22 @@
   <div id="wrapper">
     <!-- Sidebar -->
     <ul class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" style="background: #147019" href="">
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" style="background: #232946" href="">
         <div class="sidebar-brand-icon">
-          <img src="<?= base_url('assets/') ?>img/logo/logo2.png">
+          <img src="<?= base_url('assets/img/logo/lsn.png') ?>">
         </div>
-        <div class="sidebar-brand-text mx-3">RuangAdmin</div>
+        <div class="sidebar-brand-text mx-3"></div>
       </a>
      
         <li class="nav-item">
-          <a class="nav-link" href="<?= base_url('dashboard') ?>">
+          <a class="nav-link" href="<?= base_url('dashboard') ?>" style="color: #2e3359">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
         </li>
        
         <?php foreach(get_menu() as $menu){ ?>
         <li class="nav-item">
-          <a class="nav-link" href="<?= base_url($menu->url) ?>">
+          <a class="nav-link" href="<?= base_url($menu->url) ?>" style="color: #2e3359">
             <i class="<?= $menu->icon ?>"></i>
             <span><?= $menu->nama_menu ?></span></a>
         </li>
@@ -76,15 +76,11 @@
     <div id="content-wrapper" class="d-flex flex-column">
       <div id="content">
         <!-- TopBar -->
-        <nav class="navbar navbar-expand navbar-light bg-navbar topbar mb-4 static-top" style="background: #0a8211">
+        <nav class="navbar navbar-expand navbar-light bg-navbar topbar mb-4 static-top" style="background: #2e3359">
           <button id="sidebarToggleTop" class="btn btn-link rounded-circle mr-3">
             <i class="fa fa-bars"></i>
           </button>
           <ul class="navbar-nav ml-auto">
-
-
-
-
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <img class="img-profile rounded-circle" src="<?= base_url('assets/img/user/' . $user->img) ?>" style="max-width: 60px">
@@ -124,8 +120,7 @@
           <div class="copyright text-center my-auto">
             <span>copyright &copy; <script>
                 document.write(new Date().getFullYear());
-              </script> - developed by
-              <b><a href="https://indrijunanda.gitlab.io/" target="_blank">indrijunanda</a></b>
+              </script> 
             </span>
           </div>
         </div>

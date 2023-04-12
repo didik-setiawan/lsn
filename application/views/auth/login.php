@@ -15,14 +15,17 @@
     <title>Login</title>
 </head>
 
-<body style="background: #147019">
+<body style="background: #0f0e17">
 
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-12 col-sm-12 col-md-8 col-lg-5 mt-3">
                 <div class="card shadow mt-5">
                     <div class="card-body">
-                        <h3 class="text-center" style="color: #000000"><b>Login Page</b></h3>
+                        <div class="text-center mb-3">
+                            <img src="<?= base_url('assets/img/logo/lsn.png') ?>" alt="logo" width="150px">
+                        </div>
+                        <h5 class="text-center" style="color: #000000"><b>Sistem Informasi</b></h5>
                         <form action="<?= base_url('auth/validation_login') ?>" id="formLogin" method="post">
                             <div class="input-group">
                                 <div class="input-group-prepend">

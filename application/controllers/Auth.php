@@ -5,6 +5,7 @@ class Auth extends CI_Controller
 
     public function index()
     {
+        check_logout();
         $this->load->view('auth/login');
     }
 

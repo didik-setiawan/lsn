@@ -3,7 +3,7 @@
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-body table-responsive">
+            <div class="card-body">
                 
                 <div class="dropdown mb-3">
                     <button class="btn btn-sm btn-success dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
@@ -17,8 +17,7 @@
                     <button class="btn btn-sm btn-primary" id="filterData"><i class="fa fa-filter"></i> Filter Data</button>
                 </div>
 
-
-                <div id="load_data"></div>
+                <div id="load_data" class="table-responsive"></div>
             </div>
         </div>
     </div>
@@ -403,7 +402,7 @@
 
 <!-- Modal -->
 <div class="modal fade" id="modalDetail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header bg-dark text-light">
         <h5 class="modal-title" id="exampleModalLabel">Detail Anggota</h5>
@@ -420,7 +419,7 @@
 
 <!-- Modal -->
 <div class="modal fade" id="modalKTP" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-body">
         <button type="button" class="close btn-sm" data-dismiss="modal" aria-label="Close">

@@ -3,7 +3,7 @@
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-body">
+            <div class="card-body table-responsive">
                 <button class="btn btn-sm btn-success mb-3" id="toAdd"><i class="fa fa-plus"></i> Tambah</button>
                 <div id="load_data"></div>
             </div>

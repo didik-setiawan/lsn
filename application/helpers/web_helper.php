@@ -64,6 +64,16 @@ function check_login(){
     }
 }
 
+
+function check_logout(){
+    $t = get_instance();
+
+    if($t->session->userdata('email') || $t->session->userdata('id_role') || $t->session->userdata('status')) {
+        redirect('dashboard');
+    }
+
+}
+
 // DIRECT LINK SESUAI ROLE //
 function check_admin()
 {
