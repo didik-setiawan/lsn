@@ -26,7 +26,7 @@
         <tr>
             <td><?= $i++ ?></td>
             <td class="text-center"><img src="<?= base_url('assets/img/user/') . $d->img ?>" loading="lazy" alt="img_<?= $d->nik ?>" width="100px"></td>
-            <td><?= $d->nama ?></td>
+            <td><?= $d->nama ?> / <?= $d->nik ?></td>
             <td><?= $d->nama_role ?></td>
             <td><?= $organisasi ?></td>
             <td>
@@ -72,5 +72,7 @@
 </table>
 
 <script>
-    $('#Table').dataTable();
+    $('#Table').dataTable({
+        "iDisplayLength": 50,
+    });
 </script>

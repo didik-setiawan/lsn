@@ -996,4 +996,366 @@ class Master extends CI_Controller
           
     }
 
+    public function export_data(){
+        // validation_ajax_request();
+        $prov = htmlspecialchars($this->input->post('provinsi'));
+        $kab = htmlspecialchars($this->input->post('kabupaten'));
+        $kec = htmlspecialchars($this->input->post('kecamatan'));
+        $desa = htmlspecialchars($this->input->post('desa'));
+        $org = htmlspecialchars($this->input->post('organisasi'));
+
+        $data = $this->m->get_all_member_for_export($prov, $kab, $kec, $desa, $org)->result();
+
+        $nik = htmlspecialchars($this->input->post('nik'));
+        $nama = htmlspecialchars($this->input->post('nama'));
+        $email = htmlspecialchars($this->input->post('email'));
+        $telp = htmlspecialchars($this->input->post('telp'));
+        $role = htmlspecialchars($this->input->post('role'));
+        $tmp_lahir = htmlspecialchars($this->input->post('tmp_lahir'));
+        $tgl_lahir = htmlspecialchars($this->input->post('tgl_lahir'));
+        $alamat = htmlspecialchars($this->input->post('alamat'));
+        $check_prov = htmlspecialchars($this->input->post('prov'));
+        $check_kab = htmlspecialchars($this->input->post('kab'));
+        $check_kec = htmlspecialchars($this->input->post('kec'));
+        $check_desa = htmlspecialchars($this->input->post('des'));
+        $dusun = htmlspecialchars($this->input->post('dusun'));
+        $rw = htmlspecialchars($this->input->post('rw'));
+        $rt = htmlspecialchars($this->input->post('rt'));
+        $stat_org = htmlspecialchars($this->input->post('stat_org'));
+        $stat_kep = htmlspecialchars($this->input->post('stat_kep'));
+        $pengajian = htmlspecialchars($this->input->post('pengajian'));
+
+        $html = '';
+        $no = 1;
+        foreach($data as $d){
+
+            $get_role = $this->db->where('id_role', $d->id_role)->get('role_user')->row();
+            $get_prov = $this->db->where('id', $d->provinsi)->get('wilayah_provinsi')->row();
+            $get_kab = $this->db->where('id', $d->kabupaten)->get('wilayah_kabupaten')->row();
+            $get_kec = $this->db->where('id', $d->kecamatan)->get('wilayah_kecamatan')->row();
+            $get_desa = $this->db->where('id', $d->desa)->get('wilayah_desa')->row();
+            $get_organisasi = $this->db->where('id_cabang', $d->status_organisasi)->get('cabang')->row();
+
+
+            if($get_role){
+                $result_role = $get_role->nama_role;
+            } else {
+                $result_role = "";
+            }
+
+            if($get_prov){
+                $result_prov = $get_prov->nama;
+            } else {
+                $result_prov = "";
+            }
+
+            if($get_kab){
+                $result_kab = $get_kab->nama;
+            } else {
+                $result_kab = "";
+            }
+
+            if($get_kec){
+                $result_kec = $get_kec->nama;
+            } else {
+                $result_kec = "";
+            }
+
+            if($get_desa){
+                $result_desa = $get_desa->nama;
+            } else {
+                $result_desa = "";
+            }
+
+            if($get_organisasi){
+                $result_organisasi = $get_organisasi->nama_cabang;
+            } else {
+                $result_organisasi = "";
+            }
+
+
+            $row = "<td>".$no++."</td>";
+
+            if($nik){
+                $show_nik = "<td>$d->nik</td>";
+            } else {
+                $show_nik = "";
+            }
+
+            if($nama){
+                $show_nama = "<td>$d->nama</td>";
+            } else {
+                $show_nama = "";
+            }
+
+            if($email){
+                $show_email = "<td>$d->email</td>";
+            } else {
+                $show_email = "";
+            }
+
+            if($telp){
+                $show_telp = "<td>$d->no_telp</td>";
+            } else {
+                $show_telp = "";
+            }
+
+            if($role){
+                $show_role = "<td>$result_role</td>";
+            } else {
+                $show_role = "";
+            }
+
+            if($tmp_lahir){
+                $show_tmp_lahir = "<td>$d->tempat_lahir</td>";
+            } else {
+                $show_tmp_lahir = "";
+            }
+
+            if($tgl_lahir){
+                $show_tgl_lahir = "<td>$d->tanggal_lahir</td>";
+            } else {
+                $show_tgl_lahir = "";
+            }
+
+            if($alamat){
+                $show_alamat = "<td>$d->alamat_lengkap</td>";
+            } else {
+                $show_alamat = "";
+            }
+
+            if($alamat){
+                $show_alamat = "<td>$d->alamat_lengkap</td>";
+            } else {
+                $show_alamat = "";
+            }
+
+            if($check_prov){
+                $show_prov = "<td>$result_prov</td>";
+            } else {
+                $show_prov = "";
+            }
+
+            if($check_kab){
+                $show_kab = "<td>$result_kab</td>";
+            } else {
+                $show_kab = "";
+            }
+
+            if($check_kec){
+                $show_kec = "<td>$result_kec</td>";
+            } else {
+                $show_kec = "";
+            }
+
+            if($check_desa){
+                $show_desa = "<td>$result_desa</td>";
+            } else {
+                $show_desa = "";
+            }
+
+            if($dusun){
+                $show_dusun = "<td>$d->dusun</td>";
+            } else {
+                $show_dusun = "";
+            }
+
+            if($rw){
+                $show_rw = "<td>$d->rw</td>";
+            } else {
+                $show_rw = "";
+            }
+
+            if($rt){
+                $show_rt = "<td>$d->rt</td>";
+            } else {
+                $show_rt = "";
+            }
+
+            if($stat_org){
+                $show_org = "<td>$result_organisasi</td>";
+            } else {
+                $show_org = "";
+            }
+
+            if($stat_kep){
+                $show_kep = "<td>$d->status_kepengurusan</td>";
+            } else {
+                $show_kep = "";
+            }
+
+            if($pengajian){
+                $show_pengajian = "<td>$d->nama_kelompok_pengajian</td>";
+            } else {
+                $show_pengajian = "";
+            }
+
+
+            $html .= "<tr>
+                ".
+                   $row.
+                   $show_nik.
+                   $show_nama.
+                   $show_email.
+                   $show_telp.
+                   $show_role.
+                   $show_tmp_lahir.
+                   $show_tgl_lahir.
+                   $show_alamat.
+                   $show_prov.
+                   $show_kab.
+                   $show_kec.
+                   $show_desa.
+                   $show_dusun.
+                   $show_rw.
+                   $show_rt.
+                   $show_org.
+                   $show_kep.
+                   $show_pengajian
+                ."
+            </tr>";
+        }
+        
+        if($nik){
+            $cell_nik = "<th>NIK</th>";
+        } else {
+            $cell_nik = "";
+        }
+
+        if($nama){
+            $cell_nama = "<th>Nama Lengkap</th>";
+        } else {
+            $cell_nama = "";
+        }
+
+        if($email){
+            $cell_email = "<th>Email</th>";
+        } else {
+            $cell_email = "";
+        }
+
+        if($telp){
+            $cell_telp = "<th>No. Telp</th>";
+        } else {
+            $cell_telp = "";
+        }
+
+        if($role){
+            $cell_role = "<th>Role</th>";
+        } else {
+            $cell_role = "";
+        }
+
+        if($tmp_lahir){
+            $cell_temp_lahir = "<th>Tempat Lahir</th>";
+        } else {
+            $cell_temp_lahir = "";
+        }
+
+        if($tgl_lahir){
+            $cell_tgl_lahir = "<th>Tanggal Lahir</th>";
+        } else {
+            $cell_tgl_lahir = "";
+        }
+
+        if($alamat){
+            $cell_alamat = "<th>Alamat</th>";
+        } else {
+            $cell_alamat = "";
+        }
+
+        if($check_prov){
+            $cell_prov = "<th>Provinsi</th>";
+        } else {
+            $cell_prov = "";
+        }
+
+        if($check_kab){
+            $cell_kab = "<th>Kabupaten</th>";
+        } else {
+            $cell_kab = "";
+        }
+
+        if($check_kec){
+            $cell_kec = "<th>Kecamatan</th>";
+        } else {
+            $cell_kec = "";
+        }
+
+        if($check_desa){
+            $cell_desa = "<th>Desa</th>";
+        } else {
+            $cell_desa = "";
+        }
+
+        if($dusun){
+            $cell_dusun = "<th>Dusun</th>";
+        } else {
+            $cell_dusun = "";
+        }
+
+        if($rw){
+            $cell_rw = "<th>Rw</th>";
+        } else {
+            $cell_rw = "";
+        }
+
+        if($rt){
+            $cell_rt = "<th>Rt</th>";
+        } else {
+            $cell_rt = "";
+        }
+
+        if($stat_org){
+            $cell_organisasi = "<th>Status Organisasi</th>";
+        } else {
+            $cell_organisasi = "";
+        }
+
+        if($stat_kep){
+            $cell_kepengurusan = "<th>Status Kepengurusan</th>";
+        } else {
+            $cell_kepengurusan = "";
+        }
+
+        if($pengajian){
+            $cell_pengajian = "<th>Kelompok Pengajian</th>";
+        } else {
+            $cell_pengajian = "";
+        }
+
+
+        $test="<table>
+                    <tr>
+                        <th>No</th>
+                        ".
+                            $cell_nik.
+                            $cell_nama.
+                            $cell_email.
+                            $cell_telp.
+                            $cell_role.
+                            $cell_temp_lahir.
+                            $cell_tgl_lahir.
+                            $cell_alamat.
+                            $cell_prov.
+                            $cell_kab.
+                            $cell_kec.
+                            $cell_desa.
+                            $cell_dusun.
+                            $cell_rw.
+                            $cell_rt.
+                            $cell_organisasi.
+                            $cell_kepengurusan.
+                            $cell_pengajian
+                        ."
+                    </tr>
+                    ".$html."
+                    
+                </table>";
+        $file="demo.xlsx";
+        header("Content-type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=$file");
+        echo $test;
+    }
+
 }

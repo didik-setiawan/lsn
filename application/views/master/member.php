@@ -13,7 +13,7 @@
                         <a class="dropdown-item" href="#" id="addXL">Tambah langsung</a>
                         <a class="dropdown-item" id="import" href="#">Import dari excel</a>
                     </div>
-                    <button href="" class="btn btn-sm btn-secondary">Export Data</button>
+                    <button id="export" class="btn btn-sm btn-secondary">Export Data</button>
                     <button class="btn btn-sm btn-primary" id="filterData"><i class="fa fa-filter"></i> Filter Data</button>
                 </div>
 
@@ -580,6 +580,111 @@
         <button type="button" id="goFilter" class="btn btn-primary">Go</button>
       </div>
      
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalExport" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-light">
+        <h5 class="modal-title" id="exampleModalLabel">Export Data</h5>
+      </div>
+      <form action="<?= base_url('master/export_data'); ?>" method="post">
+      <div class="modal-body">
+        <p class="text-center"><strong>Silahkan pilih data yang akan di tampilkan</strong></p>
+        <div class="row">
+            <input type="hidden" name="provinsi" id="export_provinsi">
+            <input type="hidden" name="kabupaten" id="export_kabupaten">
+            <input type="hidden" name="kecamatan" id="export_kecamatan">
+            <input type="hidden" name="desa" id="export_desa">
+            <input type="hidden" name="organisasi" id="export_organisasi">
+
+
+            <div class="custom-control custom-checkbox col-md-6">
+                <input type="checkbox" class="custom-control-input" name="nik" id="customCheck2">
+                <label class="custom-control-label" for="customCheck2">NIK</label>
+            </div>
+            <div class="custom-control custom-checkbox col-md-6">
+                <input type="checkbox" class="custom-control-input" name="nama" id="customCheck3">
+                <label class="custom-control-label" for="customCheck3">Nama</label>
+            </div>
+            <div class="custom-control custom-checkbox col-md-6">
+                <input type="checkbox" class="custom-control-input" name="email" id="customCheck4">
+                <label class="custom-control-label" for="customCheck4">Email</label>
+            </div>
+            <div class="custom-control custom-checkbox col-md-6">
+                <input type="checkbox" class="custom-control-input" name="telp" id="customCheck5">
+                <label class="custom-control-label" for="customCheck5">No telp</label>
+            </div>
+            <div class="custom-control custom-checkbox col-md-6">
+                <input type="checkbox" class="custom-control-input" name="role" id="customCheck6">
+                <label class="custom-control-label" for="customCheck6">Role</label>
+            </div>
+            <div class="custom-control custom-checkbox col-md-6">
+                <input type="checkbox" class="custom-control-input" name="tmp_lahir" id="customCheck7">
+                <label class="custom-control-label" for="customCheck7">Tempat Lahir</label>
+            </div>
+            <div class="custom-control custom-checkbox col-md-6">
+                <input type="checkbox" class="custom-control-input" name="tgl_lahir" id="customCheck8">
+                <label class="custom-control-label" for="customCheck8">Tanggal Lahir</label>
+            </div>
+            <div class="custom-control custom-checkbox col-md-6">
+                <input type="checkbox" class="custom-control-input" name="jk" id="customCheck9">
+                <label class="custom-control-label" for="customCheck9">Jenis Kelamin</label>
+            </div>
+            <div class="custom-control custom-checkbox col-md-6">
+                <input type="checkbox" class="custom-control-input" name="alamat" id="customCheck10">
+                <label class="custom-control-label" for="customCheck10">Alamat Lengkap</label>
+            </div>
+            <div class="custom-control custom-checkbox col-md-6">
+                <input type="checkbox" class="custom-control-input" name="prov" id="customCheck11">
+                <label class="custom-control-label" for="customCheck11">Provinsi</label>
+            </div>
+            <div class="custom-control custom-checkbox col-md-6">
+                <input type="checkbox" class="custom-control-input" name="kab" id="customCheck12">
+                <label class="custom-control-label" for="customCheck12">Kabupaten</label>
+            </div>
+            <div class="custom-control custom-checkbox col-md-6">
+                <input type="checkbox" class="custom-control-input" name="kec" id="customCheck13">
+                <label class="custom-control-label" for="customCheck13">Kecamatan</label>
+            </div>
+            <div class="custom-control custom-checkbox col-md-6">
+                <input type="checkbox" class="custom-control-input" name="des" id="customCheck14">
+                <label class="custom-control-label" for="customCheck14">Desa</label>
+            </div>
+            <div class="custom-control custom-checkbox col-md-6">
+                <input type="checkbox" class="custom-control-input" name="dusun" id="customCheck15">
+                <label class="custom-control-label"for="customCheck15">Dusun</label>
+            </div>
+            <div class="custom-control custom-checkbox col-md-6">
+                <input type="checkbox" class="custom-control-input" name="rw" id="customCheck16">
+                <label class="custom-control-label" for="customCheck16">Rw</label>
+            </div>
+            <div class="custom-control custom-checkbox col-md-6">
+                <input type="checkbox" class="custom-control-input" name="rt" id="customCheck17">
+                <label class="custom-control-label" for="customCheck17">Rt</label>
+            </div>
+            <div class="custom-control custom-checkbox col-md-6">
+                <input type="checkbox" class="custom-control-input" name="stat_org" id="customCheck18">
+                <label class="custom-control-label" for="customCheck18">Status Organisasi</label>
+            </div>
+            <div class="custom-control custom-checkbox col-md-6">
+                <input type="checkbox" class="custom-control-input" name="stat_kep" id="customCheck19">
+                <label class="custom-control-label" for="customCheck19">Status Kepengurusan</label>
+            </div>
+            <div class="custom-control custom-checkbox col-md-6">
+                <input type="checkbox" class="custom-control-input" name="pengajian" id="customCheck20">
+                <label class="custom-control-label"  for="customCheck20">Nama Kelompok Pengajian</label>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" id="toExport" class="btn btn-primary">Go</button>
+      </div>
+      </form>
     </div>
   </div>
 </div>
@@ -1633,6 +1738,51 @@
             }
         });
 
+    });
+
+    $('#export').click(function(){
+        $('#modalExport').modal('show');
+        $('#toExport').removeAttr('disabled');
+        $('#toExport').html('Go');
+    });
+
+    $('#filter_provinsi').change(function(){
+        let value = $(this).val();
+        $('#export_provinsi').val(value);
+        $('#export_kabupaten').val('');
+        $('#export_kecamatan').val('');
+        $('#export_desa').val('');
+
+        $('#filter_kabupaten').val('');
+        $('#filter_kecamatan').val('');
+        $('#filter_desa').val('');
+    });
+
+    $('#filter_kabupaten').change(function(){
+        let value = $(this).val();
+        $('#export_kabupaten').val(value);
+        $('#export_kecamatan').val('');
+        $('#export_desa').val('');
+
+        $('#filter_kecamatan').val('');
+        $('#filter_desa').val('');
+    });
+
+    $('#filter_kecamatan').change(function(){
+        let value = $(this).val();
+        $('#export_kecamatan').val(value);
+        $('#export_desa').val('');
+        $('#filter_desa').val('');
+    });
+
+    $('#filter_desa').change(function(){
+        let value = $(this).val();
+        $('#export_desa').val(value);
+    });
+
+    $('#filter_organisasi').change(function(){
+        let value = $(this).val();
+        $('#export_organisasi').val(value);
     });
 
 </script>

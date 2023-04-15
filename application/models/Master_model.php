@@ -77,4 +77,26 @@ class Master_model extends CI_Model{
         return $this->db->get();
     }
 
+    public function get_all_member_for_export($prov = null, $kab = null, $kec = null, $desa = null, $org = null){
+        $this->db->select('*')->from('user');
+        if($prov){
+            $this->db->where('user.provinsi', $prov);
+        }
+        if($kab){
+            $this->db->where('user.kabupaten', $kab);
+        }
+        if($kec){
+            $this->db->where('user.kecamatan', $kec);
+        }
+        if($desa){
+            $this->db->where('user.desa', $desa);
+        }
+        if($org){
+            $this->db->where('user.status_organisasi', $org);
+        }
+        return $this->db->get();
+
+    }
+
+
 }
