@@ -940,6 +940,7 @@ class Master extends CI_Controller
         $user = $this->db->where('md5(sha1(id_user))', $id)->get('user')->row();
         $file  = $_FILES['file_upload'];
         if($file){
+            
             $file_name = 'lsn_user_' . time();
             $config['upload_path'] = './assets/img/user/';
             $config['allowed_types'] = 'gif|jpg|png|jpeg';

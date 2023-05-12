@@ -448,13 +448,102 @@ class Welcome extends CI_Controller {
         $this->load->view('template', $data);
     }
 
+    private function validation_kegiatan(){
+        $this->form_validation->set_rules('ket', 'Keterangan', 'required|trim');
+        $this->form_validation->set_rules('loc', 'Tempat', 'required|trim');
+        $this->form_validation->set_rules('jml', 'Jumlah Peserta', 'required|trim|numeric');
+        if($this->form_validation->run() == false){
+            $params = [
+                'type' => 'validation',
+                'err_ket' =>form_error('ket'),
+                'err_loc' => form_error('loc'),
+                'err_jml' => form_error('jml')
+            ];
+            echo json_encode($params);
+            die;
+        } else {
+            return true;
+        }     
+    }
+
     public function add_kegiatan(){
+        validation_ajax_request();
+        $this->validation_kegiatan();
+        $time_foto = time();
+        //upload foto kegiatan
+        
+        $count = count($_FILES['foto']['name']);
+
+        for($i=0; $i<$count; $i++){
+            if(!empty($_FILES['foto']['name'][$i])){
+
+                $_FILES['file']['name'] = $_FILES['foto']['name'][$i];  
+                $_FILES['file']['type'] = $_FILES['foto']['type'][$i];  
+                $_FILES['file']['tmp_name'] = $_FILES['foto']['tmp_name'][$i];  
+                $_FILES['file']['error'] = $_FILES['foto']['error'][$i];  
+                $_FILES['file']['size'] = $_FILES['foto']['size'][$i]; 
+
+
+                $config['upload_path'] = './assets/img/kegiatan/';   
+                $config['allowed_types'] = 'jpg|jpeg|png|gif';
+                $config['file_name'] = $_FILES['foto']['name'][$i]; 
+
+                $this->load->library('upload',$config);
+
+                if($this->upload->do_upload('file')){  
+                    $file_name = $this->upload->data('file_name');
+                } else {
+                    $params = [
+                        'type' => 'result',
+                        'status' => false,
+                        'msg' => 'Foto Gagal di upload'
+                    ];
+                    echo json_encode($params);
+                    die;
+                }
+
+                $data = [
+                    'kegiatan' => $time_foto,
+                    'file' => $file_name
+                ];
+
+                $this->db->insert('kegiatan_foto', $data);
+
+            } else {
+                $params = [
+                    'type' => 'result',
+                    'status' => false,
+                    'msg' => 'No media to upload'
+                ];
+                echo json_encode($params);
+                die;
+            }
+        }
+
+        $user = get_user();
         $data = [
+            'id_relawan' => $user->id_user,
             'tgl' => htmlspecialchars($this->input->post('tgl')),
-            'ket' => htmlspecialchars($this->input->post('ket')),
-            'loc' => htmlspecialchars($this->input->post('loc')),
-            'jml' => htmlspecialchars($this->input->post('jml')),
+            'keterangan' => htmlspecialchars($this->input->post('ket')),
+            'tempat' => htmlspecialchars($this->input->post('loc')),
+            'jml_peserta' => htmlspecialchars($this->input->post('jml')),
+            'foto_kegiatan' => $time_foto
         ];
+        $this->db->insert('kegiatan', $data);
+        if($this->db->affected_rows() > 0){
+            $params = [
+                'type' => 'result',
+                'status' => true,
+                'msg' => 'Kegiatan baru berhasil di tambahkan'
+            ];
+        } else {
+            $params = [
+                'type' => 'result',
+                'status' => true,
+                'msg' => 'Kegiatan baru gagal di tambahkan'
+            ];
+        }
+        echo json_encode($params);
     }
 
     public function get_prov(){
