@@ -160,4 +160,24 @@ class User extends CI_Controller
      }
      // END UPLOAD FILE KTP
 
+     public function edit_target_suara(){
+        validation_ajax_request();
+        $user = get_user();
+        $target_suara = $_POST['target_suara'];
+        $this->db->set('target_suara', $target_suara)->where('id_user', $user->id_user)->update('user');
+
+        if($this->db->affected_rows() > 0){
+            $output = [
+                'success' => true,
+                'msg' => 'Target suara berhasil di ubah'
+            ];
+        } else {
+            $output = [
+                'success' => false,
+                'msg' => 'Target suara gagal di ubah'
+            ];
+        }
+        echo json_encode($output);
+     }
+
 }

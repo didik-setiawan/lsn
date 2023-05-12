@@ -477,17 +477,46 @@ class Master extends CI_Controller
     public function get_kabupaten(){
         validation_ajax_request();
         $prov = $_POST['id'];
-        $data = $this->db->select('wilayah_kabupaten.*')->from('wilayah_kabupaten')->join('wilayah_provinsi', 'wilayah_kabupaten.provinsi_id = wilayah_provinsi.id')->where('wilayah_provinsi.id', $prov)->get()->result();
+        $user = get_user();
+        
+        if($user->id_role == 2){
+            $data = $this->db->select('wilayah_kabupaten.*')
+                ->from('wilayah_kabupaten')
+                ->join('wilayah_provinsi', 'wilayah_kabupaten.provinsi_id = wilayah_provinsi.id')
+                ->join('penempatan_relawan', 'wilayah_kabupaten.id = penempatan_relawan.id_kabupaten')
+                ->where('wilayah_provinsi.id', $prov)
+                ->where('penempatan_relawan.id_relawan', $user->id_user)
+                ->group_by('wilayah_kabupaten.id')
+                ->get()->result();
+        } else {
+            $data = $this->db->select('wilayah_kabupaten.*')->from('wilayah_kabupaten')->join('wilayah_provinsi', 'wilayah_kabupaten.provinsi_id = wilayah_provinsi.id')->where('wilayah_provinsi.id', $prov)->get()->result();
+        }
+        
+
         echo json_encode($data);
     }
 
     public function get_kecamatan(){
         validation_ajax_request();
         $req = $_POST['id'];
-        $this->db->select('wilayah_kecamatan.*')
-        ->from('wilayah_kecamatan')
-        ->join('wilayah_kabupaten', 'wilayah_kecamatan.kabupaten_id = wilayah_kabupaten.id')
-        ->where('wilayah_kabupaten.id', $req);
+        $user = get_user();
+
+        if($user->id_role == 2){
+            $this->db->select('wilayah_kecamatan.*')
+            ->from('wilayah_kecamatan')
+            ->join('wilayah_kabupaten', 'wilayah_kecamatan.kabupaten_id = wilayah_kabupaten.id')
+            ->join('penempatan_relawan', 'wilayah_kecamatan.id = penempatan_relawan.id_kecamatan')
+            ->where('penempatan_relawan.id_relawan', $user->id_user)
+            ->where('wilayah_kabupaten.id', $req)
+            ->group_by('wilayah_kecamatan.id');
+
+        } else {
+            $this->db->select('wilayah_kecamatan.*')
+            ->from('wilayah_kecamatan')
+            ->join('wilayah_kabupaten', 'wilayah_kecamatan.kabupaten_id = wilayah_kabupaten.id')
+            ->where('wilayah_kabupaten.id', $req);
+        }
+        
         $data = $this->db->get()->result();
         echo json_encode($data);
     }
@@ -495,10 +524,24 @@ class Master extends CI_Controller
     public function get_kelurahan(){
         validation_ajax_request();
         $req = $_POST['id'];
-        $this->db->select('wilayah_desa.*')
-        ->from('wilayah_desa')
-        ->join('wilayah_kecamatan', 'wilayah_kecamatan.id = wilayah_desa.kecamatan_id')
-        ->where('wilayah_kecamatan.id', $req);
+        $user = get_user();
+
+        if($user->id_role == 2){
+            $this->db->select('wilayah_desa.*')
+            ->from('wilayah_desa')
+            ->join('wilayah_kecamatan', 'wilayah_kecamatan.id = wilayah_desa.kecamatan_id')
+            ->join('penempatan_relawan', 'wilayah_desa.id = penempatan_relawan.id_desa')
+            ->where('penempatan_relawan.id_relawan', $user->id_user)
+            ->where('wilayah_kecamatan.id', $req)
+            ->group_by('wilayah_desa.id');
+
+        } else {
+            $this->db->select('wilayah_desa.*')
+            ->from('wilayah_desa')
+            ->join('wilayah_kecamatan', 'wilayah_kecamatan.id = wilayah_desa.kecamatan_id')
+            ->where('wilayah_kecamatan.id', $req);
+        }
+
         $data = $this->db->get()->result();
         echo json_encode($data);
     }
@@ -543,11 +586,6 @@ class Master extends CI_Controller
         $kec = htmlspecialchars($this->input->post('kecamatan', true));
         $desa = htmlspecialchars($this->input->post('desa', true));
 
-        // $get_prov = $this->db->where('id', $prov)->get('wilayah_provinsi')->row();
-        // $get_kab = $this->db->where('id', $kab)->get('wilayah_kabupaten')->row();
-        // $get_kec = $this->db->where('id', $kec)->get('wilayah_kecamatan')->row();
-        // $get_desa = $this->db->where('id', $desa)->get('wilayah_desa')->row();
-
         $data = [
             'nama' => htmlspecialchars($this->input->post('nama', true)),
             'email' => htmlspecialchars($this->input->post('email', true)),
@@ -572,6 +610,10 @@ class Master extends CI_Controller
             'status_organisasi' => htmlspecialchars($this->input->post('status_organisasi', true)),
             'status_kepengurusan' => htmlspecialchars($this->input->post('status_kepengurusan', true)),
             'nama_kelompok_pengajian' => htmlspecialchars($this->input->post('kel_pengajian', true)),
+            'dukungan' => 0,
+            'target_suara' => 0,
+            'add_by' => get_user()->id_user,
+            'date_create' => date('Y-m-d')
         ];
 
         $this->db->insert('user', $data);
@@ -662,6 +704,7 @@ class Master extends CI_Controller
     
                 $reader = \PhpOffice\PhpSpreadsheet\IOFactory::load($file_path);
                 $data = $reader->getActiveSheet()->toArray();
+                
                 unset($data[0]);
                 unset($data[1]);
                 unset($data[2]);
@@ -736,7 +779,11 @@ class Master extends CI_Controller
                         'no_telp'                   => $t[18],
                         'status_organisasi'         => $organisasi,
                         'status_kepengurusan'       => $t[15],
-                        'nama_kelompok_pengajian'   => $t[16]
+                        'nama_kelompok_pengajian'   => $t[16],
+                        'dukungan' => 0,
+                        'target_suara' => 0,
+                        'add_by' => get_user()->id_user,
+                        'date_create' => date('Y-m-d')
                     ];
                     $this->db->insert('user', $insert_data);
                 }
@@ -1352,7 +1399,7 @@ class Master extends CI_Controller
                     ".$html."
                     
                 </table>";
-        $file="demo.xlsx";
+        $file="demo.xls";
         header("Content-type: application/vnd.ms-excel");
         header("Content-Disposition: attachment; filename=$file");
         echo $test;

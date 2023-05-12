@@ -964,6 +964,7 @@
                     }
                 },
                 error: function(xhr){
+                    load_data();
                     if(xhr.status === 0){
                         toastr["error"]("No internet access", "Error");
                     } else if(xhr.status == 404){
@@ -1206,14 +1207,6 @@
                     }
                 });
 
-               
-
-                
-
-
-
-
-
             }, 
             error: function(xhr){
                     if(xhr.status === 0){
@@ -1343,7 +1336,6 @@
             type: 'POST',
             dataType: 'JSON',
             success: function(d){
-                console.log(d);
                 $('#toSubmitE').html('Save');
                 $('#toSubmitE').removeAttr('disabled');
 

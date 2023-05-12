@@ -49,7 +49,13 @@
                 <?= form_open_multipart('user/upload_ktp') ?>
                 <div class="row justify-content-center">
                     <div class="col-md-4 col-lg-3 col-sm-3 col-4">
-                        <img src="<?= base_url('assets/img/ktp/' . $user->file_ktp) ?>" alt="image user" width="100%" class="img-thumbnail">
+
+                        <?php if($user->file_ktp == null || $user->file_ktp == ''){ ?>
+                            <p>KTP belum di upload</p>
+                        <?php } else { ?>
+                            <img src="<?= base_url('assets/img/ktp/' . $user->file_ktp) ?>" alt="image user" width="100%" class="img-thumbnail">
+                        <?php } ?>
+
                     </div>
                     <div class="col-12 col-md-12 col-sm-12 col-lg-10 mt-3">
                         <input type="text" value="<?= $user->email ?>" name="email" class="form-control" id="inputEmail3" placeholder="Email" hidden disabled>
@@ -68,6 +74,23 @@
         </div>
     </div>
     <!-- END UPLOAD FILE KTP -->
+    <?php if($user->id_role == 4){ ?>
+    <div class="col-12 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <form action="<?= base_url('user/edit_target_suara') ?>" id="formSuara" method="post">
+                        <div class="form-group row">
+                            <label for="inputEmail3" class="col-sm-3 col-form-label">Target Suara</label>
+                                <div class="col-sm-9">
+                                    <input type="number" value="<?= $user->target_suara ?>" name="target_suara" class="form-control" id="inputSuara" placeholder="Target Suara">
+                                </div>
+                        </div>
+                    <button class="btn btn-primary" id="toSaveSuara" type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <?php } ?>
 </div>
 
 
@@ -187,4 +210,46 @@
             }
         });
     });
+
+    $('#formSuara').submit(function(e){
+        e.preventDefault();
+        $('#inputSuara').attr('disabled', true);
+        $('#toSaveSuara').attr('disabled', true);
+        let target_suara = $('#inputSuara').val();
+
+        $.ajax({
+            url: $(this).attr('action'),
+            data: {target_suara: target_suara},
+            type: 'POST',
+            dataType: 'JSON',
+            success: function(d){
+                if(d.success == true){
+                    toastr["success"](d.msg, "Success");
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1700);
+                } else {
+                    toastr["error"](d.msg, "Error");
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1700);
+                }
+            },
+            error: function(xhr) {
+                $('#inputSuara').removeAttr('disabled');
+                $('#toSaveSuara').removeAttr('disabled');
+
+                if (xhr.status === 0) {
+                    toastr["error"]("No internet access", "Error");
+                } else if (xhr.status == 404) {
+                    toastr["error"]("Page not found", "Error");
+                } else if (xhr.status == 500) {
+                    toastr["error"]("Internal server error", "Error");
+                } else {
+                    toastr["error"]("Unknow error", "Error");
+                }
+            }
+        });
+    });
+
 </script>

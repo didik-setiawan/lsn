@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 28, 2023 at 09:20 AM
+-- Generation Time: May 02, 2023 at 09:34 AM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 7.4.30
 
@@ -41,7 +41,10 @@ INSERT INTO `access_menu` (`id_access`, `id_role`, `id_menu`) VALUES
 (20, 1, 1),
 (21, 1, 3),
 (22, 1, 6),
-(23, 1, 7);
+(23, 1, 7),
+(24, 2, 7),
+(25, 5, 9),
+(26, 4, 9);
 
 -- --------------------------------------------------------
 
@@ -59,7 +62,32 @@ CREATE TABLE `cabang` (
 --
 
 INSERT INTO `cabang` (`id_cabang`, `nama_cabang`) VALUES
-(2, 'lsn1');
+(2, 'SPLS'),
+(3, 'SRIKANDI'),
+(4, 'Serikat Tani'),
+(5, 'LSN Mahasiswa'),
+(6, 'LSN Kesehatan');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `caleg`
+--
+
+CREATE TABLE `caleg` (
+  `id_caleg` int(11) NOT NULL,
+  `ketegori_caleg` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `caleg`
+--
+
+INSERT INTO `caleg` (`id_caleg`, `ketegori_caleg`) VALUES
+(1, 'DPR RI'),
+(2, 'DPRD Provinsi'),
+(3, 'DPRD Kabupaten/Kota'),
+(4, 'DPD');
 
 -- --------------------------------------------------------
 
@@ -83,7 +111,9 @@ INSERT INTO `menu` (`id_menu`, `nama_menu`, `icon`, `url`, `status`) VALUES
 (1, 'Master Menu', 'fas fa-folder-minus', 'master/menu', 1),
 (3, 'Master Role', 'fas fa-users', 'master/role_user', 1),
 (6, 'Master Anak Cabang', 'fa fa-plus', 'master/cabang', 1),
-(7, 'Master Anggota', 'fas fa-users', 'master/member', 1);
+(7, 'Master Anggota', 'fas fa-users', 'master/member', 1),
+(8, 'Caleg', 'fa fa-user', 'master/caleg', 1),
+(9, 'Pendukung', 'fas fa-users', 'welcome/pendukung', 1);
 
 -- --------------------------------------------------------
 
@@ -103,8 +133,9 @@ CREATE TABLE `role_user` (
 
 INSERT INTO `role_user` (`id_role`, `nama_role`, `status`) VALUES
 (1, 'Admin', 1),
-(2, 'Petugas', 1),
-(4, 'Anggota', 1);
+(2, 'Relawan', 1),
+(3, 'Anggota', 1),
+(4, 'Caleg', 1);
 
 -- --------------------------------------------------------
 
@@ -120,7 +151,7 @@ CREATE TABLE `user` (
   `status` int(1) NOT NULL,
   `img` varchar(255) NOT NULL,
   `id_role` int(11) NOT NULL,
-  `nik` int(30) NOT NULL,
+  `nik` varchar(20) NOT NULL,
   `tanggal_lahir` date NOT NULL,
   `tempat_lahir` varchar(255) NOT NULL,
   `jenis_kelamin` varchar(255) NOT NULL,
@@ -136,18 +167,46 @@ CREATE TABLE `user` (
   `no_telp` varchar(255) NOT NULL,
   `status_organisasi` varchar(255) NOT NULL,
   `status_kepengurusan` varchar(255) NOT NULL,
-  `nama_kelompok_pengajian` varchar(255) NOT NULL
+  `nama_kelompok_pengajian` varchar(255) NOT NULL,
+  `dukungan` int(11) NOT NULL,
+  `target_suara` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id_user`, `nama`, `email`, `password`, `status`, `img`, `id_role`, `nik`, `tanggal_lahir`, `tempat_lahir`, `jenis_kelamin`, `provinsi`, `kabupaten`, `kecamatan`, `desa`, `dusun`, `rw`, `rt`, `alamat_lengkap`, `file_ktp`, `no_telp`, `status_organisasi`, `status_kepengurusan`, `nama_kelompok_pengajian`) VALUES
-(1, 'admin', 'admin@mail.com', '0a2ede56f6523e16b6a2794c26921580', 1, 'lsn_user_1679640553.jpg', 1, 0, '0000-00-00', '', '', '', '', '', '', '', 0, 0, '', '', '', '', '', ''),
-(2, 'user', 'user@mail.com', 'b714337aa8007c433329ef43c7b8252c', 1, 'lsn_user_1679881306.jpg', 2, 0, '0000-00-00', '', '', '', '', '', '', '', 0, 0, '', '', '', '', '', ''),
-(3, 'didik', 'admin@mail.coms', 'b714337aa8007c433329ef43c7b8252c', 1, 'lsn_user_1679881676.jpg', 2, 0, '0000-00-00', '', '', '', '', '', '', '', 0, 0, '', '', '', '', '', ''),
-(5, 'Bang xin', 'xin@mail.com', 'b714337aa8007c433329ef43c7b8252c', 1, 'default.png', 4, 2147483647, '2023-03-27', 'Jembar', 'Laki-laki', 'Jawa Timur', 'Pacitan', ' Donorojo', 'Widoro', 'widodari', 12, 2, 'Jl. Prabu', '', '087665224110', 'ok', 'ko', 'ngab xin');
+INSERT INTO `user` (`id_user`, `nama`, `email`, `password`, `status`, `img`, `id_role`, `nik`, `tanggal_lahir`, `tempat_lahir`, `jenis_kelamin`, `provinsi`, `kabupaten`, `kecamatan`, `desa`, `dusun`, `rw`, `rt`, `alamat_lengkap`, `file_ktp`, `no_telp`, `status_organisasi`, `status_kepengurusan`, `nama_kelompok_pengajian`, `dukungan`, `target_suara`) VALUES
+(1, 'admin', 'admin@mail.com', 'b714337aa8007c433329ef43c7b8252c', 1, 'lsn_user_1680740563.jpg', 1, '0', '0000-00-00', '', '', '', '', '', '', '', 0, 0, '', 'lsn_ktp_user_1680740569.jpg', '', '', '', '', 0, 0),
+(2, 'user', 'didiksetyaone0@gmail.com', '0a2ede56f6523e16b6a2794c26921580', 1, 'lsn_user_1679881306.jpg', 2, '0', '0000-00-00', '', '', '', '', '', '', '', 0, 0, '', 'lsn_ktp_1680614012.jpg', '', '', '', '', 0, 0),
+(38, 'Budiman Arrohman', 'budi@mail.com', 'b714337aa8007c433329ef43c7b8252c', 1, 'default.png', 3, '2147483647', '1977-06-05', 'Lumajang', 'Laki-laki', '35', '3519', '3519130', '3519130001', 'purwoasri', 2, 5, 'Jl Pandawa', '', '081772662553', '2', 'Leader', 'ccccccc', 41, 0),
+(39, 'Mulyadi', 'mulyadi@mail.com', '0a2ede56f6523e16b6a2794c26921580', 1, 'default.png', 3, '9908', '1990-08-27', 'Jepara', 'Laki-laki', '35', '3509', '3509140', '3509140004', 'BANJAR SARI', 1, 6, 'Jl. kalimantan 12', '', '81223556227', '3', 'qwerty', 'cccccvvv', 41, 0),
+(40, 'Joko', 'joko@mail.com', 'b714337aa8007c433329ef43c7b8252c', 1, 'lsn_user_1680574798.jpg', 3, '2234', '1985-11-30', 'Serang', 'Laki-laki', '31', '3171', '3171100', '3171100001', 'Asdfg', 9, 11, 'Jl. Beringin 31', 'lsn_ktp_1680613996.jpg', '89008227809', '3', 'asdfg', 'cvv', 41, 0),
+(41, 'Joko Ahmad', 'Joko2@mail.com', 'b714337aa8007c433329ef43c7b8252c', 1, 'default.png', 4, '350907825301928', '1993-02-10', 'Jember', 'Laki-laki', '35', '3509', '3509020', '3509020007', 'Gentengan', 10, 3, 'Jl. jkljkl', '', '081227338192', '2', '', '', 0, 0),
+(44, 'Sri Sulyanti', 'sri@mail.com', 'b714337aa8007c433329ef43c7b8252c', 1, 'default.png', 3, '7780009221221', '2001-02-01', 'Jember', 'Perempuan', '35', '3509', '3509130', '3509130008', 'asdasd', 2, 1, 'Jl. ahsgasgagshas ', '', '081234667819', '2', '', '', 41, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_token`
+--
+
+CREATE TABLE `user_token` (
+  `id` int(11) NOT NULL,
+  `email` varchar(128) NOT NULL,
+  `token` varchar(128) NOT NULL,
+  `date_created` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `user_token`
+--
+
+INSERT INTO `user_token` (`id`, `email`, `token`, `date_created`) VALUES
+(36, 'didiksetyaone0@gmail.com', 'adn9lufLKzjqPj50An5C6bOQnFAUYP0Z0FE5udFsHuM=', 1680676802),
+(37, 'didiksetyaone0@gmail.com', 'SwSiVxxsJUZ2ZpBiQ0/5KSHcCQKcB3e15vwrfK2e9eI=', 1680676995),
+(38, 'didiksetyaone0@gmail.com', 'ldq2mIKKjWeDAfvXtmrDaOmqv1mUgISxzJELhtMECbM=', 1680677120),
+(39, 'didiksetyaone0@gmail.com', 'fB72uoRqOdbdkgzZ07r9yFUANrOVWU7UufP7HJ96lT8=', 1680677438);
 
 -- --------------------------------------------------------
 
@@ -87415,6 +87474,12 @@ ALTER TABLE `cabang`
   ADD PRIMARY KEY (`id_cabang`);
 
 --
+-- Indexes for table `caleg`
+--
+ALTER TABLE `caleg`
+  ADD PRIMARY KEY (`id_caleg`);
+
+--
 -- Indexes for table `menu`
 --
 ALTER TABLE `menu`
@@ -87431,6 +87496,12 @@ ALTER TABLE `role_user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id_user`);
+
+--
+-- Indexes for table `user_token`
+--
+ALTER TABLE `user_token`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `wilayah_desa`
@@ -87464,31 +87535,43 @@ ALTER TABLE `wilayah_provinsi`
 -- AUTO_INCREMENT for table `access_menu`
 --
 ALTER TABLE `access_menu`
-  MODIFY `id_access` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id_access` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `cabang`
 --
 ALTER TABLE `cabang`
-  MODIFY `id_cabang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_cabang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `caleg`
+--
+ALTER TABLE `caleg`
+  MODIFY `id_caleg` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `menu`
 --
 ALTER TABLE `menu`
-  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `role_user`
 --
 ALTER TABLE `role_user`
-  MODIFY `id_role` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_role` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+
+--
+-- AUTO_INCREMENT for table `user_token`
+--
+ALTER TABLE `user_token`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
