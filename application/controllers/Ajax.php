@@ -123,4 +123,20 @@ class Ajax extends CI_Controller {
         $this->load->view('ajax/caleg/load_pendukung_relawan', $data);
     }
 
+    public function load_data_kegiatan(){
+        validation_ajax_request();
+        $user = get_user();
+        $data['kegiatan'] = $this->db->get_where('kegiatan', ['id_relawan'=> $user->id_user])->result();
+
+        $this->load->view('ajax/caleg/load_kegiatan', $data);
+
+    }
+
+    public function load_list_foto_kegiatan(){
+        $id = $_POST['id'];
+        $data['data'] = $this->db->get_where('kegiatan_foto', ['md5(sha1(kegiatan))' => $id])->result();
+
+        $this->load->view('ajax/caleg/load_list_foto', $data);
+    }
+
 }
