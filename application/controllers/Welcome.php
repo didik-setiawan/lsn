@@ -634,6 +634,65 @@ class Welcome extends CI_Controller {
         echo json_encode($params);
     }
 
+    public function get_data_kegiatan_row(){
+        validation_ajax_request();
+        $id = $_POST['id'];
+        $data = $this->db->where('md5(sha1(id_kegiatan))', $id)->get('kegiatan')->row();
+        echo json_encode($data);
+    }
+
+    public function edit_kegiatan(){
+        validation_ajax_request();
+        $this->validation_kegiatan();
+
+        $user = get_user();
+        $id = $this->input->post('kegiatan');
+
+        $data = [
+            'tgl' => htmlspecialchars($this->input->post('tgl')),
+            'keterangan' => htmlspecialchars($this->input->post('ket')),
+            'tempat' => htmlspecialchars($this->input->post('loc')),
+            'jml_peserta' => htmlspecialchars($this->input->post('jml'))
+        ];
+        $this->db->where('md5(sha1(id_kegiatan))', $id)->update('kegiatan', $data);
+        if($this->db->affected_rows() > 0){
+            $params = [
+                'type' => 'result',
+                'status' => true,
+                'msg' => 'Kegiatan baru berhasil di edit'
+            ];
+        } else {
+            $params = [
+                'type' => 'result',
+                'status' => true,
+                'msg' => 'Kegiatan baru gagal di edit'
+            ];
+        }
+        echo json_encode($params);
+
+    }
+
+    public function delete_data_kegiatan(){
+        validation_ajax_request();
+        $id = $_POST['id'];
+        $data = $this->db->where('md5(sha1(id_kegiatan))', $id)->get('kegiatan')->row();
+        $this->db->delete('kegiatan_foto', ['kegiatan' => $data->foto_kegiatan]);
+        $this->db->where('md5(sha1(id_kegiatan))', $id)->delete('kegiatan');
+        
+        if($this->db->affected_rows() > 0){
+            $params = [
+                'success' => true,
+                'msg' => 'Data kegiatan berhasil di hapus'
+            ];
+        } else {
+            $params = [
+                'success' => false,
+                'msg' => 'Data kegiatan gagal di hapus'
+            ];
+        }
+        echo json_encode($params);
+    }
+
     public function get_prov(){
         $user = get_user();
         $req = '3509140';

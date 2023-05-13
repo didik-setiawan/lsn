@@ -182,8 +182,20 @@ class Master_model extends CI_Model{
         $data = $this->db->get_where('penempatan_relawan', ['id_relawan' => $user->id_user])->num_rows();
         return $data;
     }
-
     
+    public function get_data_kegiatan_for_caleg(){
+        $user = get_user();
+        $this->db->select('
+            kegiatan.*,
+            user.nama,
+        ')
+        ->from('kegiatan')
+        ->join('user', 'kegiatan.id_relawan = user.id_user')
+        ->where('user.dukungan', $user->id_user)
+        ;
+
+        return $this->db->get();
+    }
 
 
 }

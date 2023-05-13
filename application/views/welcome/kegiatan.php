@@ -8,7 +8,9 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
+              <?php if($user->id_role == 2){ ?>
                 <button class="btn btn-sm btn-success" id="addData"><i class="fa fa-plus"></i> Tambah</button>
+              <?php } ?>
 
                 <div id="load_data_kegiatan" class="mt-3"></div>
 
@@ -80,7 +82,9 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="toAddNewPhoto"><i class="fa fa-plus"></i> Tambah</button>
+        <?php if($user->id_role == 2){ ?>
+          <button type="button" class="btn btn-primary" id="toAddNewPhoto"><i class="fa fa-plus"></i> Tambah</button>
+        <?php } ?>
       </div>
     </div>
   </div>
@@ -126,6 +130,49 @@
   </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="modalEditData" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-light">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Data kegiatan</h5>
+      </div>
+      <form action="<?= base_url('welcome/edit_kegiatan') ?>" method="post" id="formEditData">
+      <div class="modal-body">
+      <input type="hidden" name="kegiatan" id="id_kegiatan_edit">
+      <div class="form-group">
+        <label>Tanggal Kegiatan</label>
+        <input type="date" name="tgl" id="tgl_edit" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label>Keterangan</label>
+        <input type="text" name="ket" id="ket_edit" class="form-control">
+        <small class="text-danger" id="err_ket_edit"></small>
+      </div>
+
+      <div class="form-group">
+        <label>Tempat</label>
+        <textarea name="loc" id="loc_edit" cols="30" rows="5" class="form-control"></textarea>
+        <small class="text-danger" id="err_loc_edit"></small>
+      </div>
+
+      <div class="form-group">
+        <label>Jumlah Peserta</label>
+        <input type="number" name="jml" id="jml_edit" class="form-control">
+        <small class="text-danger" id="err_jml_edit"></small>
+      </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" id="toEdit">Save</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script>
 
     $(document).ready(function(){
@@ -157,6 +204,7 @@
         contentType: false,
         processData: false,
         success: function(d){
+          load_data_kegiatan();
           $('#toAdd').removeAttr('disabled');
           if(d.type == 'validation'){
             if(d.err_ket == ''){
@@ -328,6 +376,142 @@
         }
       });
 
+    });
+
+    $(document).on('click', '.edit_data', function(){
+      let id = $(this).data('id');
+      $('#id_kegiatan_edit').val(id);
+
+      $('#tgl_edit').val('');
+      $('#ket_edit').val('');
+      $('#loc_edit').val('');
+      $('#jml_edit').val('');
+      $('#err_ket_edit').html('');
+      $('#err_jml_edit').html('');
+      $('#err_loc_edit').html('');
+
+      $.ajax({
+        url: '<?= base_url('welcome/get_data_kegiatan_row') ?>',
+        data: {id: id},
+        type: 'POST',
+        dataType: 'JSON',
+        success: function(d){
+          $('#tgl_edit').val(d.tgl);
+          $('#ket_edit').val(d.keterangan);
+          $('#loc_edit').val(d.tempat);
+          $('#jml_edit').val(d.jml_peserta);
+        },
+        error: function(xhr){
+               
+               if(xhr.status === 0){
+                   toastr["error"]("No internet access", "Error");
+               } else if(xhr.status == 404){
+                   toastr["error"]("Page not found", "Error");
+               } else if(xhr.status == 500){
+                   toastr["error"]("Internal server error", "Error");
+               } else {
+                   toastr["error"]("Unknow error", "Error");
+               }
+       }
+      });
+      $('#modalEditData').modal('show');
+    });
+
+    $('#formEditData').submit(function(e){
+      e.preventDefault();
+      $('#toEdit').attr('disabled', true);
+
+      $.ajax({
+        url: $(this).attr('action'),
+        data: $(this).serialize(),
+        type: 'POST',
+        dataType: 'JSON',
+        success: function(d){
+          load_data_kegiatan();
+          $('#toAdd').removeAttr('disabled');
+          if(d.type == 'validation'){
+            if(d.err_ket == ''){
+              $('#err_ket_edit').html('');
+            } else {
+              $('#err_ket_edit').html(d.err_ket);
+            }
+
+            if(d.err_loc == ''){
+              $('#err_loc_edit').html('');
+            } else {
+              $('#err_loc_edit').html(d.err_loc);
+            }
+
+            if(d.err_jml == ''){
+              $('#err_jml_edit').html('');
+            } else {
+              $('#err_jml_edit').html(d.err_jml);
+            }
+          } else if(d.type == 'result'){
+            $('#modalEditData').modal('hide');
+            if(d.status == true){
+              toastr["success"](d.msg, "Success");
+            } else {
+              toastr["error"](d.msg, "Error");
+            }
+          }
+        },
+        error: function(xhr){
+          $('#toEdit').removeAttr('disabled');
+          $('#modalEditData').modal('hide');
+                    if(xhr.status === 0){
+                        toastr["error"]("No internet access", "Error");
+                    } else if(xhr.status == 404){
+                        toastr["error"]("Page not found", "Error");
+                    } else if(xhr.status == 500){
+                        toastr["error"]("Internal server error", "Error");
+                    } else {
+                        toastr["error"]("Unknow error", "Error");
+                    }
+        }
+        
+      });
+    });
+
+    $(document).on('click', '.delete_data', function(){
+      let id = $(this).data('id');
+        Swal.fire({
+          title: 'Apakah anda yakin?',
+          text: "Untuk menghapus data ini",
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $.ajax({
+              url: '<?= base_url('welcome/delete_data_kegiatan') ?>',
+              data: {id: id},
+              type: 'POST',
+              dataType: 'JSON',
+              success: function(d){
+                load_data_kegiatan();
+                if(d.success == true){
+                  toastr["success"](d.msg, "Success");
+                } else {
+                  toastr["error"](d.msg, "Error");
+                }
+              },
+              error: function(xhr){
+                load_data_kegiatan();
+                if(xhr.status === 0){
+                    toastr["error"]("No internet access", "Error");
+                } else if(xhr.status == 404){
+                    toastr["error"]("Page not found", "Error");
+                } else if(xhr.status == 500){
+                    toastr["error"]("Internal server error", "Error");
+                } else {
+                    toastr["error"]("Unknow error", "Error");
+                }
+              }
+            });
+          }
+        })
     });
 
     function load_data_kegiatan(){
