@@ -1,0 +1,45 @@
+<h5><b>Statistik</b></h5>
+
+<p class="text-center"><b>Total Dukungan</b></p>
+<h5 class="text-center" style="margin-top: -15px"><b><?= number_format($jml_pendukung) ?></b></h5>
+
+<small class="text-primary">Demography Gender</small>
+<div class="row">
+
+    <div class="col-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="float-left">
+                    <span style="font-size: 40px;" class="text-primary">
+                        <i class="fas fa-male"></i>
+                    </span>
+                </div>
+
+                <div class="float-right">
+                    <span style="font-size: 20px;" class="text-primary"><b><?= number_format($jml_l) ?></b></span> <br>
+                    <small><?= round($persentase_l, 2) ?>%</small>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="float-left">
+                    <span style="font-size: 20px;" class="text-danger"><b><?= number_format($jml_p) ?></b></span> <br>
+                    <small><?= round($persentase_p, 2) ?>%</small>
+                </div>
+
+                <div class="float-right">
+                    <span style="font-size: 40px;" class="text-danger">
+                        <i class="fas fa-female"></i>
+                    </span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

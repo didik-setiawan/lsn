@@ -197,5 +197,32 @@ class Master_model extends CI_Model{
         return $this->db->get();
     }
 
+    public function get_jml_pendukung_by_gender($gender = null){
+        $user = get_user();
+        $this->db->where('dukungan', $user->id_user);
+        $this->db->where('id_role', 3);
+        if($gender == 'L'){
+            $l = ['l', 'L', 'Laki-laki', 'laki-laki'];
+            $this->db->where_in('jenis_kelamin', $l);
+        } else if($gender == 'P'){
+            $p = ['p', 'P', 'Perempuan', 'perempuan'];
+            $this->db->where_in('jenis_kelamin', $p);
+        }
+        return $this->db->get('user');
+    }
+
+    public function get_persentase_gender($gender = null){
+        $pendukung = $this->get_pendukung()->num_rows();
+        $jml_gender = $this->get_jml_pendukung_by_gender($gender)->num_rows();
+
+        if($pendukung == '' || $pendukung == 0 || $jml_gender == 0 || $jml_gender == ''){
+            $persentase = 0;
+        } else {
+            $persentase = $pendukung / $jml_gender * 100;
+        }
+
+        return $persentase;
+    }
+
 
 }

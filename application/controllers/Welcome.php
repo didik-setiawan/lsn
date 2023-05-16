@@ -710,4 +710,19 @@ class Welcome extends CI_Controller {
         var_dump($data);
     }
 
+    public function statistik(){
+        access_menu();
+        $data = [
+            'title' => 'Statistik',
+            'user' => get_user(),
+            'view' => 'welcome/statistik',
+            'jml_p' => $this->m->get_jml_pendukung_by_gender('P')->num_rows(),
+            'jml_l' => $this->m->get_jml_pendukung_by_gender('L')->num_rows(),
+            'jml_pendukung' => $this->m->get_pendukung()->num_rows(),
+            'persentase_l' => $this->m->get_persentase_gender('L'),
+            'persentase_p' => $this->m->get_persentase_gender('P'),
+        ];
+        $this->load->view('template', $data);
+    }
+
 }
