@@ -38,6 +38,27 @@
                     </span>
                 </div>
 
+            </div>  
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-md-6 mt-3">
+
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <b>Pendukung Baru Bulan Ini</b>
+            </div>
+            <div class="card-body">
+                <div class="float-left">
+                    <span style="font-size: 50px">
+                        <i class="fas fa-users text-danger"></i>
+                    </span>
+                </div>
+                <div class="float-right">
+                    <span class="float-right">60</span> <br>
+                    <span>Pendukung baru</span>
+
+                </div>
             </div>
         </div>
     </div>

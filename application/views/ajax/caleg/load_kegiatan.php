@@ -58,6 +58,7 @@
         <tr class="bg-dark text-light">
             <th>#</th>
             <th>Tanggal</th>
+            <th>Foto Kegiatan</th>
             <th>Keterangan</th>
             <th>Lokasi</th>
             <th>Jumlah Peserta</th>
@@ -70,10 +71,17 @@
         $i = 1;
         foreach($kegiatan as $k){ 
         $tgl = date_create($k->tgl);    
+        $foto = $this->db->get_where('kegiatan_foto', ['kegiatan' => $k->foto_kegiatan])->row();
         ?>
             <tr>
                 <td><?= $i++ ?></td>
                 <td><?= date_format($tgl, 'd F Y'); ?></td>
+
+                <?php if($foto){ ?>
+                    <td class="text-center"><img src="<?= base_url('assets/img/kegiatan/') . $foto->file ?>" alt="foto_kegiatan" width="100px"></td>
+                <?php } else { ?>
+                    <td class="text-center text-danger">Belum ada foto di upload</td>
+                <?php } ?>
                 <td><?= $k->keterangan ?></td>
                 <td><?= $k->tempat ?></td>
                 <td><?= $k->jml_peserta ?></td>
