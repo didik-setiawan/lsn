@@ -1406,4 +1406,251 @@ class Master extends CI_Controller
         echo $test;
     }
 
+
+    //master dapil
+
+    public function dapil(){
+        access_menu();
+        $data = [
+            'title' => 'Master Dapil',
+            'user' => get_user(),
+            'view' => 'master/dapil',
+            'caleg' => $this->db->get('caleg')->result(),
+            'provinsi' => $this->db->get('wilayah_provinsi')->result(),
+        ];
+        $this->load->view('template', $data);
+    }
+
+    public function add_dapil(){
+        validation_ajax_request();
+        $this->form_validation->set_rules('dapil', 'Nama Dapil', 'required|trim');
+        if($this->form_validation->run() == false){
+            $params = [
+                'type' => 'validation',
+                'err_dapil' => form_error('dapil')
+            ];
+            echo json_encode($params);
+            die;
+        } else {
+            $dapil = htmlspecialchars($this->input->post('dapil'));
+            $caleg = htmlspecialchars($this->input->post('caleg'));
+            $prov = htmlspecialchars($this->input->post('prov'));
+            $kab = htmlspecialchars($this->input->post('kab'));
+
+            if($caleg == 1){
+                $data_ada = $this->db->where([
+                    'nama_dapil' => $dapil,
+                    'id_caleg' => $caleg
+                ])->get('dapil')->num_rows();
+
+                if($data_ada > 0){
+                    $params = [
+                        'type' => 'validation',
+                        'err_dapil' => 'Dapil sudah terdaftar'
+                    ];
+                    echo json_encode($params);
+                    die;
+                } else {
+                    $this->insert_data_dapil($dapil, $caleg, $prov, $kab);
+                }
+            } else if($caleg == 2){
+                $data_ada = $this->db->where([
+                    'nama_dapil' => $dapil,
+                    'id_caleg' => $caleg,
+                    'wilayah_provinsi' => $prov
+                ])->get('dapil')->num_rows();
+
+                if($data_ada > 0){
+                    $params = [
+                        'type' => 'validation',
+                        'err_dapil' => 'Dapil sudah terdaftar'
+                    ];
+                    echo json_encode($params);
+                    die;
+                } else {
+                    $this->insert_data_dapil($dapil, $caleg, $prov, $kab);
+                }
+            } else if($caleg == 3){
+                $data_ada = $this->db->where([
+                    'nama_dapil' => $dapil,
+                    'id_caleg' => $caleg,
+                    'wilayah_provinsi' => $prov,
+                    'wilayah_kabupaten' => $kab
+                ])->get('dapil')->num_rows();
+
+                if($data_ada > 0){
+                    $params = [
+                        'type' => 'validation',
+                        'err_dapil' => 'Dapil sudah terdaftar'
+                    ];
+                    echo json_encode($params);
+                    die;
+                } else {
+                    $this->insert_data_dapil($dapil, $caleg, $prov, $kab);
+                }
+            }
+
+        }
+
+
+    }
+
+    private function insert_data_dapil($dapil = null, $caleg = null, $prov = null, $kab = null){
+        $data  = [
+            'id_caleg' => $caleg,
+            'nama_dapil' => $dapil,
+            'wilayah_provinsi' => $prov,
+            'wilayah_kabupaten' => $kab
+        ];
+        $this->db->insert('dapil', $data);
+        if($this->db->affected_rows() > 0){
+            $params = [
+                'type' => 'result',
+                'success' => true,
+                'msg' => 'Data dapil baru berhasil di tambahkan'
+            ];
+        } else {
+            $params = [
+                'type' => 'result',
+                'success' => false,
+                'msg' => 'Data dapil baru gagal di tambahkan'
+            ];
+        }
+        echo json_encode($params);
+    }
+
+    public function add_list_wilayah(){
+        validation_ajax_request();
+
+        $id_dapil = htmlspecialchars($this->input->post('id_dapil'));
+        $prov = htmlspecialchars($this->input->post('prov'));
+        $kab = htmlspecialchars($this->input->post('kab'));
+        $kec = htmlspecialchars($this->input->post('kec'));
+
+
+        $data = [
+            'id' => $id_dapil,
+            'qty' => 1,
+            'price' => 1,
+            'name' => time(),
+            'options' => [
+                'prov' => $prov,
+                'kab' => $kab,
+                'kec' => $kec
+            ]
+        ];
+
+        $this->cart->insert($data);
+    }
+
+    public function load_list_wilayah_cart(){
+        validation_ajax_request();
+        
+        $list = '';
+        foreach($this->cart->contents() as  $c){
+            $prov = $c['options']['prov'];
+            $kab = $c['options']['kab'];
+            $kec = $c['options']['kec'];
+
+            if($kec == null || $kec == '' || $kec == 0){
+                $data_prov = $this->db->where('id', $prov)->get('wilayah_provinsi')->row();
+                $data_kab = $this->db->where('id', $kab)->get('wilayah_kabupaten')->row();
+
+                $list .= '<li class="list-group-item">'.$data_prov->nama.' / '.$data_kab->nama.'
+                    <div class="float-right">
+                        <button class="btn btn-sm btn-danger delete_list_cart" data-id="'.$c['rowid'].'">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                </li>';
+            } else {
+                $data_prov = $this->db->where('id', $prov)->get('wilayah_provinsi')->row();
+                $data_kab = $this->db->where('id', $kab)->get('wilayah_kabupaten')->row();
+                $data_kec = $this->db->where('id', $kec)->get('wilayah_kecamatan')->row();
+
+                $list .= '<li class="list-group-item">'.$data_prov->nama.' / '.$data_kab->nama. ' / '.$data_kec->nama.'
+                    <div class="float-right">
+                        <button class="btn btn-sm btn-danger delete_list_cart" data-id="'.$c['rowid'].'">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                </li>';
+            }
+
+            
+        }
+
+      echo $list;
+    }
+
+    public function delete_list_cart(){
+        validation_ajax_request();
+        $id = $_POST['id'];
+        $this->cart->remove($id);
+    }
+
+    public function add_wilayah_dapil(){
+        validation_ajax_request();
+
+        $list = $this->cart->contents();
+
+        if($list != null){
+            
+            foreach($list as $l){
+                $prov = $l['options']['prov'];
+                $kab = $l['options']['kab'];
+                $kec = $l['options']['kec'];
+                $id_dapil = $l['id'];
+
+                $data = [
+                    'id_dapil' => $id_dapil,
+                    'id_provinsi' => $prov,
+                    'id_kabupaten' => $kab,
+                    'id_kecamatan' => $kec
+                ];
+                $this->db->insert('dapil_wilayah', $data);
+            }   
+
+            if($this->db->affected_rows() > 0){
+                $this->cart->destroy();
+                $params = [
+                    'success' => true,
+                    'msg' => 'Data wilayah berhasil di tambahkan'
+                ];
+            } else {
+                $params = [
+                    'success' => false,
+                    'msg' => 'Data wilayah gagal di tambahkan'
+                ];
+            }
+
+        } else {
+            $params = [
+                'success' => false,
+                'msg' => 'Tidak ada wilayah untuk di tambahkan'
+            ];
+        }
+        echo json_encode($params);
+
+    }
+    
+    public function delete_wilayah_dapil(){
+        validation_ajax_request();
+        $id = $_POST['id'];
+        $this->db->where('md5(sha1(id_wilayah))', $id)->delete('dapil_wilayah');
+        if($this->db->affected_rows() > 0){
+            $params = [
+                'success' => true,
+                'msg' => 'Wilayah dapil berhasil di hapus'
+            ];
+        } else {
+            $params = [
+                'success' => false,
+                'msg' => 'Wilayah dapil gagal di hapus'
+            ];
+        }
+        echo json_encode($params);
+
+    }
+
 }
