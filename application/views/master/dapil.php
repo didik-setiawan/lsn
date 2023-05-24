@@ -599,6 +599,49 @@
         })
     })
 
+    $(document).on('click', '.deleteDapil', function(){
+        let id = $(this).data('id');
+
+        Swal.fire({
+        title: 'Apakah anda yakin?',
+        text: "Untuk menghapus dapil ini",
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+        }).then((result) => {
+        if (result.value) {
+            $.ajax({
+                url: '<?= base_url('master/delete_dapil') ?>',
+                data: {id: id},
+                type: 'POST',
+                dataType: 'JSON',
+                success: function(d){
+
+                    if(d.success == true){
+                        toastr["success"](d.msg, "Success");
+                        $('#modalShowDapil').modal('hide');
+                    } else {
+                        toastr["error"](d.msg, "Error");
+                    }
+
+                },
+                error: function(xhr){
+                    if(xhr.status === 0){
+                        toastr["error"]("No internet access", "Error");
+                    } else if(xhr.status == 404){
+                        toastr["error"]("Page not found", "Error");
+                    } else if(xhr.status == 500){
+                        toastr["error"]("Internal server error", "Error");
+                    } else {
+                        toastr["error"]("Unknow error", "Error");
+                    }
+                }
+            })
+        }
+        })
+    })
+
     function load_list_wilayah(){
         $.ajax({
             url: '<?= base_url('master/load_list_wilayah_cart') ?>',

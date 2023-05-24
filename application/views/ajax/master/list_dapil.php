@@ -17,7 +17,7 @@
                 <td><?= $d->nama_dapil ?></td>
                 <td><?= $d->ketegori_caleg ?></td>
                 <td>
-                    <button class="btn btn-sm btn-success editDapil" data-id="<?= md5(sha1($d->id_dapil)) ?>"><i class="fa fa-edit"></i></button>
+                    
                     <button class="btn btn-sm btn-danger deleteDapil" data-id="<?= md5(sha1($d->id_dapil)) ?>"><i class="fa fa-trash"></i></button>
                     <button class="btn btn-sm btn-primary showWilayah" data-id="<?= $d->id_dapil ?>"><i class="fa fa-eye"></i></button>
                 </td>
@@ -46,7 +46,7 @@
                 <td><?= $d->ketegori_caleg ?></td>
                 <td><?= $d->provinsi ?></td>
                 <td>
-                    <button class="btn btn-sm btn-success editDapil" data-id="<?= md5(sha1($d->id_dapil)) ?>"><i class="fa fa-edit"></i></button>
+                   
                     <button class="btn btn-sm btn-danger deleteDapil" data-id="<?= md5(sha1($d->id_dapil)) ?>"><i class="fa fa-trash"></i></button>
                     <button class="btn btn-sm btn-primary showWilayah" data-id="<?= $d->id_dapil ?>"><i class="fa fa-eye"></i></button>
                 </td>
@@ -77,7 +77,7 @@
                 <td><?= $d->provinsi ?></td>
                 <td><?= $d->kabupaten ?></td>
                 <td>
-                    <button class="btn btn-sm btn-success editDapil" data-id="<?= md5(sha1($d->id_dapil)) ?>"><i class="fa fa-edit"></i></button>
+                 
                     <button class="btn btn-sm btn-danger deleteDapil" data-id="<?= md5(sha1($d->id_dapil)) ?>"><i class="fa fa-trash"></i></button>
                     <button class="btn btn-sm btn-primary showWilayah" data-id="<?= $d->id_dapil ?>"><i class="fa fa-eye"></i></button>
                 </td>

@@ -1734,4 +1734,25 @@ class Master extends CI_Controller
         echo $html;
     }
 
+    public function delete_dapil(){
+        validation_ajax_request();
+
+        $id = $_POST['id'];
+        $this->db->where('md5(sha1(id_dapil))', $id)->delete('dapil');
+        $this->db->where('md5(sha1(id_dapil))', $id)->delete('dapil_wilayah');
+        
+        if($this->db->affected_rows() > 0){
+            $params = [
+                'success' => true,
+                'msg' => 'Data dapil berhasil di hapus'
+            ];
+        } else {
+            $params = [
+                'success' => false,
+                'msg' => 'Data dapil gagal di hapus'
+            ];
+        }
+        echo json_encode(($params));
+    }
+
 }
