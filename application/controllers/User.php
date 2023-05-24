@@ -22,7 +22,9 @@ class User extends CI_Controller
         $data = [
             'title' => 'User Settings',
             'user' => get_user(),
-            'view' => 'user/setting'
+            'view' => 'user/setting',
+            'prov' => $this->db->get('wilayah_provinsi')->result(),
+            'caleg' => $this->db->get('caleg')->result()
         ];
         $this->load->view('template', $data);
     }

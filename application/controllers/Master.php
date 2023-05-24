@@ -1653,4 +1653,85 @@ class Master extends CI_Controller
 
     }
 
+    public function get_data_dapil(){
+        validation_ajax_request();
+
+        $caleg = $_POST['caleg'];
+
+        if($caleg == 1){
+            $data = $this->db->where('id_caleg', $caleg)->get('dapil')->result();
+        } else if($caleg == 2){
+            $prov = $_POST['prov'];
+            $data = $this->db->where(['id_caleg' => $caleg, 'wilayah_provinsi' => $prov])->get('dapil')->result();
+        } else if($caleg == 3){
+            $kab = $_POST['kab'];
+            $prov = $_POST['prov'];
+            $data = $this->db->where(['id_caleg' => $caleg, 'wilayah_provinsi' => $prov, 'wilayah_kabupaten' => $kab])->get('dapil')->result();
+        }
+        echo json_encode($data);
+    }
+
+    public function add_data_dapil_caleg(){
+        validation_ajax_request();
+
+        $dapil = htmlspecialchars($this->input->post('dapil'));
+
+        if($dapil){
+            $user = get_user();
+            $this->db->set('dapil_id', $dapil)->where('id_user', $user->id_user)->update('user');
+
+            if($this->db->affected_rows() > 0){
+                $params = [
+                    'success' => true,
+                    'msg' => 'Data dapil berhasil di tambahkan'
+                ]; 
+            } else {
+                $params = [
+                    'success' => false,
+                    'msg' => 'Data dapil gagal di tambahkan'
+                ]; 
+            }
+
+        } else {
+            $params = [
+                'success' => false,
+                'msg' => 'Tidak data dapil untuk di tambahkan'
+            ]; 
+        }
+        echo json_encode($params);
+    }
+
+    public function get_wilayah_dapil(){
+        validation_ajax_request();
+        $id_dapil = $_POST['id'];
+        $data_wilayah = $this->db->where('id_dapil', $id_dapil)->get('dapil_wilayah')->result();
+        $list = '';
+
+        if($data_wilayah){
+
+            foreach($data_wilayah as $d){
+                if($d->id_kecamatan == 0 || $d->id_wilayah == null){
+                    $data_prov = $this->db->where('id', $d->id_provinsi)->get('wilayah_provinsi')->row();
+                    $data_kab = $this->db->where('id', $d->id_kabupaten)->get('wilayah_kabupaten')->row();
+
+                    $list .= '<li class="list-group-item">'.$data_prov->nama.' / '.$data_kab->nama.'</li>';
+                } else {
+                    $data_prov = $this->db->where('id', $d->id_provinsi)->get('wilayah_provinsi')->row();
+                    $data_kab = $this->db->where('id', $d->id_kabupaten)->get('wilayah_kabupaten')->row();
+                    $data_kec = $this->db->where('id', $d->id_kecamatan)->get('wilayah_kecamatan')->row();
+
+                    $list .= '<li class="list-group-item">'.$data_prov->nama.' / '.$data_kab->nama. ' / '.$data_kec->nama.'</li>';
+                }
+            }
+
+        } else {
+            $list = '<li class="list-group-item list-group-item-danger">No data result</li>';
+        }
+
+        $html = '<p class="text-center mb-3
+        "><strong>List Wilayah Dapil</strong></p> <br> '.$list;
+
+        echo $html;
+    }
+
 }

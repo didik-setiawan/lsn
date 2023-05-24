@@ -232,8 +232,7 @@ class Master_model extends CI_Model{
                 caleg.ketegori_caleg
             ')
             ->from('dapil')
-            ->join('caleg', 'dapil.id_caleg = caleg.id_caleg')
-            ->where('dapil.id_caleg', $id);
+            ->join('caleg', 'dapil.id_caleg = caleg.id_caleg');
         } else if($id == 2){
             $this->db->select('
                 dapil.*,
@@ -242,8 +241,7 @@ class Master_model extends CI_Model{
             ')
             ->from('dapil')
             ->join('caleg', 'dapil.id_caleg = caleg.id_caleg')
-            ->join('wilayah_provinsi', 'dapil.wilayah_provinsi = wilayah_provinsi.id')
-            ->where('dapil.id_caleg', $id);
+            ->join('wilayah_provinsi', 'dapil.wilayah_provinsi = wilayah_provinsi.id');
         } else if($id == 3){
             $this->db->select('
                 dapil.*,
@@ -254,8 +252,11 @@ class Master_model extends CI_Model{
             ->from('dapil')
             ->join('caleg', 'dapil.id_caleg = caleg.id_caleg')
             ->join('wilayah_provinsi', 'dapil.wilayah_provinsi = wilayah_provinsi.id')
-            ->join('wilayah_kabupaten', 'dapil.wilayah_kabupaten = wilayah_kabupaten.id')
-            ->where('dapil.id_caleg', $id);
+            ->join('wilayah_kabupaten', 'dapil.wilayah_kabupaten = wilayah_kabupaten.id');
+        }
+
+        if($id){
+            $this->db->where('dapil.id_caleg', $id);
         }
 
         if($id_dapil){
