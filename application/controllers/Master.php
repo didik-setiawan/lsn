@@ -704,6 +704,8 @@ class Master extends CI_Controller
     
                 $reader = \PhpOffice\PhpSpreadsheet\IOFactory::load($file_path);
                 $data = $reader->getActiveSheet()->toArray();
+
+              
                 
                 unset($data[0]);
                 unset($data[1]);
@@ -756,6 +758,12 @@ class Master extends CI_Controller
                         $organisasi = 0;
                     }
 
+                    $nik = "$t[1]";
+                    $rw = "$t[11]";
+                    $rt = "$t[12]";
+                    $telp = "$t[18]";
+                    
+
                     $insert_data = [
                         'nama'              => $t[2],
                         'email'             => $t[19],
@@ -763,7 +771,7 @@ class Master extends CI_Controller
                         'status'            => 1,
                         'img'               => 'default.png',
                         'id_role'           => $t[17],
-                        'nik'               => $t[1],
+                        'nik'               => $nik,
                         'tanggal_lahir'     => date_format($date, 'Y-m-d'),
                         'tempat_lahir'      => $t[3],
                         'jenis_kelamin'     => $t[5],
@@ -772,11 +780,11 @@ class Master extends CI_Controller
                         'kecamatan'         => $kec->id,
                         'desa'              => $desa->id,
                         'dusun'             => $t[10],
-                        'rw'                => $t[11],
-                        'rt'                        => $t[12],
+                        'rw'                => $rw,
+                        'rt'                        => $rt,
                         'alamat_lengkap'            => $t[13],
                         'file_ktp'                  => '',
-                        'no_telp'                   => $t[18],
+                        'no_telp'                   => $telp,
                         'status_organisasi'         => $organisasi,
                         'status_kepengurusan'       => $t[15],
                         'nama_kelompok_pengajian'   => $t[16],
@@ -785,6 +793,7 @@ class Master extends CI_Controller
                         'add_by' => get_user()->id_user,
                         'date_create' => date('Y-m-d')
                     ];
+
                     $this->db->insert('user', $insert_data);
                 }
                 

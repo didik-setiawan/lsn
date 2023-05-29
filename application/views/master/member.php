@@ -919,7 +919,9 @@
                         } else {
                             $('#modalXL').modal('hide');
                             toastr["success"](d.msg, "Success");  
-                            load_data(); 
+                            setTimeout(() => {
+                                load_data(); 
+                            }, 2000);
                         }
                     }
             },
@@ -958,13 +960,16 @@
                     if(d.success == true){
                         toastr["success"](d.msg, "Success");
                         $('#modalImport').modal('hide');
-                        load_data();
+                        setTimeout(() => { 
+                            load_data();
+                        }, 2000);
                     } else {
                         toastr["error"](d.msg, "Error");
+                        $('#modalImport').modal('hide');
                     }
                 },
                 error: function(xhr){
-                    load_data();
+                    
                     if(xhr.status === 0){
                         toastr["error"]("No internet access", "Error");
                     } else if(xhr.status == 404){
@@ -974,6 +979,10 @@
                     } else {
                         toastr["error"]("Unknow error", "Error");
                     }
+
+                    setTimeout(() => {
+                        load_data();
+                    }, 2000);
                 }
             });
     });
@@ -1060,7 +1069,9 @@
                 success: function(d){
                     if(d.success == true){
                         toastr["success"](d.msg, "Success");
-                        load_data();
+                        setTimeout(() => {
+                            load_data();
+                        }, 2000);
                     } else {
                         toastr["error"](d.msg, "Error");
                     }
@@ -1392,12 +1403,14 @@
                         $('#err_rw_e').html('');
                         $('#err_rt_e').html('');
 
+                        $('#modalEdit').modal('hide');
                         if(d.success == false){
                             toastr["error"](d.msg, "Error");
                         } else {
-                            $('#modalEdit').modal('hide');
                             toastr["success"](d.msg, "Success");  
-                            load_data(); 
+                            setTimeout(() => {
+                                load_data(); 
+                            }, 2000);
                         }
                     }
             },
@@ -1464,10 +1477,13 @@
 
                 if(d.success == false){
                     toastr["error"](d.msg, "Error");
+                    $('#editImage').modal('hide');
                 } else {
                     $('#editImage').modal('hide');
-                    toastr["success"](d.msg, "Success");  
-                    load_data(); 
+                    toastr["success"](d.msg, "Success");
+                    setTimeout(() => {
+                        load_data(); 
+                    }, 2000);  
                 }
 
             },
@@ -1492,9 +1508,22 @@
         const loading_animation = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
         $('#load_data').html(loading_animation);
 
+        let prov = $('#filter_provinsi').val();
+        let kab = $('#filter_kabupaten').val();
+        let kec = $('#filter_kecamatan').val();
+        let desa = $('#filter_desa').val();
+        let org = $('#filter_organisasi').val();
+
         $.ajax({
             url: '<?= base_url('ajax/load_data_member'); ?>',
             type: 'POST',
+            data: {
+                provinsi: prov,
+                kabupaten: kab,
+                kecamatan: kec,
+                desa: desa,
+                organisasi: org
+            },
             success: function(d){
                 $('#load_data').html(d);
             },
