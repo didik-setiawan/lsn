@@ -2,6 +2,11 @@
 defined('BASEPATH')or exit('No direct script access allowed');
 class Ajax extends CI_Controller {
     
+    public function __construct(){
+        parent::__construct();
+        $this->load->model('Member_model', 'member');
+    }
+
 
     public function get_data_role_user(){
         validation_ajax_request();
@@ -27,40 +32,6 @@ class Ajax extends CI_Controller {
         $this->load->view('ajax/master/cabang', $data);
     }
 
-    public function load_data_member(){
-        validation_ajax_request();
-
-        if(isset($_POST['provinsi'])){
-            $prov = $_POST['provinsi'];
-        } else {
-            $prov = null;
-        }
-        if(isset($_POST['kabupaten'])){
-            $kab = $_POST['kabupaten'];
-        } else {
-            $kab = null;
-        }
-        if(isset($_POST['kecamatan'])){
-            $kec = $_POST['kecamatan'];
-        } else {
-            $kec = null;
-        }
-        if(isset($_POST['desa'])){
-            $desa = $_POST['desa'];
-        } else {
-            $desa = null;
-        }
-        if(isset($_POST['organisasi'])){
-            $organisasi = $_POST['organisasi'];
-        } else {
-            $organisasi = null;
-        }
-
-        $data = [
-            'data' => $this->m->get_member(null, $prov, $kab, $kec, $desa, $organisasi)->result()
-        ];
-        $this->load->view('ajax/master/member', $data);
-    }
 
     public function load_data_anggota(){
         validation_ajax_request();
@@ -71,18 +42,79 @@ class Ajax extends CI_Controller {
         $this->load->view('ajax/master/member_detail', $data);
     }
 
-    public function coba(){
-        $word = "jawa timur";
-        echo ucwords($word);
-
-    }
-
     public function get_data_pendukung(){
         validation_ajax_request();
-        $data = [
-            'data' => $this->m->get_pendukung()->result()
-        ];
-        $this->load->view('ajax/caleg/load_pendukung', $data);
+        $role = 3;
+        $dukungan = get_user()->id_user;
+
+        $list = $this->member->get_datatables(null, null, null, null, null, $role, $dukungan);
+        $data = array();
+        $no = $_POST['start'];
+
+        foreach($list as $l){
+            $q_org = $this->db->where('id_cabang', $l->status_organisasi)->get('cabang')->row();
+
+            $prov = $this->db->where('id', $l->provinsi)->get('wilayah_provinsi')->row();
+            $kab = $this->db->where('id', $l->kabupaten)->get('wilayah_kabupaten')->row();
+            $kec = $this->db->where('id', $l->kecamatan)->get('wilayah_kecamatan')->row();
+
+            if($prov){
+                $prov_nama = $prov->nama;
+            } else {
+                $prov_nama = '-';
+            }
+
+            if($kab){
+                $kab_nama = $kab->nama;
+            } else {
+                $kab_nama = '-';
+            }
+
+            if($kec){
+                $kec_nama = $kec->nama;
+            } else {
+                $kec_nama = '-';
+            }
+
+            if($q_org){
+                $org = $q_org->nama_cabang;
+            } else {
+                $org = '-';
+            }
+
+            if($l->img){
+                $img = '<img width="100px" src="'.base_url('assets/img/user/').$l->img.'" alt="img" loading="lazy">';
+            } else {
+                $img = 'Unavailable';
+            }
+
+            if($l->id_role == 1){
+                $action = 'disabled';
+            } else {
+                $action = '';
+            }
+
+            $no++;
+            $row = array();
+
+            $row[] = $no;
+            $row[] = $img;
+            $row[] = $l->nama .' / ' . $l->nik;
+            $row[] = $prov_nama .' / '. $kab_nama .' / '. $kec_nama;
+            $row[] = $org;
+            $row[] = '<button class="btn btn-sm btn-success detail-pendukung" data-id="'.md5(sha1($l->id_user)).'"><i class="fa fa-search"></i></button>';
+            $data[] = $row;
+        }
+
+        $output = array(
+            "draw" => $_POST['draw'],
+            "recordsTotal" => $this->member->count_all(),
+            "recordsFiltered" => $this->member->count_filtered(null, null, null, null, null, $role, $dukungan),
+            "data" => $data,
+        );
+            //output to json format
+        echo json_encode($output);
+        
     }
 
     public function get_data_member(){
@@ -101,10 +133,79 @@ class Ajax extends CI_Controller {
     public function load_data_relawan(){
         validation_ajax_request();
 
-        $data = [
-            'data' => $this->m->get_relawan()->result()
-        ];
-        $this->load->view('ajax/caleg/load_relawan', $data);
+        $role = 2;
+        $dukungan = get_user()->id_user;
+
+        $list = $this->member->get_datatables(null, null, null, null, null, $role, $dukungan);
+        $data = array();
+        $no = $_POST['start'];
+
+        foreach($list as $l){
+            $q_org = $this->db->where('id_cabang', $l->status_organisasi)->get('cabang')->row();
+
+            $prov = $this->db->where('id', $l->provinsi)->get('wilayah_provinsi')->row();
+            $kab = $this->db->where('id', $l->kabupaten)->get('wilayah_kabupaten')->row();
+            $kec = $this->db->where('id', $l->kecamatan)->get('wilayah_kecamatan')->row();
+
+            if($prov){
+                $prov_nama = $prov->nama;
+            } else {
+                $prov_nama = '-';
+            }
+
+            if($kab){
+                $kab_nama = $kab->nama;
+            } else {
+                $kab_nama = '-';
+            }
+
+            if($kec){
+                $kec_nama = $kec->nama;
+            } else {
+                $kec_nama = '-';
+            }
+
+            if($q_org){
+                $org = $q_org->nama_cabang;
+            } else {
+                $org = '-';
+            }
+
+            if($l->img){
+                $img = '<img width="100px" src="'.base_url('assets/img/user/').$l->img.'" alt="img" loading="lazy">';
+            } else {
+                $img = 'Unavailable';
+            }
+
+            if($l->id_role == 1){
+                $action = 'disabled';
+            } else {
+                $action = '';
+            }
+
+            $no++;
+            $row = array();
+
+            $row[] = $no;
+            $row[] = $img;
+            $row[] = $l->nama .' / ' . $l->nik;
+            $row[] = $prov_nama .' / '. $kab_nama .' / '. $kec_nama;
+            $row[] = $org;
+            $row[] = '<button class="btn btn-sm btn-success detail-pendukung" data-id="'.md5(sha1($l->id_user)).'"><i class="fa fa-search"></i></button>
+
+            <button class="btn btn-sm btn-primary tempat_relawan" data-id="'.md5(sha1($l->id_user)).'"><i class="fas fa-map-marker-alt"></i></button>';
+            $data[] = $row;
+        }
+
+        $output = array(
+            "draw" => $_POST['draw'],
+            "recordsTotal" => $this->member->count_all(),
+            "recordsFiltered" => $this->member->count_filtered(null, null, null, null, null, $role, $dukungan),
+            "data" => $data,
+        );
+            //output to json format
+        echo json_encode($output);
+        
 
     }
 
@@ -113,14 +214,81 @@ class Ajax extends CI_Controller {
         $id = $_POST['id'];
         $data['data'] = $this->m->get_penempatan_relawan($id)->result();
         $this->load->view('ajax/caleg/load_penempatan_relawan', $data);
-
     }
 
     public function get_data_pendukung_relawan()
     {
         validation_ajax_request();
-        $data['data'] = $this->m->get_data_pendukung_relawan()->result();
-        $this->load->view('ajax/caleg/load_pendukung_relawan', $data);
+        $role = 3;
+        $add_by = get_user()->id_user;
+
+        $list = $this->member->get_datatables(null, null, null, null, null, $role, null, $add_by);
+        $data = array();
+        $no = $_POST['start'];
+
+        foreach($list as $l){
+            $q_org = $this->db->where('id_cabang', $l->status_organisasi)->get('cabang')->row();
+
+            $prov = $this->db->where('id', $l->provinsi)->get('wilayah_provinsi')->row();
+            $kab = $this->db->where('id', $l->kabupaten)->get('wilayah_kabupaten')->row();
+            $kec = $this->db->where('id', $l->kecamatan)->get('wilayah_kecamatan')->row();
+
+            if($prov){
+                $prov_nama = $prov->nama;
+            } else {
+                $prov_nama = '-';
+            }
+
+            if($kab){
+                $kab_nama = $kab->nama;
+            } else {
+                $kab_nama = '-';
+            }
+
+            if($kec){
+                $kec_nama = $kec->nama;
+            } else {
+                $kec_nama = '-';
+            }
+
+            if($q_org){
+                $org = $q_org->nama_cabang;
+            } else {
+                $org = '-';
+            }
+
+            if($l->img){
+                $img = '<img width="100px" src="'.base_url('assets/img/user/').$l->img.'" alt="img" loading="lazy">';
+            } else {
+                $img = 'Unavailable';
+            }
+
+            if($l->id_role == 1){
+                $action = 'disabled';
+            } else {
+                $action = '';
+            }
+
+            $no++;
+            $row = array();
+
+            $row[] = $no;
+            $row[] = $img;
+            $row[] = $l->nama .' / ' . $l->nik;
+            $row[] = $prov_nama .' / '. $kab_nama .' / '. $kec_nama;
+            $row[] = $org;
+            $row[] = '<button class="btn btn-sm btn-success detail-pendukung" data-id="'.md5(sha1($l->id_user)).'"><i class="fa fa-search"></i></button>';
+            $data[] = $row;
+        }
+
+        $output = array(
+            "draw" => $_POST['draw'],
+            "recordsTotal" => $this->member->count_all(),
+            "recordsFiltered" => $this->member->count_filtered(null, null, null, null, null, $role, null, $add_by),
+            "data" => $data,
+        );
+            //output to json format
+        echo json_encode($output);
     }
 
     public function load_data_kegiatan(){
@@ -241,6 +409,123 @@ class Ajax extends CI_Controller {
         }
 
         echo $list;
+
+    }
+
+    public function load_all_data_member(){
+        validation_ajax_request();
+
+        if(!empty($this->input->post('prov'))){
+            $prov = $this->input->post('prov');
+        } else {
+            $prov = '';
+        }
+
+        if(!empty($this->input->post('kab'))){
+            $kab = $this->input->post('kab');
+        } else {
+            $kab = '';
+        }
+
+        if(!empty($this->input->post('kec'))){
+            $kec = $this->input->post('kec');
+        } else {
+            $kec = '';
+        }
+
+        if(!empty($this->input->post('desa'))){
+            $desa = $this->input->post('desa');
+        } else {
+            $desa = '';
+        }
+
+        if(!empty($this->input->post('org'))){
+            $org = $this->input->post('org');
+        } else {
+            $org = '';
+        }
+
+        $list = $this->member->get_datatables($prov, $kab, $kec, $desa, $org, null, null, null);
+        $data = array();
+        $no = $_POST['start'];
+        $a = 0;
+        $b = 0;
+
+        foreach($list as $l){
+            $q_org = $this->db->where('id_cabang', $l->status_organisasi)->get('cabang')->row();
+
+            $prov = $this->db->where('id', $l->provinsi)->get('wilayah_provinsi')->row();
+            $kab = $this->db->where('id', $l->kabupaten)->get('wilayah_kabupaten')->row();
+            $kec = $this->db->where('id', $l->kecamatan)->get('wilayah_kecamatan')->row();
+
+            if($prov){
+                $prov_nama = $prov->nama;
+            } else {
+                $prov_nama = '-';
+            }
+
+            if($kab){
+                $kab_nama = $kab->nama;
+            } else {
+                $kab_nama = '-';
+            }
+
+            if($kec){
+                $kec_nama = $kec->nama;
+            } else {
+                $kec_nama = '-';
+            }
+
+            if($q_org){
+                $org = $q_org->nama_cabang;
+            } else {
+                $org = '-';
+            }
+
+            if($l->img){
+                $img = '<img width="100px" src="'.base_url('assets/img/user/').$l->img.'" alt="img" loading="lazy">';
+            } else {
+                $img = 'Unavailable';
+            }
+
+            if($l->id_role == 1){
+                $action = 'disabled';
+            } else {
+                $action = '';
+            }
+
+            $no++;
+            $row = array();
+
+            $row[] = $no;
+            $row[] = $img;
+            $row[] = $l->nama .' / ' . $l->nik;
+            $row[] = $prov_nama .' / '. $kab_nama .' / '. $kec_nama;
+            $row[] = $org;
+            $row[] = '<div class="dropdown">
+                        <button class="btn btn-sm btn-primary dropdown-toggle" '.$action.' type="button" data-toggle="dropdown" aria-expanded="false">
+                            Action
+                        </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item detail" data-id="'. md5(sha1($l->id_user)).'" href="#">Detail</a>
+                                <a class="dropdown-item delete" data-id="'. md5(sha1($l->id_user)).'" href="#">Hapus</a>
+                                <a class="dropdown-item edit" data-id="'. md5(sha1($l->id_user)).'" href="#">Edit Data</a>
+                                <a class="dropdown-item edit-img" data-id="'. md5(sha1($l->id_user)).'" href="#">Edit Foto</a>
+                                <a class="dropdown-item edit-ktp" data-id="'. md5(sha1($l->id_user)).'" href="#">Edit Ktp</a>
+                                
+                            </div>
+                        </div>';
+            $data[] = $row;
+        }
+
+        $output = array(
+            "draw" => $_POST['draw'],
+            "recordsTotal" => $this->member->count_all(),
+            "recordsFiltered" => $this->member->count_filtered(),
+            "data" => $data,
+        );
+            //output to json format
+        echo json_encode($output);
 
     }
 

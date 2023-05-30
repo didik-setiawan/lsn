@@ -18,11 +18,41 @@
 
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                   
                     <button class="btn btn-sm btn-success mt-3" id="add_pendukung" data-by="caleg"><i class="fa fa-plus"></i> Tambah</button>
-                    <div id="load_pendukung"></div>
+
+                    <div id="load_pendukung" class="table-responsive mt-3">
+                        <table class="table table-bordered loadPendukung w-100">
+                            <thead>
+                                <tr class="bg-dark text-light">
+                                    <th>#</th>
+                                    <th>Foto</th>
+                                    <th>Nama</th>
+                                    <th>Domisili</th>
+                                    <th>Status Organisasi</th>
+                                    <th><i class="fa fa-cogs"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                    <div id="load_data_relawan"></div>
+                    <div id="load_data_relawan" class="table-responsive mt-3">
+                        <table class="table table-bordered loadRelawan w-100">
+                            <thead>
+                                <tr class="bg-dark text-light">
+                                    <th>#</th>
+                                    <th>Foto</th>
+                                    <th>Nama</th>
+                                    <th>Domisili</th>
+                                    <th>Status Organisasi</th>
+                                    <th><i class="fa fa-cogs"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -49,7 +79,21 @@
                     ?>
                     <button <?= $action ?> class="btn btn-sm btn-success" id="add_pendukung" data-by="relawan"><i class="fa fa-plus"></i> Tambah</button>
 
-                    <div id="load_data_if_relawan"></div>
+                    <div id="load_data_if_relawan" class="mt-3 table-responsive">
+                        <table class="table table-bordered loadPendukungRelawan w-100">
+                            <thead>
+                                <tr class="bg-dark text-light">
+                                    <th>#</th>
+                                    <th>Foto</th>
+                                    <th>Nama</th>
+                                    <th>Domisili</th>
+                                    <th>Status Organisasi</th>
+                                    <th><i class="fa fa-cogs"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1075,7 +1119,6 @@
 
     });
 
-
     $('#formAnggotaE').submit(function(e){
         e.preventDefault();
         $('#toSubmitE').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
@@ -1172,7 +1215,6 @@
             }
         });
     });
-
 
     $(document).on('click', '.tempat_relawan', function(){
         $('#modalPenempatan').modal('show');
@@ -1531,80 +1573,90 @@
     });
 
     function load_pendukung(){
-        const loading_animation = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
-
-        $('#load_pendukung').html(loading_animation);
-
-        $.ajax({
-            url: '<?= base_url('ajax/get_data_pendukung') ?>',
-            type: 'POST',
-            success: function(d){
-                $('#load_pendukung').html(d);
+        $('.loadPendukung').DataTable().destroy();
+        let datatable = $('.loadPendukung').dataTable({
+            "processing": true,
+            "serverSide": true,
+            "order": [],
+            "ajax": {
+                "url": "<?= base_url('ajax/get_data_pendukung')?>",
+                "type": "POST"
             },
-            error: function(xhr){
-              
-
-              if(xhr.status === 0){
-                  toastr["error"]("No internet access", "Error");
-              } else if(xhr.status == 404){
-                  toastr["error"]("Page not found", "Error");
-              } else if(xhr.status == 500){
-                  toastr["error"]("Internal server error", "Error");
-              } else {
-                  toastr["error"]("Unknow error", "Error");
-              }
-            }
+            "columnDefs": [
+                { 
+                    "targets": [ 0 ], //first column / numbering column
+                    "orderable": false, //set not orderable
+                },
+            ],
+            "iDisplayLength": 50,
+            "ordering": false,
         });
     }
 
     function load_relawan(){
-        const loading_animation = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
-
-        $('#load_data_relawan').html(loading_animation);
-
-        $.ajax({
-            url: '<?= base_url('ajax/load_data_relawan') ?>',
-            type: 'POST',
-            success: function(d){
-                $('#load_data_relawan').html(d);
+        $('.loadRelawan').DataTable().destroy();
+        let datatable = $('.loadRelawan').dataTable({
+            "processing": true,
+            "serverSide": true,
+            "order": [],
+            "ajax": {
+                "url": "<?= base_url('ajax/load_data_relawan')?>",
+                "type": "POST"
             },
-            error: function(xhr){
-              if(xhr.status === 0){
-                  toastr["error"]("No internet access", "Error");
-              } else if(xhr.status == 404){
-                  toastr["error"]("Page not found", "Error");
-              } else if(xhr.status == 500){
-                  toastr["error"]("Internal server error", "Error");
-              } else {
-                  toastr["error"]("Unknow error", "Error");
-              }
-            }
+            "columnDefs": [
+                { 
+                    "targets": [ 0 ], //first column / numbering column
+                    "orderable": false, //set not orderable
+                },
+            ],
+            "iDisplayLength": 50,
+            "ordering": false,
         });
     }
 
     function load_pendukung_if_relawan(){
-        const loading_animation = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
 
-        $('#load_data_if_relawan').html(loading_animation);
-
-        $.ajax({
-            url: '<?= base_url('ajax/get_data_pendukung_relawan') ?>',
-            type: 'POST',
-            success: function(d){
-                $('#load_data_if_relawan').html(d);
+        $('.loadPendukungRelawan').DataTable().destroy();
+        let datatable = $('.loadPendukungRelawan').dataTable({
+            "processing": true,
+            "serverSide": true,
+            "order": [],
+            "ajax": {
+                "url": "<?= base_url('ajax/get_data_pendukung_relawan')?>",
+                "type": "POST"
             },
-            error: function(xhr){
-              if(xhr.status === 0){
-                  toastr["error"]("No internet access", "Error");
-              } else if(xhr.status == 404){
-                  toastr["error"]("Page not found", "Error");
-              } else if(xhr.status == 500){
-                  toastr["error"]("Internal server error", "Error");
-              } else {
-                  toastr["error"]("Unknow error", "Error");
-              }
-            }
+            "columnDefs": [
+                { 
+                    "targets": [ 0 ], //first column / numbering column
+                    "orderable": false, //set not orderable
+                },
+            ],
+            "iDisplayLength": 50,
+            "ordering": false,
         });
+
+        // const loading_animation = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
+
+        // $('#load_data_if_relawan').html(loading_animation);
+
+        // $.ajax({
+        //     url: '<?= base_url('ajax/get_data_pendukung_relawan') ?>',
+        //     type: 'POST',
+        //     success: function(d){
+        //         $('#load_data_if_relawan').html(d);
+        //     },
+        //     error: function(xhr){
+        //       if(xhr.status === 0){
+        //           toastr["error"]("No internet access", "Error");
+        //       } else if(xhr.status == 404){
+        //           toastr["error"]("Page not found", "Error");
+        //       } else if(xhr.status == 500){
+        //           toastr["error"]("Internal server error", "Error");
+        //       } else {
+        //           toastr["error"]("Unknow error", "Error");
+        //       }
+        //     }
+        // });
     }
 
 

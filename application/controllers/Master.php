@@ -463,13 +463,17 @@ class Master extends CI_Controller
 
     public function member(){
         access_menu();
+
+    
+        
+
         $data = [
             'title' => 'Master Anggota',
             'user' => get_user(),
             'view' => 'master/member',
             'provinsi' => $this->db->get('wilayah_provinsi')->result(),
             'role' => $this->db->where('status', 1)->get('role_user')->result(),
-            'cabang' => $this->db->get('cabang')->result()
+            'cabang' => $this->db->get('cabang')->result(),
         ];
         $this->load->view('template', $data);
     }

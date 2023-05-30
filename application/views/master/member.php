@@ -17,7 +17,25 @@
                     <button class="btn btn-sm btn-primary" id="filterData"><i class="fa fa-filter"></i> Filter Data</button>
                 </div>
 
-                <div id="load_data" class="table-responsive"></div>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="TableAllMember">
+                        <thead>
+                            <tr class="bg-dark text-light">
+                                <th>#</th>
+                                <th>Foto</th>
+                                <th>Nama</th>
+                                <th>Domisili</th>
+                                <th>Status Organisasi</th>
+                                <th><i class="fa fa-cogs"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                
+                <div id="pagination_link">
+                    <?= $this->pagination->create_links(); ?>
+                </div>
             </div>
         </div>
     </div>
@@ -691,7 +709,7 @@
 
 <script>
     $(document).ready(function(){
-        load_data();
+        load_all_member();
     });
 
     $('#provinsi').change(function(){
@@ -920,7 +938,7 @@
                             $('#modalXL').modal('hide');
                             toastr["success"](d.msg, "Success");  
                             setTimeout(() => {
-                                load_data(); 
+                                load_all_member();
                             }, 2000);
                         }
                     }
@@ -961,7 +979,7 @@
                         toastr["success"](d.msg, "Success");
                         $('#modalImport').modal('hide');
                         setTimeout(() => { 
-                            load_data();
+                            load_all_member();
                         }, 2000);
                     } else {
                         toastr["error"](d.msg, "Error");
@@ -981,7 +999,7 @@
                     }
 
                     setTimeout(() => {
-                        load_data();
+                        load_all_member();
                     }, 2000);
                 }
             });
@@ -1070,7 +1088,7 @@
                     if(d.success == true){
                         toastr["success"](d.msg, "Success");
                         setTimeout(() => {
-                            load_data();
+                            load_all_member();
                         }, 2000);
                     } else {
                         toastr["error"](d.msg, "Error");
@@ -1409,7 +1427,7 @@
                         } else {
                             toastr["success"](d.msg, "Success");  
                             setTimeout(() => {
-                                load_data(); 
+                                load_all_member();
                             }, 2000);
                         }
                     }
@@ -1482,7 +1500,7 @@
                     $('#editImage').modal('hide');
                     toastr["success"](d.msg, "Success");
                     setTimeout(() => {
-                        load_data(); 
+                        load_all_member(); 
                     }, 2000);  
                 }
 
@@ -1504,43 +1522,43 @@
         });
     });
 
-    function load_data(){
-        const loading_animation = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
-        $('#load_data').html(loading_animation);
+    // function load_data(){
+    //     const loading_animation = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
+    //     $('#load_data').html(loading_animation);
 
-        let prov = $('#filter_provinsi').val();
-        let kab = $('#filter_kabupaten').val();
-        let kec = $('#filter_kecamatan').val();
-        let desa = $('#filter_desa').val();
-        let org = $('#filter_organisasi').val();
+    //     let prov = $('#filter_provinsi').val();
+    //     let kab = $('#filter_kabupaten').val();
+    //     let kec = $('#filter_kecamatan').val();
+    //     let desa = $('#filter_desa').val();
+    //     let org = $('#filter_organisasi').val();
 
-        $.ajax({
-            url: '<?= base_url('ajax/load_data_member'); ?>',
-            type: 'POST',
-            data: {
-                provinsi: prov,
-                kabupaten: kab,
-                kecamatan: kec,
-                desa: desa,
-                organisasi: org
-            },
-            success: function(d){
-                $('#load_data').html(d);
-            },
-            error: function(xhr){
+    //     $.ajax({
+    //         url: '<?= base_url('ajax/load_data_member'); ?>',
+    //         type: 'POST',
+    //         data: {
+    //             provinsi: prov,
+    //             kabupaten: kab,
+    //             kecamatan: kec,
+    //             desa: desa,
+    //             organisasi: org
+    //         },
+    //         success: function(d){
+    //             $('#load_data').html(d);
+    //         },
+    //         error: function(xhr){
                
-                    if(xhr.status === 0){
-                        toastr["error"]("No internet access", "Error");
-                    } else if(xhr.status == 404){
-                        toastr["error"]("Page not found", "Error");
-                    } else if(xhr.status == 500){
-                        toastr["error"]("Internal server error", "Error");
-                    } else {
-                        toastr["error"]("Unknow error", "Error");
-                    }
-            }
-        });
-    }
+    //                 if(xhr.status === 0){
+    //                     toastr["error"]("No internet access", "Error");
+    //                 } else if(xhr.status == 404){
+    //                     toastr["error"]("Page not found", "Error");
+    //                 } else if(xhr.status == 500){
+    //                     toastr["error"]("Internal server error", "Error");
+    //                 } else {
+    //                     toastr["error"]("Unknow error", "Error");
+    //                 }
+    //         }
+    //     });
+    // }
 
     $(document).on('click', '.edit-ktp', function(){
         let id = $(this).data('id');
@@ -1613,6 +1631,7 @@
 
     $('#filterData').click(function(){
         $('#getFilterData').modal('show');
+        $('#goFilter').removeAttr('disabled');
     });
 
     $('#filter_provinsi').change(function(){
@@ -1716,50 +1735,7 @@
 
     });
 
-    $('#goFilter').click(function(){
-        $('#goFilter').attr('disabled', true);
-        $('#goFilter').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
-
-        let prov = $('#filter_provinsi').val();
-        let kab = $('#filter_kabupaten').val();
-        let kec = $('#filter_kecamatan').val();
-        let desa = $('#filter_desa').val();
-        let org = $('#filter_organisasi').val();
-
-        $.ajax({
-            url: '<?= base_url('ajax/load_data_member'); ?>',
-            data: {
-                provinsi: prov,
-                kabupaten: kab,
-                kecamatan: kec,
-                desa: desa,
-                organisasi: org
-            },
-            type: 'POST',
-            success: function(d){
-                $('#load_data').html(d);
-
-                $('#goFilter').removeAttr('disabled');
-                $('#goFilter').html('Go');
-                $('#getFilterData').modal('hide');
-            },
-            error: function(xhr){
-                $('#goFilter').removeAttr('disabled');
-                $('#goFilter').html('Go');
-               
-                    if(xhr.status === 0){
-                        toastr["error"]("No internet access", "Error");
-                    } else if(xhr.status == 404){
-                        toastr["error"]("Page not found", "Error");
-                    } else if(xhr.status == 500){
-                        toastr["error"]("Internal server error", "Error");
-                    } else {
-                        toastr["error"]("Unknow error", "Error");
-                    }
-            }
-        });
-
-    });
+    
 
     $('#export').click(function(){
         $('#modalExport').modal('show');
@@ -1805,5 +1781,48 @@
         let value = $(this).val();
         $('#export_organisasi').val(value);
     });
+
+    $('#goFilter').click(function(){
+        $('#goFilter').attr('disabled', true);
+        reload_data_member();
+        $('#getFilterData').modal('hide');
+    });
+    
+    function reload_data_member(){
+        let prov = $('#filter_provinsi').val();
+        let kab = $('#filter_kabupaten').val();
+        let kec = $('#filter_kecamatan').val();
+        let desa = $('#filter_desa').val();
+        let org = $('#filter_organisasi').val();
+        $('#TableAllMember').DataTable().destroy();
+        load_all_member(prov, kab, kec, desa, org);
+    }
+
+    function load_all_member(prov = null, kab  =null, kec = null, desa = null, org = null){
+        let datatable = $('#TableAllMember').dataTable({
+            "processing": true,
+            "serverSide": true,
+            "order": [],
+            "ajax": {
+                "url": "<?= base_url('ajax/load_all_data_member')?>",
+                "type": "POST",
+                "data": {
+                    "prov" : prov,
+                    "kab" : kab,
+                    "kec" : kec,
+                    "desa": desa,
+                    "org": org
+                }
+            },
+            "columnDefs": [
+                { 
+                    "targets": [ 0 ], //first column / numbering column
+                    "orderable": false, //set not orderable
+                },
+            ],
+            "iDisplayLength": 50,
+            "ordering": false,
+        });
+    }
 
 </script>

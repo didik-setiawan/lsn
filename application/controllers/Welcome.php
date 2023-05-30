@@ -725,20 +725,4 @@ class Welcome extends CI_Controller {
         $this->load->view('template', $data);
     }
 
-    public function get_statistik_pendukung(){
-        $list = array();
-        $month = date('m');
-        $year = date('Y');
-
-        for($d=1; $d<=31; $d++)
-        {
-            $time=mktime(12, 0, 0, $month, $d, $year);          
-            if (date('m', $time)==$month)       
-                $list[]= date('d', $time);
-        }
-
-
-        echo json_encode($list);
-    }
-
 }

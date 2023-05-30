@@ -29,7 +29,7 @@ class Master_model extends CI_Model{
         return $data;
     }
 
-    public function get_member($id = null, $prov = null, $kab = null, $kec = null, $desa = null, $org = null){
+    public function get_member($id = null, $prov = null, $kab = null, $kec = null, $desa = null, $org = null, $limit = null, $start = null){
         $this->db->select('
             user.*,
             role_user.nama_role
@@ -59,7 +59,12 @@ class Master_model extends CI_Model{
             $this->db->where('status_organisasi', $org);
         }
 
+        if($limit && $start){
+            $this->db->limit($limit, $start);
+        }
+
         $data = $this->db->get();
+        
         return $data;
     }
 
