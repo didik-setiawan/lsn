@@ -18,8 +18,11 @@
 
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                   
-                    <button class="btn btn-sm btn-success mt-3" id="add_pendukung" data-by="caleg"><i class="fa fa-plus"></i> Tambah</button>
+                    <?php if($user->dapil_id != null || $user->dapil_id != 0){ ?>
+                        <button class="btn btn-sm btn-success mt-3" id="add_pendukung" data-by="caleg"><i class="fa fa-plus"></i> Tambah</button>
+                    <?php } else  {?>
+                        <button class="btn btn-sm btn-success mt-3" disabled><i class="fa fa-plus"></i> Tambah</button>
+                    <?php } ?>
 
                     <div id="load_pendukung" class="table-responsive mt-3">
                         <table class="table table-bordered loadPendukung w-100">
@@ -492,7 +495,11 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" data-id="" data-type="add" id="penempatan"><i class="fa fa-plus"></i> Tambah</button>
+        <?php if($user->dapil_id != null || $user->dapil_id != 0){ ?>
+            <button type="button" class="btn btn-primary" data-id="" data-type="add" id="penempatan"><i class="fa fa-plus"></i> Tambah</button>
+        <?php } else { ?>
+            <button type="button" class="btn btn-primary" disabled ><i class="fa fa-plus"></i> Tambah</button>
+        <?php } ?>
       </div>
     </div>
   </div>
@@ -866,6 +873,8 @@
 
                 if(d.role != 3){
                     $('#for_relawan').addClass('d-none');
+                } else {
+                    $('#for_relawan').removeClass('d-none');
                 }
             }, 
             error: function(xhr){
@@ -1634,29 +1643,6 @@
             "iDisplayLength": 50,
             "ordering": false,
         });
-
-        // const loading_animation = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
-
-        // $('#load_data_if_relawan').html(loading_animation);
-
-        // $.ajax({
-        //     url: '<?= base_url('ajax/get_data_pendukung_relawan') ?>',
-        //     type: 'POST',
-        //     success: function(d){
-        //         $('#load_data_if_relawan').html(d);
-        //     },
-        //     error: function(xhr){
-        //       if(xhr.status === 0){
-        //           toastr["error"]("No internet access", "Error");
-        //       } else if(xhr.status == 404){
-        //           toastr["error"]("Page not found", "Error");
-        //       } else if(xhr.status == 500){
-        //           toastr["error"]("Internal server error", "Error");
-        //       } else {
-        //           toastr["error"]("Unknow error", "Error");
-        //       }
-        //     }
-        // });
     }
 
 

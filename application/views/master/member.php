@@ -938,7 +938,7 @@
                             $('#modalXL').modal('hide');
                             toastr["success"](d.msg, "Success");  
                             setTimeout(() => {
-                                load_all_member();
+                                reload_data_member();
                             }, 2000);
                         }
                     }
@@ -963,9 +963,11 @@
     $('#import').click(function(){
         $('#modalImport').modal('show');
         $('#file').val('');
+        $('#toImport').removeAttr('disabled');
     });
 
     $('#formImport').submit(function(e){
+        $('#toImport').attr('disabled');
         e.preventDefault();
             $.ajax({
                 url: $(this).attr('action'),
@@ -979,7 +981,7 @@
                         toastr["success"](d.msg, "Success");
                         $('#modalImport').modal('hide');
                         setTimeout(() => { 
-                            load_all_member();
+                            reload_data_member();
                         }, 2000);
                     } else {
                         toastr["error"](d.msg, "Error");
@@ -998,8 +1000,9 @@
                         toastr["error"]("Unknow error", "Error");
                     }
 
+                    $('#modalImport').modal('hide');
                     setTimeout(() => {
-                        load_all_member();
+                        reload_data_member();
                     }, 2000);
                 }
             });
@@ -1088,7 +1091,7 @@
                     if(d.success == true){
                         toastr["success"](d.msg, "Success");
                         setTimeout(() => {
-                            load_all_member();
+                            reload_data_member();
                         }, 2000);
                     } else {
                         toastr["error"](d.msg, "Error");
@@ -1427,7 +1430,7 @@
                         } else {
                             toastr["success"](d.msg, "Success");  
                             setTimeout(() => {
-                                load_all_member();
+                                reload_data_member();
                             }, 2000);
                         }
                     }
@@ -1500,7 +1503,7 @@
                     $('#editImage').modal('hide');
                     toastr["success"](d.msg, "Success");
                     setTimeout(() => {
-                        load_all_member(); 
+                        reload_data_member();
                     }, 2000);  
                 }
 
@@ -1521,44 +1524,6 @@
             }
         });
     });
-
-    // function load_data(){
-    //     const loading_animation = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
-    //     $('#load_data').html(loading_animation);
-
-    //     let prov = $('#filter_provinsi').val();
-    //     let kab = $('#filter_kabupaten').val();
-    //     let kec = $('#filter_kecamatan').val();
-    //     let desa = $('#filter_desa').val();
-    //     let org = $('#filter_organisasi').val();
-
-    //     $.ajax({
-    //         url: '<?= base_url('ajax/load_data_member'); ?>',
-    //         type: 'POST',
-    //         data: {
-    //             provinsi: prov,
-    //             kabupaten: kab,
-    //             kecamatan: kec,
-    //             desa: desa,
-    //             organisasi: org
-    //         },
-    //         success: function(d){
-    //             $('#load_data').html(d);
-    //         },
-    //         error: function(xhr){
-               
-    //                 if(xhr.status === 0){
-    //                     toastr["error"]("No internet access", "Error");
-    //                 } else if(xhr.status == 404){
-    //                     toastr["error"]("Page not found", "Error");
-    //                 } else if(xhr.status == 500){
-    //                     toastr["error"]("Internal server error", "Error");
-    //                 } else {
-    //                     toastr["error"]("Unknow error", "Error");
-    //                 }
-    //         }
-    //     });
-    // }
 
     $(document).on('click', '.edit-ktp', function(){
         let id = $(this).data('id');
@@ -1608,7 +1573,7 @@
                 } else {
                     $('#editKtp').modal('hide');
                     toastr["success"](d.msg, "Success");  
-                    load_data(); 
+                    reload_data_member();
                 }
 
             },
@@ -1734,8 +1699,6 @@
         });
 
     });
-
-    
 
     $('#export').click(function(){
         $('#modalExport').modal('show');
