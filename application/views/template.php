@@ -143,6 +143,13 @@
   <script src="<?= base_url('assets/') ?>vendor/jquery-easing/jquery.easing.min.js"></script>
   <script src="<?= base_url('assets/') ?>js/ruang-admin.min.js"></script>
   <script>
+    let interval;
+    $(document).ready(function(){
+      interval = setInterval(() => {
+        check_user();
+      }, 3000);
+    });
+
     $('.count').each(function () {
     $(this).prop('Counter',0).animate({
         Counter: $(this).text()
@@ -154,6 +161,38 @@
           }
       });
     });
+
+    function check_user(){
+
+      $.ajax({
+        url: '<?= base_url('pub/check') ?>',
+        type: 'POST',
+        dataType: 'JSON',
+        success: function(d){
+          if(d.sess != 1){
+
+            clearInterval(interval);
+
+            Swal.fire({
+              title: 'Oppss....',
+              text: "Sesi telah habis, silahkan login kembali",
+              icon: 'warning',
+              showCancelButton: false,
+              confirmButtonColor: '#62278f',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'OK',
+              allowOutsideClick: false
+            }).then((result) => {
+              if (result.value) {
+                window.location.href = '<?= base_url('auth/logout') ?>';
+              }
+            });
+            }
+        }
+      })
+
+      
+    }
   </script>
 </body>
 

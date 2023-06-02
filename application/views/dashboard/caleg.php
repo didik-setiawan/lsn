@@ -71,7 +71,7 @@
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-uppercase mb-1">Target Suara</div>
-                      <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?= $user->target_suara ?></div>
+                      <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800 count"><?= $user->target_suara ?></div>
                     </div>
                     <div class="col-auto">
                       <!-- <i class="fas fa-users fa-2x text-primary"></i> -->
@@ -88,7 +88,7 @@
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-uppercase mb-1">Total Dukungan</div>
-                      <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?= $dukungan ?></div>
+                      <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800 count"><?= $dukungan ?></div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-users fa-2x text-danger"></i>
@@ -104,7 +104,7 @@
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-uppercase mb-1">Jumlah Relawan</div>
-                      <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?= $relawan ?></div>
+                      <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800 count"><?= $relawan ?></div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-user-tag fa-2x text-success"></i>
@@ -113,17 +113,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <h6><b>Progres Pemenangan: <?= $persentase ?>%</b></h6>
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="<?= $persentase; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $persentase ?>%"></div>
-                    </div>
-                </div>
-            </div>
-        </div> -->
 
         <div class="col-12 col-lg-8 mt-3">
           <div class="card">

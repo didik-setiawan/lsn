@@ -414,7 +414,7 @@ class Ajax extends CI_Controller {
     }
 
     public function load_all_data_member(){
-        validation_ajax_request();
+        // validation_ajax_request();
 
         if(!empty($this->input->post('prov'))){
             $prov = $this->input->post('prov');
