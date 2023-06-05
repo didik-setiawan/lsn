@@ -116,12 +116,19 @@
 
         <div class="col-12 col-lg-8 mt-3">
           <div class="card">
-            <div class="card-header bg-danger text-white">
+            <div class="card-header bg-primary text-white">
               Statistik Suara
             </div>
             <div class="card-body">
               <div width="100%">
-                <canvas id="loadData"></canvas>
+                <?php if($user->dapil_id == null || $user->dapil_id == 0){ ?>
+                  <div class="alert alert-warning text-center" role="alert">
+                    <i style="font-size: 30px" class="fas fa-exclamation-triangle"></i>
+                    <p>Tidak ada data yang dapat di munculkan</p>
+                  </div>
+                <?php } else { ?>
+                  <canvas id="loadData"></canvas>
+                <?php } ?>
               </div>
             </div>
           </div>
@@ -134,11 +141,20 @@
             </div>
             <div class="card-body">
               <div class="box">
+
+              <?php if($user->dapil_id == null || $user->dapil_id == 0){ ?>
+                <div class="alert alert-warning text-center" role="alert">
+                  <i style="font-size: 30px" class="fas fa-exclamation-triangle"></i>
+                  <p>Tidak ada data yang dapat di munculkan</p>
+                </div>
+              <?php } else { ?>
+
                 <div class="circle" data-dots="70" data-percent="<?= $persentase ?>" style="--bgColor: #ff0070"></div>
                   <div class="text">
                       <h2><?= round($persentase, 2) ?>%</h2>
                   </div>
               </div>
+              <?php } ?>
             </div>
           </div>
         </div>

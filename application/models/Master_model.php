@@ -347,4 +347,46 @@ class Master_model extends CI_Model{
         return $data;
     }
 
+    public function get_jml_user_per_group(){
+        $group = $this->db->get('cabang')->result();
+        $no_group = $this->db->where('status_organisasi', null)->or_where('status_organisasi', 0)->get('user')->num_rows();
+        $data_no_group[0] = [
+            'nama' => 'Tidak berkategori',
+            'jml' => $no_group
+        ];
+        $list = [];
+
+        foreach($group as $g){
+            $jml_per_group = $this->db->where('status_organisasi', $g->id_cabang)->get('user')->num_rows();
+            $list[] = [
+                'nama' => $g->nama_cabang,
+                'jml' => $jml_per_group
+            ];
+        }
+        $data = array_merge($data_no_group, $list);
+        return $data;
+    }
+
+    public function get_jml_user_per_bulan(){
+        $tgl = get_date();
+        $bulan = date('m');
+        $tahun = date('Y');
+
+        $list = [];
+        foreach($tgl as $date){
+            $this->db->from('user')
+            ->where('year(date_create)', $tahun)
+            ->where('month(date_create)', $bulan)
+            ->where('day(date_create)', $date);
+            $jml = $this->db->get()->num_rows();
+
+            $list[] = [
+                'tanggal' => $date,
+                'jml' => $jml
+            ];
+        }
+        return $list;
+    }
+
+
 }

@@ -18,12 +18,12 @@ class Dashboard extends CI_Controller
             'user' => get_user(),
             'total_user' => $this->db->get('user')->num_rows(),
             'role' => $this->db->get('role_user')->result(),
-            'cabang' => $this->db->get('cabang')->result()
         ];
 
         if($user->id_role == 1){
             //dashboard super admin
             $data['view'] = 'dashboard/index';
+            $data['cabang'] = $this->m->get_jml_user_per_group();
         } else if($user->id_role == 2){
             //dashboard relawan
             $data['view'] = 'dashboard/relawan';
@@ -35,7 +35,10 @@ class Dashboard extends CI_Controller
             $data['view'] = 'dashboard/caleg';
             $data['dukungan'] = $this->m->get_pendukung()->num_rows();
             $data['relawan'] = $this->m->get_relawan()->num_rows();
-            $data['persentase'] = $this->m->get_progres_pemenangan();
+
+            if($user->dapil_id != null || $user->dapil_id != 0){
+                $data['persentase'] = $this->m->get_progres_pemenangan();
+            }
         } else if($user->id_role == 5){
             //dashboard admin anak cabang
             $data['view'] = 'dashboard/admin_anak_cabang';
@@ -43,5 +46,10 @@ class Dashboard extends CI_Controller
 
         $this->load->view('template', $data);
 
+    }
+
+    public function coba(){
+        $date = get_date();
+        var_dump($date);
     }
 }

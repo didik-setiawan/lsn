@@ -536,4 +536,42 @@ class Ajax extends CI_Controller {
         echo json_encode($data);
     }
 
+    public function get_data_chart_dashboard_admin(){
+        validation_ajax_request();
+        $role = $this->db->get('role_user')->result();
+        
+        $list_all[0] = [
+            'role' => 'Semua User',
+            'jumlah' => $this->db->get('user')->num_rows()
+        ];
+
+        $list_role = [];
+
+        foreach($role as $r){
+            $jml = $this->m->get_total_user_role($r->id_role);
+
+            $list_role[] = [
+                'role' => $r->nama_role,
+                'jumlah' => $jml
+            ];
+        
+        }
+        $list = array_merge($list_role, $list_all);
+        
+        
+        echo json_encode($list);
+    }
+
+    public function get_data_user_by_group(){
+        validation_ajax_request();
+        $data_by_group = $this->m->get_jml_user_per_group();
+        echo json_encode($data_by_group);
+    }
+
+    public function get_data_user_per_month(){
+        validation_ajax_request();
+        $data = $this->m->get_jml_user_per_bulan();
+        echo json_encode($data);
+    }
+
 }

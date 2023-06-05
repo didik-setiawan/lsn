@@ -84,4 +84,72 @@ function check_admin()
         redirect('user');
     }
 }
-// END DIRECT LINK SESUAI ROLE //
+// END DIRECT LINK SESUAI ROLE //_
+
+function get_all_month(){
+    $data = [
+        [
+            'no' => '01',
+            'name' => 'Januari'
+        ],
+        [
+            'no' => '02',
+            'name' => 'Februari'
+        ],
+        [
+            'no' => '03',
+            'name' => 'Maret'
+        ],
+        [
+            'no' => '04',
+            'name' => 'April'
+        ],
+        [
+            'no' => '05',
+            'name' => 'Mei'
+        ],
+        [
+            'no' => '06',
+            'name' => 'Juni'
+        ],
+        [
+            'no' => '07',
+            'name' => 'Juli'
+        ],
+        [
+            'no' => '08',
+            'name' => 'Agustus'
+        ],
+        [
+            'no' => '09',
+            'name' => 'September'
+        ],
+        [
+            'no' => '10',
+            'name' => 'Oktober'
+        ],
+        [
+            'no' => '11',
+            'name' => 'November'
+        ],
+        [
+            'no' => '12',
+            'name' => 'Desember'
+        ],
+    ];
+    return $data;
+}
+
+function get_date(){
+    $list = array();
+    $month = date('m');
+    $year = date('Y');
+
+    for($d=1; $d<=31; $d++)
+    {
+        $time=mktime(12, 0, 0, $month, $d, $year);          
+        if (date('m', $time)==$month)       
+            $list[]=date('d', $time);
+    }
+    return $list;
+}

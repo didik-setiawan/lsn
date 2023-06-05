@@ -185,6 +185,7 @@
                 let newWilayah = d.map(element => element.wilayah);
                 let newPendukung = d.map(element => element.pendukung);
                 let newRelawan = d.map(element => element.relawan);
+                
                 load_statistik_pendukung(newWilayah, newPendukung);
                 load_statistik_relawan(newWilayah, newRelawan);
             }
@@ -200,6 +201,7 @@
                 backgroundColor: '#ffeda6',
                 borderColor: '#fcd73f',
                 borderWidth: 1,
+                barThickness: 20,
             }]
         }
         new Chart(statistik_pendukung, {
@@ -217,6 +219,7 @@
                 backgroundColor: '#a1ffee',
                 borderColor: '#32ad97',
                 borderWidth: 1,
+                barThickness: 20,
             }]
         }
         new Chart(statistik_relawan, {

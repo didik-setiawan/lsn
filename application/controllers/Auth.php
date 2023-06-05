@@ -86,8 +86,8 @@ class Auth extends CI_Controller
             //INI BAWAAN DARI GOOGLE
             'protocol'  => 'smtp',
             'smtp_host' => 'ssl://smtp.googlemail.com',
-            'smtp_user' => 'agnarizky88@gmail.com',
-            'smtp_pass' => 'bznhpdikekfllfso',
+            'smtp_user' => 'didikarpuz@gmail.com',
+            'smtp_pass' => 'jmqyoqpqxbhryefr',
             'smtp_port' => 465,
             'mailtype'  => 'html',
             'charset'   => 'utf-8',
@@ -98,7 +98,7 @@ class Auth extends CI_Controller
         $this->load->library('email', $config);
         $this->email->initialize($config);
 
-        $this->email->from('lsn@gmail.com', 'Agna Rizky');
+        $this->email->from('lsn@gmail.com', 'Laskar Sholawat Nusantara');
         $this->email->to($this->input->post('email'));
 
         if ($type == 'verify') {
