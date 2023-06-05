@@ -492,6 +492,15 @@ class Master extends CI_Controller
                 ->where('penempatan_relawan.id_relawan', $user->id_user)
                 ->group_by('wilayah_kabupaten.id')
                 ->get()->result();
+        } else if($user->id_role == 4 && $user->dapil_id != null || $user->id_role == 4 && $user->dapil_id != 0){
+            $data = $this->db->select('wilayah_kabupaten.*')
+                    ->from('wilayah_kabupaten')
+                    ->join('dapil_wilayah', 'wilayah_kabupaten.id = dapil_wilayah.id_kabupaten')
+                    ->join('wilayah_provinsi', 'wilayah_kabupaten.provinsi_id = wilayah_provinsi.id')
+                    ->where('dapil_wilayah.id_dapil', $user->dapil_id)
+                    ->where('wilayah_provinsi.id', $prov)
+                    ->group_by('wilayah_kabupaten.id')
+                    ->get()->result();
         } else {
             $data = $this->db->select('wilayah_kabupaten.*')->from('wilayah_kabupaten')->join('wilayah_provinsi', 'wilayah_kabupaten.provinsi_id = wilayah_provinsi.id')->where('wilayah_provinsi.id', $prov)->get()->result();
         }
@@ -513,6 +522,32 @@ class Master extends CI_Controller
             ->where('penempatan_relawan.id_relawan', $user->id_user)
             ->where('wilayah_kabupaten.id', $req)
             ->group_by('wilayah_kecamatan.id');
+
+        } else if($user->id_role == 4){
+            $dapil = $this->db->get_where('dapil', ['id_dapil' => $user->dapil_id])->row();
+            if($dapil){
+                if($dapil->id_caleg == 3){
+
+                    $this->db->select('wilayah_kecamatan.*')
+                    ->from('wilayah_kecamatan')
+                    ->join('dapil_wilayah', 'wilayah_kecamatan.id = dapil_wilayah.id_kecamatan')
+                    ->join('wilayah_kabupaten', 'wilayah_kecamatan.kabupaten_id = wilayah_kabupaten.id')
+                    ->where('dapil_wilayah.id_dapil', $user->dapil_id)
+                    ->where('wilayah_kabupaten.id', $req)
+                    ->group_by('wilayah_kecamatan.id');
+    
+                } else {
+                    $this->db->select('wilayah_kecamatan.*')
+                    ->from('wilayah_kecamatan')
+                    ->join('wilayah_kabupaten', 'wilayah_kecamatan.kabupaten_id = wilayah_kabupaten.id')
+                    ->where('wilayah_kabupaten.id', $req);
+                }
+            } else {
+                $this->db->select('wilayah_kecamatan.*')
+                    ->from('wilayah_kecamatan')
+                    ->join('wilayah_kabupaten', 'wilayah_kecamatan.kabupaten_id = wilayah_kabupaten.id')
+                    ->where('wilayah_kabupaten.id', $req);
+            }
 
         } else {
             $this->db->select('wilayah_kecamatan.*')

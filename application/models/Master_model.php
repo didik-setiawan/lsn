@@ -271,5 +271,80 @@ class Master_model extends CI_Model{
         return $this->db->get();
     }
 
+    public function get_dapil(){
+        $user = get_user();
+        $dapil = $this->db->where('id_dapil', $user->dapil_id)->get('dapil')->row();
+        if($dapil->id_caleg == 3){
+            $this->db->select('
+                wilayah_kecamatan.nama,
+                dapil_wilayah.*
+            ')->from('dapil_wilayah')
+            ->join('wilayah_kecamatan', 'dapil_wilayah.id_kecamatan = wilayah_kecamatan.id')
+            ->where('dapil_wilayah.id_dapil', $user->dapil_id)
+            ;
+            $list_wilayah = $this->db->get()->result();
+        } else {
+            $this->db->select('
+                wilayah_kabupaten.nama,
+                dapil_wilayah.*
+            ')->from('dapil_wilayah')
+            ->join('wilayah_kabupaten', 'dapil_wilayah.id_kabupaten = wilayah_kabupaten.id')
+            ->where('dapil_wilayah.id_dapil', $user->dapil_id)
+            ;
+            $list_wilayah = $this->db->get()->result();
+        }
+
+        $data = [];
+        foreach($list_wilayah as $lw){
+            if($lw->id_kecamatan == 0 || $lw->id_kecamatan == ''){
+                //get per kabupaten
+                $jml_pendukung = $this->db->where(['kabupaten' => $lw->id_kabupaten, 'dukungan' => $user->id_user, 'id_role' => 3])->get('user')->num_rows();
+
+                $jml_relawan = $this->db->where(['kabupaten' => $lw->id_kabupaten, 'dukungan' => $user->id_user, 'id_role' => 2])->get('user')->num_rows();
+
+                $data[] = [
+                    'wilayah' => $lw->nama,
+                    'pendukung' => $jml_pendukung,
+                    'relawan' => $jml_relawan
+                ];
+
+            } else {
+                //get per kecamatan
+                $jml_pendukung = $this->db->where(['kecamatan' => $lw->id_kecamatan, 'dukungan' => $user->id_user, 'id_role' => 3])->get('user')->num_rows();
+
+                $jml_relawan = $this->db->where(['kecamatan' => $lw->id_kecamatan, 'dukungan' => $user->id_user, 'id_role' => 2])->get('user')->num_rows();
+
+                $data[] = [
+                    'wilayah' => $lw->nama,
+                    'pendukung' => $jml_pendukung,
+                    'relawan' => $jml_relawan
+                ];
+            }
+        }
+
+        return $data;
+    }
+
+    public function get_data_statistik($role = null, $gender = null, $month = null){
+        $user = get_user();
+
+        $this->db->from('user');
+        $this->db->where('dukungan', $user->id_user);
+        if($role){
+            $this->db->where('id_role', $role);
+        }
+
+        if($gender){
+            $this->db->where_in('jenis_kelamin', $gender);
+        }
+
+        if($month){
+            $year = date('Y');
+            $this->db->where('year(date_create)', $year);
+            $this->db->where('month(date_create)', $month);
+        }
+        $data = $this->db->get();
+        return $data;
+    }
 
 }

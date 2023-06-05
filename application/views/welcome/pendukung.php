@@ -18,10 +18,10 @@
 
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                    <?php if($user->dapil_id != null || $user->dapil_id != 0){ ?>
-                        <button class="btn btn-sm btn-success mt-3" id="add_pendukung" data-by="caleg"><i class="fa fa-plus"></i> Tambah</button>
-                    <?php } else  {?>
+                    <?php if($user->dapil_id == null || $user->dapil_id == 0){ ?>
                         <button class="btn btn-sm btn-success mt-3" disabled><i class="fa fa-plus"></i> Tambah</button>
+                    <?php } else  {?>
+                        <button class="btn btn-sm btn-success mt-3" id="add_pendukung" data-by="caleg"><i class="fa fa-plus"></i> Tambah</button>
                     <?php } ?>
 
                     <div id="load_pendukung" class="table-responsive mt-3">
@@ -495,10 +495,10 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <?php if($user->dapil_id != null || $user->dapil_id != 0){ ?>
-            <button type="button" class="btn btn-primary" data-id="" data-type="add" id="penempatan"><i class="fa fa-plus"></i> Tambah</button>
-        <?php } else { ?>
+        <?php if($user->dapil_id == null || $user->dapil_id == 0){ ?>
             <button type="button" class="btn btn-primary" disabled ><i class="fa fa-plus"></i> Tambah</button>
+        <?php } else { ?>
+            <button type="button" class="btn btn-primary" data-id="" data-type="add" id="penempatan"><i class="fa fa-plus"></i> Tambah</button>
         <?php } ?>
       </div>
     </div>

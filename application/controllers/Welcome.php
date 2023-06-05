@@ -32,8 +32,14 @@ class Welcome extends CI_Controller {
             $prov = $this->db->get()->result();
 
         } else if($user->id_role == 4){
-            $prov = $this->db->get('wilayah_provinsi')->result();
-        }
+            $this->db->select('wilayah_provinsi.*')
+            ->from('wilayah_provinsi')
+            ->join('dapil_wilayah', 'wilayah_provinsi.id = dapil_wilayah.id_provinsi')
+            ->where('dapil_wilayah.id_dapil', $user->dapil_id)
+            ->group_by('wilayah_provinsi.id');
+
+            $prov = $this->db->get()->result();
+        } 
 
 
 		$data = [
@@ -712,16 +718,40 @@ class Welcome extends CI_Controller {
 
     public function statistik(){
         access_menu();
-        $data = [
-            'title' => 'Statistik',
-            'user' => get_user(),
-            'view' => 'welcome/statistik',
-            'jml_p' => $this->m->get_jml_pendukung_by_gender('P')->num_rows(),
-            'jml_l' => $this->m->get_jml_pendukung_by_gender('L')->num_rows(),
-            'jml_pendukung' => $this->m->get_pendukung()->num_rows(),
-            'persentase_l' => $this->m->get_persentase_gender('L'),
-            'persentase_p' => $this->m->get_persentase_gender('P'),
-        ];
+        $pendukung = 3;
+        $relawan = 2;
+        $month = date('m');
+        $gender_l = ['l', 'laki-laki'];
+        $gender_p = ['p', 'perempuan'];
+
+        if(get_user()->dapil_id){
+            $data = [
+                'title' => 'Statistik',
+                'user' => get_user(),
+                'view' => 'welcome/statistik',
+                'data' => $this->m->get_dapil(),
+    
+                'total_pendukung' => $this->m->get_data_statistik($pendukung, null, null)->num_rows(),
+                'total_relawan' => $this->m->get_data_statistik($relawan, null, null)->num_rows(),
+    
+                'pendukung_bulan' => $this->m->get_data_statistik($pendukung, null, $month)->num_rows(),
+                'relawan_bulan' => $this->m->get_data_statistik($relawan, null, $month)->num_rows(),
+    
+                'pendukung_l' => $this->m->get_data_statistik($pendukung, $gender_l, null)->num_rows(),
+                'pendukung_p' => $this->m->get_data_statistik($pendukung, $gender_p, null)->num_rows(),
+    
+                'relawan_l' => $this->m->get_data_statistik($relawan, $gender_l, null)->num_rows(),
+                'relawan_p' => $this->m->get_data_statistik($relawan, $gender_p, null)->num_rows()
+            ];
+        } else {
+            $data = [
+                'title' => 'Statistik',
+                'user' => get_user(),
+                'view' => 'welcome/statistik',
+            ];
+        }
+
+        
         $this->load->view('template', $data);
     }
 

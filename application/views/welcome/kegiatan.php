@@ -8,8 +8,18 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
+
               <?php if($user->id_role == 2){ ?>
-                <button class="btn btn-sm btn-success" id="addData"><i class="fa fa-plus"></i> Tambah</button>
+                <?php 
+                  $check_penempatan_relawan = $this->m->check_penempatan_relawan();
+                    if($check_penempatan_relawan > 0){
+                      $action = '';
+                    } else {
+                      $action = 'disabled';
+                    }
+                ?>
+
+                <button <?= $action ?> class="btn btn-sm btn-success" id="addData"><i class="fa fa-plus"></i> Tambah</button>
               <?php } ?>
 
                 <div id="load_data_kegiatan" class="mt-3"></div>

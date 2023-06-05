@@ -414,7 +414,7 @@ class Ajax extends CI_Controller {
     }
 
     public function load_all_data_member(){
-        // validation_ajax_request();
+        validation_ajax_request();
 
         if(!empty($this->input->post('prov'))){
             $prov = $this->input->post('prov');
@@ -528,6 +528,12 @@ class Ajax extends CI_Controller {
             //output to json format
         echo json_encode($output);
 
+    }
+
+    public function get_data_statistik(){
+        validation_ajax_request();
+        $data = $this->m->get_dapil();
+        echo json_encode($data);
     }
 
 }
