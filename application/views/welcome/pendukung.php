@@ -130,7 +130,7 @@
         </div>
 
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Tempat Lahir <span class="text-danger">*</span></label>
+            <label class="col-sm-2 col-form-label">Tempat Lahir</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" name="tempat_lahir" id="tempat_lahir">
                 <small class="text-danger" id="err_tl"></small>
@@ -138,9 +138,9 @@
         </div>
 
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Tanggal Lahir <span class="text-danger">*</span></label>
+            <label class="col-sm-2 col-form-label">Tanggal Lahir</label>
             <div class="col-sm-10">
-                <input type="date" class="form-control" name="tgl_lahir" id="tgl_lahir" required>
+                <input type="date" class="form-control" name="tgl_lahir" id="tgl_lahir">
             </div>
         </div>
 
@@ -219,7 +219,7 @@
         </div>
 
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Dusun <span class="text-danger">*</span></label>
+            <label class="col-sm-2 col-form-label">Dusun</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" name="dusun" id="dusun">
                 <small class="text-danger" id="err_dusun"></small>
@@ -227,7 +227,7 @@
         </div>
 
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Rw <span class="text-danger">*</span></label>
+            <label class="col-sm-2 col-form-label">Rw</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" name="rw" id="rw">
                 <small class="text-danger" id="err_rw"></small>
@@ -235,7 +235,7 @@
         </div>
 
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Rt <span class="text-danger">*</span></label>
+            <label class="col-sm-2 col-form-label">Rt</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" name="rt" id="rt">
                 <small class="text-danger" id="err_rt"></small>
@@ -273,9 +273,9 @@
         </div>
 
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Alamat Lengkap <span class="text-danger">*</span></label>
+            <label class="col-sm-2 col-form-label">Alamat Lengkap</label>
             <div class="col-sm-10">
-                <textarea name="alamat_lengkap" id="alamat_engkap" class="form-control" cols="30" rows="3" required></textarea>
+                <textarea name="alamat_lengkap" id="alamat_engkap" class="form-control" cols="30" rows="3"></textarea>
             </div>
         </div>
 
@@ -332,7 +332,7 @@
         </div>
 
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">NIK <span class="text-danger">*</span></label>
+            <label class="col-sm-2 col-form-label">NIK</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" name="nik" id="nikE">
                 <small class="text-danger" id="err_nik_e"></small>
@@ -340,7 +340,7 @@
         </div>
 
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Tempat Lahir <span class="text-danger">*</span></label>
+            <label class="col-sm-2 col-form-label">Tempat Lahir</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" name="tempat_lahir" id="tempat_lahirE">
                 <small class="text-danger" id="err_tl_e"></small>
@@ -348,9 +348,9 @@
         </div>
 
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Tanggal Lahir <span class="text-danger">*</span></label>
+            <label class="col-sm-2 col-form-label">Tanggal Lahir</label>
             <div class="col-sm-10">
-                <input type="date" class="form-control" name="tgl_lahir" id="tgl_lahirE" required>
+                <input type="date" class="form-control" name="tgl_lahir" id="tgl_lahirE">
             </div>
         </div>
 
@@ -366,7 +366,7 @@
         </div>
 
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">No Telp <span class="text-danger">*</span></label>
+            <label class="col-sm-2 col-form-label">No Telp</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" name="no_telp" id="no_telpE">
                 <small class="text-danger" id="err_telp_e"></small>
@@ -413,7 +413,7 @@
         </div>
 
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Dusun <span class="text-danger">*</span></label>
+            <label class="col-sm-2 col-form-label">Dusun</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" name="dusun" id="dusunE">
                 <small class="text-danger" id="err_dusun_e"></small>
@@ -421,7 +421,7 @@
         </div>
 
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Rw <span class="text-danger">*</span></label>
+            <label class="col-sm-2 col-form-label">Rw </label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" name="rw" id="rwE">
                 <small class="text-danger" id="err_rw_e"></small>
@@ -429,7 +429,7 @@
         </div>
 
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Rt <span class="text-danger">*</span></label>
+            <label class="col-sm-2 col-form-label">Rt </label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" name="rt" id="rtE">
                 <small class="text-danger" id="err_rt_e"></small>
@@ -464,9 +464,9 @@
         </div>
 
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Alamat Lengkap <span class="text-danger">*</span></label>
+            <label class="col-sm-2 col-form-label">Alamat Lengkap </label>
             <div class="col-sm-10">
-                <textarea name="alamat_lengkap" id="alamat_engkapE" class="form-control" cols="30" rows="3" required></textarea>
+                <textarea name="alamat_lengkap" id="alamat_engkapE" class="form-control" cols="30" rows="3"></textarea>
             </div>
         </div>
 

@@ -13,6 +13,7 @@ class Dashboard extends CI_Controller
     public function index()
     {
         $user = get_user();
+        $month = date('m');
         $data = [
             'title' => 'Dashboard',
             'user' => get_user(),
@@ -27,6 +28,8 @@ class Dashboard extends CI_Controller
         } else if($user->id_role == 2){
             //dashboard relawan
             $data['view'] = 'dashboard/relawan';
+            $data['pendukung_bulan'] = $this->db->where('add_by', $user->id_user)->where('month(date_create)', $month)->get('user')->num_rows();
+            $data['pendukung_total'] = $this->db->where('add_by', $user->id_user)->get('user')->num_rows();
         } else if($user->id_role == 3){
             //dashboard anggota
             $data['view'] = 'dashboard/anggota';

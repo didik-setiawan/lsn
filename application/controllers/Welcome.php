@@ -55,13 +55,13 @@ class Welcome extends CI_Controller {
 	private function validation_member(){
         $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required|trim');
         $this->form_validation->set_rules('nik', 'NIK', 'trim|numeric|is_unique[user.nik]');
-        $this->form_validation->set_rules('tempat_lahir', 'Tempat Lahir', 'required|trim');
+        $this->form_validation->set_rules('tempat_lahir', 'Tempat Lahir', 'trim');
         $this->form_validation->set_rules('no_telp', 'No Telp', 'trim|numeric|is_unique[user.no_telp]');
-        $this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email|is_unique[user.email]');
-        $this->form_validation->set_rules('password', 'Password', 'required|trim|min_length[5]');
-        $this->form_validation->set_rules('dusun', 'Dusun', 'required|trim');
-        $this->form_validation->set_rules('rw', 'Rw', 'required|trim|numeric');
-        $this->form_validation->set_rules('rt', 'Rt', 'required|trim|numeric');
+        $this->form_validation->set_rules('email', 'Email', 'trim|valid_email|is_unique[user.email]');
+        $this->form_validation->set_rules('password', 'Password', 'trim|min_length[5]');
+        $this->form_validation->set_rules('dusun', 'Dusun', 'trim');
+        $this->form_validation->set_rules('rw', 'Rw', 'trim|numeric');
+        $this->form_validation->set_rules('rt', 'Rt', 'trim|numeric');
        
         if($this->form_validation->run() == false){
             $params = [
@@ -185,7 +185,7 @@ class Welcome extends CI_Controller {
         $get_telp = $this->db->where('no_telp', $telp)->get('user')->num_rows();
         $get_nik = $this->db->where('nik', $nik)->get('user')->num_rows();
 
-        if($telp != null && $get_telp > 1){
+        if($telp != null && $get_telp > 1 || $telp != 0 && $get_telp > 1){
             $params = [
                 'type' => 'validation',
                 'err_tlp' => 'No telp sudah terdaftar'
@@ -193,7 +193,7 @@ class Welcome extends CI_Controller {
             echo json_encode($params);die;
         }
 
-        if($nik != null && $get_nik > 1){
+        if($nik != null && $get_nik > 1 || $nik != 0 && $get_nik > 1){
             $params = [
                 'type' => 'validation',
                 'err_nik' => 'NIK sudah terdaftar'
@@ -203,11 +203,11 @@ class Welcome extends CI_Controller {
 
         $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required|trim');
         $this->form_validation->set_rules('nik', 'NIk', 'trim|numeric');
-        $this->form_validation->set_rules('tempat_lahir', 'Tempat Lahir', 'required|trim');
+        $this->form_validation->set_rules('tempat_lahir', 'Tempat Lahir', 'trim');
         $this->form_validation->set_rules('no_telp', 'No Telp', 'trim|numeric');
-        $this->form_validation->set_rules('dusun', 'Dusun', 'required|trim');
-        $this->form_validation->set_rules('rw', 'Rw', 'required|trim|numeric');
-        $this->form_validation->set_rules('rt', 'Rt', 'required|trim|numeric');
+        $this->form_validation->set_rules('dusun', 'Dusun', 'trim');
+        $this->form_validation->set_rules('rw', 'Rw', 'trim|numeric');
+        $this->form_validation->set_rules('rt', 'Rt', 'trim|numeric');
        
         if($this->form_validation->run() == false){
             $params = [

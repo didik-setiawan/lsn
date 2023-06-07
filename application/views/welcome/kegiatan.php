@@ -22,7 +22,42 @@
                 <button <?= $action ?> class="btn btn-sm btn-success" id="addData"><i class="fa fa-plus"></i> Tambah</button>
               <?php } ?>
 
-                <div id="load_data_kegiatan" class="mt-3"></div>
+                <div class="mt-3 table-responsive">
+                  <?php if($user->id_role == 2){ ?>
+                    <table class="table table-bordered w-100" id="load_kegiatan">
+                      <thead>
+                        <tr class="bg-dark text-white">
+                          <th>#</th>
+                          <th>Tanggal</th>
+                          <th>Foto Kegiatan</th>
+                          <th>Keterangan</th>
+                          <th>Lokasi</th>
+                          <th>Jumlah Peserta</th>
+                          <th><i class="fa fa-cogs"></i></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                    </table>
+                  <?php } else { ?>
+                    <table class="table table-bordered w-100" id="load_kegiatan">
+                      <thead>
+                        <tr class="bg-dark text-white">
+                          <th>#</th>
+                          <th>Tanggal</th>
+                          <th>Foto Kegiatan</th>
+                          <th>Keterangan</th>
+                          <th>Lokasi</th>
+                          <th>Jumlah Peserta</th>
+                          <th>Nama Relawan</th>
+                          <th><i class="fa fa-cogs"></i></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                    </table>
+                  <?php } ?>
+                </div>
 
             </div>
         </div>
@@ -186,7 +221,8 @@
 <script>
 
     $(document).ready(function(){
-      load_data_kegiatan();
+      // load_data_kegiatan();
+      load_datatable();
     });
 
     $('#addData').click(function(){
@@ -524,28 +560,53 @@
         })
     });
 
-    function load_data_kegiatan(){
-      const loading_animation = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
-        $('#load_data_kegiatan').html(loading_animation);
+    // function load_data_kegiatan(){
+    //   const loading_animation = '<div class="text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
+    //     $('#load_data_kegiatan').html(loading_animation);
 
-        $.ajax({
-            url: '<?= base_url('ajax/load_data_kegiatan'); ?>',
-            type: 'POST',
-            success: function(d){
-                $('#load_data_kegiatan').html(d);
-            },
-            error: function(xhr){
+    //     $.ajax({
+    //         url: '<?= base_url('ajax/load_data_kegiatan'); ?>',
+    //         type: 'POST',
+    //         success: function(d){
+    //             $('#load_data_kegiatan').html(d);
+    //         },
+    //         error: function(xhr){
                
-                    if(xhr.status === 0){
-                        toastr["error"]("No internet access", "Error");
-                    } else if(xhr.status == 404){
-                        toastr["error"]("Page not found", "Error");
-                    } else if(xhr.status == 500){
-                        toastr["error"]("Internal server error", "Error");
-                    } else {
-                        toastr["error"]("Unknow error", "Error");
-                    }
-            }
+    //                 if(xhr.status === 0){
+    //                     toastr["error"]("No internet access", "Error");
+    //                 } else if(xhr.status == 404){
+    //                     toastr["error"]("Page not found", "Error");
+    //                 } else if(xhr.status == 500){
+    //                     toastr["error"]("Internal server error", "Error");
+    //                 } else {
+    //                     toastr["error"]("Unknow error", "Error");
+    //                 }
+    //         }
+    //     });
+    // }
+
+    function reload_data_member(){
+        $('#load_kegiatan').DataTable().destroy();
+        load_datatable();
+    }
+
+    function load_datatable(){
+      let datatable = $('#load_kegiatan').dataTable({
+            "processing": true,
+            "serverSide": true,
+            "order": [],
+            "ajax": {
+                "url": "<?= base_url('ajax/get_datatable_kegiatan')?>",
+                "type": "POST"
+            },
+            "columnDefs": [
+                { 
+                    "targets": [ 0 ], //first column / numbering column
+                    "orderable": false, //set not orderable
+                },
+            ],
+            "iDisplayLength": 10,
+            "ordering": false,
         });
     }
 </script>

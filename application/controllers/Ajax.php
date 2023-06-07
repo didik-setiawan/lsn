@@ -574,4 +574,102 @@ class Ajax extends CI_Controller {
         echo json_encode($data);
     }
 
+    public function get_data_bulan_pendukung_relawan(){
+        validation_ajax_request();
+        $user = get_user();
+        $data = $this->m->get_jml_user_per_bulan($user->id_user);
+        echo json_encode($data);
+    }
+
+    public function get_datatable_kegiatan(){
+
+        $user = get_user();
+       
+        $no = $_POST['start'];
+        $data = array();
+
+        if($user->id_role == 2){
+            $list = $this->m->get_datatables($user->id_user, $user->dukungan);
+
+            foreach($list as $l){
+                $tanggal = date_create($l->tgl);
+                $foto = $this->db->get_where('kegiatan_foto', ['kegiatan' => $l->foto_kegiatan])->row();
+
+                $img = '<img src="'. base_url("assets/img/kegiatan/") . $foto->file .'" alt="foto_kegiatan" width="100px">';
+                $btn = '<div class="dropdown">
+                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-cogs"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                                <button class="dropdown-item view_photo" type="button" data-id="'.md5(sha1($l->foto_kegiatan)).'"   data-kegiatan="'.$l->foto_kegiatan.'">Lihat Foto</button>
+
+                                <button class="dropdown-item edit_data" type="button" data-id="'.md5(sha1($l->id_kegiatan)).'">Edit</button>
+
+                                <button class="dropdown-item delete_data" type="button" data-id="'.md5(sha1($l->id_kegiatan)).'">Hapus</button>
+                            </div>
+                        </div>';
+
+                $no ++;
+                $row = [];
+
+                $row[] = $no;
+                $row[] = date_format($tanggal, 'd F Y');
+                $row[] = $img;
+                $row[] = $l->keterangan;
+                $row[] = $l->tempat;
+                $row[] = $l->jml_peserta;
+                $row[] = $btn;
+
+                $data[] = $row;
+                
+            }
+
+            $output = array(
+                "draw" => $_POST['draw'],
+                "recordsTotal" => $this->m->count_all($user->id_user, $user->dukungan),
+                "recordsFiltered" => $this->m->count_filtered($user->id_user, $user->dukungan),
+                "data" => $data,
+            );
+
+        } else if($user->id_role == 4) {
+            
+            $list = $this->m->get_datatables(null, $user->id_user);
+
+            foreach($list as $l){
+                $tanggal = date_create($l->tgl);
+                $foto = $this->db->get_where('kegiatan_foto', ['kegiatan' => $l->foto_kegiatan])->row();
+
+                $img = '<img src="'. base_url("assets/img/kegiatan/") . $foto->file .'" alt="foto_kegiatan" width="100px">';
+                $btn = '<button class="btn btn-sm btn-dark view_photo" data-id="'. md5(sha1($l->foto_kegiatan)) .'"><i class="fa fa-images"></i></button>';
+
+                $no ++;
+                $row = [];
+
+                $row[] = $no;
+                $row[] = date_format($tanggal, 'd F Y');
+                $row[] = $img;
+                $row[] = $l->keterangan;
+                $row[] = $l->tempat;
+                $row[] = $l->jml_peserta;
+                $row[] = $l->nama;
+                $row[] = $btn;
+
+                $data[] = $row;
+                
+            }
+
+            $output = array(
+                "draw" => $_POST['draw'],
+                "recordsTotal" => $this->m->count_all(null, $user->id_user),
+                "recordsFiltered" => $this->m->count_filtered(null, $user->id_user),
+                "data" => $data,
+            );
+
+        }
+
+        
+        echo json_encode($output);
+
+    }
+
 }

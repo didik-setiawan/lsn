@@ -32,7 +32,7 @@
                             </div>
                             <small class="text-danger" id="err_email"></small>
                             <a href="<?= base_url('auth') ?>"><small>Sign In?</small></a>
-                            <button class="btn btn-danger float-right mt-3" id="toLogin" type="submit">Login</button>
+                            <button class="btn btn-danger float-right mt-3" id="toLogin" type="submit">Go</button>
                         </form>
                     </div>
                 </div>

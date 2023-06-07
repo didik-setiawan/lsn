@@ -367,7 +367,7 @@ class Master_model extends CI_Model{
         return $data;
     }
 
-    public function get_jml_user_per_bulan(){
+    public function get_jml_user_per_bulan($add_by = null){
         $tgl = get_date();
         $bulan = date('m');
         $tahun = date('Y');
@@ -378,6 +378,11 @@ class Master_model extends CI_Model{
             ->where('year(date_create)', $tahun)
             ->where('month(date_create)', $bulan)
             ->where('day(date_create)', $date);
+
+            if($add_by){
+                $this->db->where('add_by', $add_by);
+            }
+
             $jml = $this->db->get()->num_rows();
 
             $list[] = [
@@ -388,5 +393,83 @@ class Master_model extends CI_Model{
         return $list;
     }
 
+
+
+    //get data kegiatan for datatable 
+
+    private function get_kegiatan_datatable($add_by = null, $dukungan = null){
+        $column_search = ['tgl', 'tempat', 'keterangan', 'jml_peserta'];
+        $column_order = [null, 'tgl', null, 'keterangan', 'tempat', 'jml_peserta', null];
+        $order = ['id_kegiatan' => 'DESC'];
+
+        $this->db->select('
+            user.nama,
+            kegiatan.*
+        ')
+        ->from('kegiatan')
+        ->join('user', 'kegiatan.id_relawan = user.id_user');
+
+        if($add_by){
+            $this->db->where('kegiatan.id_relawan', $add_by);
+        }
+        if($dukungan){
+            $this->db->where('user.dukungan', $dukungan);
+        }
+
+        $i = 0;
+        foreach($column_search as $item){
+            if($_POST['search']['value']){
+                if($i === 0){
+                    $this->db->group_start();
+                    $this->db->like($item, $_POST['search']['value']);
+                } else {
+                    $this->db->or_like($item, $_POST['search']['value']);
+                }
+
+                if(count($column_search) - 1 == $i) {
+                    $this->db->group_end();
+                }
+            }
+            $i++;
+        }
+        if(isset($_POST['order'])){
+            $this->db->order_by($column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        } else if(isset($order)){
+            $order_data = $order;
+            $this->db->order_by(key($order_data), $order_data[key($order_data)]);
+        }
+    }
+
+    public function get_datatables($add_by = null, $dukungan = null){
+        $this->get_kegiatan_datatable($add_by, $dukungan);
+        if($_POST['length'] != -1)
+        $this->db->limit($_POST['length'], $_POST['start']);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    public function count_filtered($add_by = null, $dukungan = null){
+        $this->get_kegiatan_datatable($add_by, $dukungan);
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+
+    public function count_all($add_by = null, $dukungan = null)
+    {
+        $this->db->select('
+            user.nama,
+            kegiatan.*
+        ')
+        ->from('kegiatan')
+        ->join('user', 'kegiatan.id_relawan = user.id_user');
+
+        if($add_by){
+            $this->db->where('kegiatan.id_relawan', $add_by);
+        }
+        if($dukungan){
+            $this->db->where('user.dukungan', $dukungan);
+        }
+        return $this->db->count_all_results();
+    }
 
 }

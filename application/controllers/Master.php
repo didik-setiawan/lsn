@@ -457,8 +457,6 @@ class Master extends CI_Controller
         echo json_encode($params);
     }
 
-
-
     //master anggota
 
     public function member(){
@@ -587,14 +585,14 @@ class Master extends CI_Controller
 
     private function validation_member(){
         $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required|trim');
-        $this->form_validation->set_rules('nik', 'NIk', 'required|trim|numeric|is_unique[user.nik]');
-        $this->form_validation->set_rules('tempat_lahir', 'Tempat Lahir', 'required|trim');
-        $this->form_validation->set_rules('no_telp', 'No Telp', 'required|trim|numeric|is_unique[user.no_telp]');
-        $this->form_validation->set_rules('email', 'Email', 'required|trim|valid_email|is_unique[user.email]');
-        $this->form_validation->set_rules('password', 'Password', 'required|trim|min_length[5]');
-        $this->form_validation->set_rules('dusun', 'Dusun', 'required|trim');
-        $this->form_validation->set_rules('rw', 'Rw', 'required|trim|numeric');
-        $this->form_validation->set_rules('rt', 'Rt', 'required|trim|numeric');
+        $this->form_validation->set_rules('nik', 'NIk', 'trim|numeric|is_unique[user.nik]');
+        $this->form_validation->set_rules('tempat_lahir', 'Tempat Lahir', 'alpha_numeric_spaces|trim');
+        $this->form_validation->set_rules('no_telp', 'No Telp', 'trim|numeric|is_unique[user.no_telp]');
+        $this->form_validation->set_rules('email', 'Email', 'trim|valid_email|is_unique[user.email]');
+        $this->form_validation->set_rules('password', 'Password', 'trim|min_length[5]');
+        $this->form_validation->set_rules('dusun', 'Dusun', 'trim');
+        $this->form_validation->set_rules('rw', 'Rw', 'trim|numeric');
+        $this->form_validation->set_rules('rt', 'Rt', 'trim|numeric');
        
         if($this->form_validation->run() == false){
             $params = [
@@ -872,18 +870,10 @@ class Master extends CI_Controller
         $telp = $this->input->post('no_telp');
         $nik = $this->input->post('nik');
 
-        $get_telp = $this->db->where('no_telp', $telp)->get('user')->num_rows();
         $get_nik = $this->db->where('nik', $nik)->get('user')->num_rows();
+        $get_telp = $this->db->where('no_telp', $telp)->get('user')->num_rows();
 
-        if($get_telp > 1){
-            $params = [
-                'type' => 'validation',
-                'err_tlp' => 'No telp sudah terdaftar'
-            ];
-            echo json_encode($params);die;
-        }
-
-        if($get_nik > 1){
+        if($get_nik > 1 && $nik != null || $get_nik > 1 && $nik != 0){
             $params = [
                 'type' => 'validation',
                 'err_nik' => 'NIK sudah terdaftar'
@@ -891,13 +881,21 @@ class Master extends CI_Controller
             echo json_encode($params);die;
         }
 
+        if($get_telp > 1 && $telp != null || $get_telp > 1 && $telp != 0){
+            $params = [
+                'type' => 'validation',
+                'err_nik' => 'No telp sudah terdaftar'
+            ];
+            echo json_encode($params);die;
+        }
+
         $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required|trim');
-        $this->form_validation->set_rules('nik', 'NIk', 'required|trim|numeric');
-        $this->form_validation->set_rules('tempat_lahir', 'Tempat Lahir', 'required|trim');
-        $this->form_validation->set_rules('no_telp', 'No Telp', 'required|trim|numeric');
-        $this->form_validation->set_rules('dusun', 'Dusun', 'required|trim');
-        $this->form_validation->set_rules('rw', 'Rw', 'required|trim|numeric');
-        $this->form_validation->set_rules('rt', 'Rt', 'required|trim|numeric');
+        $this->form_validation->set_rules('nik', 'NIk', 'trim|numeric');
+        $this->form_validation->set_rules('tempat_lahir', 'Tempat Lahir', 'trim');
+        $this->form_validation->set_rules('no_telp', 'No Telp', 'trim|numeric');
+        $this->form_validation->set_rules('dusun', 'Dusun', 'trim');
+        $this->form_validation->set_rules('rw', 'Rw', 'trim|numeric');
+        $this->form_validation->set_rules('rt', 'Rt', 'trim|numeric');
        
         if($this->form_validation->run() == false){
             $params = [
